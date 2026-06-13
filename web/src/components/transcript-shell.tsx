@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckIcon,
   PauseIcon,
   PlayIcon,
+  RotateCcwIcon,
   SkipForwardIcon,
   Volume2Icon,
   VolumeXIcon,
@@ -25,6 +26,18 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
+/*
+ * DESIGN SYSTEM — "tabellone delle prove", light premium editorial (defined, not vibe).
+ *  bg            soft off-white radial (globals.css), white cards + subtle shadow
+ *  surface       --card (white) / --surface-soft (light gray) ; hairline border-black/10
+ *  fail (base)   red    — the agent that forgets = the problem
+ *  recall (sug)  emerald — the solution; SCARCE: only the win + memory writes
+ *  voice-accent  violet — the memory layer / the caller's voice
+ *  running       amber  — live / in-progress
+ *  data type     Geist Mono — timestamps, [tN] citations, $, scores
+ *  motif         every claim carries its [tN] citation = receipts, no vibes
+ */
+
 type TranscriptShellProps = {
   baseTurns: DisplayTurn[];
   cost: CostFixture;
@@ -33,14 +46,9 @@ type TranscriptShellProps = {
   verdicts: VerdictsFixture;
 };
 
-// Replay pacing. The clock auto-HOLDS while a real nonna clip plays, so the
-// voice and the transcript advance together on the spoken lines (audio effect).
 const REPLAY_RATE = 12;
 const FRAME_MS = 100;
-// how many recent turns stay on the projector at once — a moving window, not the
-// whole 9-minute scroll, so the divergence at t41 reads from the back of the room
 const WINDOW = 6;
-// caller turns that have a real recorded clip in /public/audio (see AGENTS.md)
 const AUDIO_TURNS = ["t1", "t5", "t7", "t9", "t38", "t40"];
 
 function parseTimestamp(ts: string) {
@@ -97,82 +105,38 @@ function PressureMeter({
   recallActive: boolean;
 }) {
   const baseEvent = latestCostEvent(cost.events, "base", currentSeconds, turnTimes);
-  const sugEvent = latestCostEvent(
-    cost.events,
-    "suggeritore",
-    currentSeconds,
-    turnTimes
-  );
+  const sugEvent = latestCostEvent(cost.events, "suggeritore", currentSeconds, turnTimes);
   const baseValue = baseEvent?.usd_cumulative ?? 0;
   const sugValue = sugEvent?.usd_cumulative ?? 0;
-  const baseFill = cost.final.base ? (baseValue / cost.final.base) * 100 : 0;
-  const sugFill = cost.final.suggeritore
-    ? (sugValue / cost.final.suggeritore) * 100
-    : 0;
-  const live =
-    baseValue > 0 && sugValue > 0 ? (baseValue / sugValue).toFixed(1) : null;
+  const live = baseValue > 0 && sugValue > 0 ? (baseValue / sugValue).toFixed(1) : null;
 
   return (
-    <div className="flex items-stretch gap-5 rounded-xl border border-white/10 bg-[color:var(--surface-soft)]/70 px-5 py-2.5">
-      <div className="flex min-w-[8.5rem] flex-col justify-center gap-1">
-        <div className="flex items-baseline justify-between gap-3">
-          <span className="text-[0.68rem] uppercase tracking-wider text-muted-foreground">
-            base
-          </span>
-          <span className="font-mono text-lg font-semibold tabular-nums text-[color:var(--fail)]">
-            {formatUsd(baseValue)}
-          </span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
-          <div
-            className="h-full rounded-full bg-[color:var(--fail)] transition-[width] duration-200"
-            style={{ width: `${Math.min(100, baseFill)}%` }}
-          />
-        </div>
-        <span className="text-[0.64rem] text-muted-foreground">
-          ripaga tutto l&apos;audio, ogni turno
+    <div className="flex items-center gap-4 rounded-lg border border-black/10 bg-[color:var(--card)] px-4 py-1.5 shadow-sm">
+      <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted-foreground">
+        costo · stima
+      </span>
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-[0.66rem] uppercase tracking-wide text-muted-foreground">base</span>
+        <span className="font-mono text-base font-semibold tabular-nums text-[color:var(--fail)]">
+          {formatUsd(baseValue)}
         </span>
       </div>
-
-      <Separator orientation="vertical" className="h-auto" />
-
-      <div className="flex min-w-[8.5rem] flex-col justify-center gap-1">
-        <div className="flex items-baseline justify-between gap-3">
-          <span className="text-[0.68rem] uppercase tracking-wider text-muted-foreground">
-            suggeritore
-          </span>
-          <span className="font-mono text-lg font-semibold tabular-nums text-[color:var(--voice-accent)]">
-            {formatUsd(sugValue)}
-          </span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
-          <div
-            className="h-full rounded-full bg-[color:var(--voice-accent)] transition-[width] duration-200"
-            style={{ width: `${Math.min(100, sugFill)}%` }}
-          />
-        </div>
-        <span className="text-[0.64rem] text-muted-foreground">
-          manda solo lo stato compatto
+      <Separator orientation="vertical" className="h-5" />
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-[0.66rem] uppercase tracking-wide text-muted-foreground">sugg.</span>
+        <span className="font-mono text-base font-semibold tabular-nums text-[color:var(--voice-accent)]">
+          {formatUsd(sugValue)}
         </span>
       </div>
-
-      <Separator orientation="vertical" className="h-auto" />
-
-      <div className="flex flex-col items-center justify-center px-1">
-        <span
-          className={cn(
-            "font-mono font-semibold leading-none tabular-nums transition-all",
-            recallActive
-              ? "text-3xl text-[color:var(--fail)]"
-              : "text-xl text-muted-foreground"
-          )}
-        >
-          {live ? `${live}×` : "—"}
-        </span>
-        <span className="mt-1 text-[0.6rem] uppercase tracking-wide text-muted-foreground">
-          più caro
-        </span>
-      </div>
+      <Separator orientation="vertical" className="h-5" />
+      <span
+        className={cn(
+          "font-mono font-bold tabular-nums transition-all",
+          recallActive ? "text-xl text-[color:var(--fail)]" : "text-sm text-muted-foreground"
+        )}
+      >
+        {live ? `${live}×` : "—"}
+      </span>
     </div>
   );
 }
@@ -184,8 +148,10 @@ function ReplayBar({
   duration,
   isPlaying,
   muted,
+  speaking,
   markers,
-  onPlayToggle,
+  onPlayPause,
+  onRestart,
   onSeek,
   onJumpToRecall,
   onToggleMute,
@@ -194,55 +160,70 @@ function ReplayBar({
   duration: number;
   isPlaying: boolean;
   muted: boolean;
+  speaking: boolean;
   markers: { label: string; seconds: number; recall?: boolean }[];
-  onPlayToggle: () => void;
+  onPlayPause: () => void;
+  onRestart: () => void;
   onSeek: (value: number) => void;
   onJumpToRecall: () => void;
   onToggleMute: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-[color:var(--surface-soft)]/60 px-5 py-3.5">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col gap-2 rounded-lg border border-black/10 bg-[color:var(--card)] px-4 py-2.5 shadow-sm">
+      <div className="flex items-center gap-2.5">
         <Button
-          size="lg"
+          size="sm"
           onClick={onJumpToRecall}
-          className="bg-[color:var(--recall)] font-semibold text-black hover:bg-[color:var(--recall)]/90"
+          className="h-9 bg-[color:var(--recall)] px-4 font-semibold text-white hover:bg-[color:var(--recall)]/90"
         >
           <SkipForwardIcon data-icon="inline-start" />
-          Vai al momento del recall
+          Vai al recall
         </Button>
-        <Button variant="outline" size="lg" onClick={onPlayToggle}>
-          {isPlaying ? (
-            <PauseIcon data-icon="inline-start" />
-          ) : (
-            <PlayIcon data-icon="inline-start" />
-          )}
-          {isPlaying ? "Pausa" : "Riproduci dall'inizio"}
+        <Button variant="outline" size="sm" className="h-9" onClick={onRestart}>
+          <RotateCcwIcon data-icon="inline-start" />
+          Dall&apos;inizio
         </Button>
         <Button
           variant="ghost"
           size="icon"
+          className="size-9"
+          onClick={onPlayPause}
+          aria-label={isPlaying ? "Pausa" : "Riprendi"}
+        >
+          {isPlaying ? <PauseIcon /> : <PlayIcon />}
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-9"
           onClick={onToggleMute}
           aria-label={muted ? "Riattiva la voce" : "Disattiva la voce"}
         >
           {muted ? <VolumeXIcon /> : <Volume2Icon />}
         </Button>
-        <div className="ml-auto font-mono text-sm tabular-nums text-muted-foreground">
-          <span className="text-foreground">{formatTimestamp(currentSeconds)}</span>
-          {" / "}
-          {formatTimestamp(duration)}
+
+        <div className="ml-auto flex items-center gap-3">
+          {speaking ? (
+            <span className="flex items-center gap-1.5 font-mono text-xs text-[color:var(--voice-accent)]">
+              <span className="size-2 animate-pulse rounded-full bg-[color:var(--voice-accent)]" />
+              Nonna sta parlando…
+            </span>
+          ) : null}
+          <span className="font-mono text-sm tabular-nums text-muted-foreground">
+            <span className="text-foreground">{formatTimestamp(currentSeconds)}</span>
+            {" / "}
+            {formatTimestamp(duration)}
+          </span>
         </div>
       </div>
 
-      <div className="relative pb-5 pt-1">
+      <div className="relative pb-4 pt-0.5">
         <Slider
           value={[currentSeconds]}
           min={0}
           max={duration}
           step={1}
-          onValueChange={(value) =>
-            onSeek(Array.isArray(value) ? value[0] ?? 0 : value)
-          }
+          onValueChange={(value) => onSeek(Array.isArray(value) ? value[0] ?? 0 : value)}
           aria-label="Timeline della chiamata"
         />
         {markers.map((marker) => {
@@ -250,21 +231,19 @@ function ReplayBar({
           return (
             <div
               key={marker.label}
-              className="pointer-events-none absolute top-1 flex -translate-x-1/2 flex-col items-center"
+              className="pointer-events-none absolute top-0.5 flex -translate-x-1/2 flex-col items-center"
               style={{ left: `${left}%` }}
             >
               <span
                 className={cn(
-                  "h-2.5 w-0.5 rounded-full",
-                  marker.recall ? "bg-[color:var(--recall)]" : "bg-white/30"
+                  "h-2 w-0.5 rounded-full",
+                  marker.recall ? "bg-[color:var(--recall)]" : "bg-black/25"
                 )}
               />
               <span
                 className={cn(
-                  "mt-1 whitespace-nowrap text-[0.6rem]",
-                  marker.recall
-                    ? "font-medium text-[color:var(--recall)]"
-                    : "text-muted-foreground"
+                  "mt-0.5 whitespace-nowrap text-[0.7rem]",
+                  marker.recall ? "font-medium text-[color:var(--recall)]" : "text-muted-foreground"
                 )}
               >
                 {marker.label}
@@ -279,18 +258,45 @@ function ReplayBar({
 
 /* ------------------------------------------------------------------------- lane */
 
+// Reveal a spoken line word-by-word in sync with the audio: revealed words are
+// solid, the rest stay faint and "light up" as the voice reaches them.
+function KaraokeText({ text, progress }: { text: string; progress: number }) {
+  const tokens = text.split(" ");
+  const reveal = Math.round(progress * tokens.length);
+  return (
+    <>
+      {tokens.map((word, i) => (
+        <span
+          key={i}
+          className={cn(
+            "transition-opacity duration-200",
+            i < reveal ? "opacity-100" : "opacity-25"
+          )}
+        >
+          {word}
+          {i < tokens.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </>
+  );
+}
+
 function LaneColumn({
   title,
   subtitle,
   turns,
   lane,
   recallActive,
+  speakingTurn,
+  clipProgress,
 }: {
   title: string;
   subtitle: string;
   turns: DisplayTurn[];
   lane: "base" | "suggeritore";
   recallActive: boolean;
+  speakingTurn: string | null;
+  clipProgress: number;
 }) {
   const endRef = useRef<HTMLDivElement | null>(null);
 
@@ -310,60 +316,52 @@ function LaneColumn({
   return (
     <section
       className={cn(
-        "flex flex-col overflow-hidden rounded-xl border bg-[color:var(--surface-strong)]/60 transition-colors",
+        "flex min-h-0 flex-col overflow-hidden rounded-xl border bg-[color:var(--card)] shadow-sm transition-colors",
         recallActive && isSug && "border-[color:var(--recall)]/60",
         recallActive && !isSug && "border-[color:var(--fail)]/50",
-        !recallActive && "border-white/10"
+        !recallActive && "border-black/10"
       )}
     >
-      <header className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-3.5">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-black/10 px-4 py-2.5">
         <div className="flex flex-col">
-          <h2 className="text-lg font-semibold leading-tight">{title}</h2>
-          <p className="text-[0.78rem] text-muted-foreground">{subtitle}</p>
+          <h2 className="text-base font-semibold leading-tight">{title}</h2>
+          <p className="text-[0.72rem] text-muted-foreground">{subtitle}</p>
         </div>
         <span
           className={cn(
-            "rounded-md px-2.5 py-1 font-mono text-[0.68rem] uppercase tracking-wide",
-            recallActive &&
-              isSug &&
-              "bg-[color:var(--recall)]/15 text-[color:var(--recall)]",
-            recallActive &&
-              !isSug &&
-              "bg-[color:var(--fail)]/15 text-[color:var(--fail)]",
-            !recallActive &&
-              isSug &&
-              "bg-[color:var(--voice-accent)]/15 text-[color:var(--voice-accent)]",
-            !recallActive && !isSug && "bg-white/5 text-muted-foreground"
+            "rounded px-2 py-0.5 font-mono text-[0.64rem] uppercase tracking-wide",
+            recallActive && isSug && "bg-[color:var(--recall)]/15 text-[color:var(--recall)]",
+            recallActive && !isSug && "bg-[color:var(--fail)]/15 text-[color:var(--fail)]",
+            !recallActive && isSug && "bg-[color:var(--voice-accent)]/15 text-[color:var(--voice-accent)]",
+            !recallActive && !isSug && "bg-black/[0.05] text-muted-foreground"
           )}
         >
           {stateLabel}
         </span>
       </header>
 
-      <div className="h-[52vh] overflow-y-auto px-5 py-5">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {turns.length === 0 ? (
-          <div className="flex h-full min-h-40 items-center justify-center text-center text-sm text-muted-foreground">
+          <div className="flex h-full min-h-32 items-center justify-center text-center text-sm text-muted-foreground">
             Premi play per avviare la chiamata.
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2.5">
             {turns.map((turn) => {
               const isCaller = turn.role === "caller";
               const isDivergent = recallActive && turn.displayTurn === "t41";
               const isWin = isDivergent && isSug;
               const isFail = isDivergent && !isSug;
+              const isSpeaking = speakingTurn === turn.displayTurn && isCaller;
 
               return (
                 <div
                   key={`${lane}-${turn.turn}`}
-                  className={cn(
-                    "flex flex-col gap-1.5",
-                    isCaller ? "items-end" : "items-start"
-                  )}
+                  className={cn("flex flex-col gap-1", isCaller ? "items-end" : "items-start")}
                 >
                   <div
                     className={cn(
-                      "flex items-center gap-2 font-mono text-[0.66rem] text-muted-foreground",
+                      "flex items-center gap-1.5 font-mono text-[0.62rem] text-muted-foreground",
                       isCaller && "flex-row-reverse"
                     )}
                   >
@@ -373,37 +371,46 @@ function LaneColumn({
                     <span>·</span>
                     <span>{turn.ts}</span>
                     <span className="opacity-60">[{turn.displayTurn}]</span>
+                    {isSpeaking ? (
+                      <span className="size-1.5 animate-pulse rounded-full bg-[color:var(--voice-accent)]" />
+                    ) : null}
                   </div>
 
                   <div
                     className={cn(
-                      "max-w-[94%] rounded-xl px-4 py-3 text-[0.95rem] leading-7 transition-all",
+                      "max-w-[95%] rounded-lg px-3 py-2 text-[0.88rem] leading-6 transition-all",
                       isCaller && "bg-secondary text-foreground",
                       !isCaller &&
-                        "border border-white/10 bg-[color:var(--surface-soft)] text-foreground",
+                        "border border-black/10 bg-[color:var(--surface-soft)] text-foreground",
+                      isSpeaking &&
+                        "border-[color:var(--voice-accent)]/60 ring-2 ring-[color:var(--voice-accent)]/70 shadow-[0_0_34px_color-mix(in_oklch,var(--voice-accent),transparent_66%)]",
                       isFail &&
-                        "border-[color:var(--fail)] bg-[color:var(--fail)]/12 text-foreground shadow-[0_0_30px_color-mix(in_oklch,var(--fail),transparent_80%)]",
+                        "border-[color:var(--fail)] bg-[color:var(--fail)]/12 text-foreground shadow-[0_0_24px_color-mix(in_oklch,var(--fail),transparent_82%)]",
                       isWin &&
-                        "border border-[color:var(--recall)] bg-[color:var(--recall)] font-medium text-black shadow-[0_0_48px_var(--recall-glow)]"
+                        "border border-[color:var(--recall)] bg-[color:var(--recall)] font-medium text-white shadow-[0_8px_30px_-6px_var(--recall-glow)]"
                     )}
                   >
-                    {turn.text}
+                    {isSpeaking ? (
+                      <KaraokeText text={turn.text} progress={clipProgress} />
+                    ) : (
+                      turn.text
+                    )}
                   </div>
 
                   {isFail ? (
-                    <span className="flex items-center gap-1.5 font-mono text-[0.72rem] text-[color:var(--fail)]">
-                      <XIcon className="size-3.5" /> chiede di nuovo tutto da capo
+                    <span className="flex items-center gap-1 font-mono text-[0.68rem] text-[color:var(--fail)]">
+                      <XIcon className="size-3" /> chiede di nuovo tutto da capo
                     </span>
                   ) : null}
                   {isWin ? (
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="flex items-center gap-1.5 font-mono text-[0.72rem] text-[color:var(--recall)]">
-                        <CheckIcon className="size-3.5" /> prova
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="flex items-center gap-1 font-mono text-[0.68rem] text-[color:var(--recall)]">
+                        <CheckIcon className="size-3" /> prova
                       </span>
-                      <span className="rounded bg-[color:var(--recall)]/15 px-1.5 py-0.5 font-mono text-[0.66rem] text-[color:var(--recall)]">
+                      <span className="rounded bg-[color:var(--recall)]/15 px-1.5 py-0.5 font-mono text-[0.7rem] text-[color:var(--recall)]">
                         [t5] scadenza
                       </span>
-                      <span className="rounded bg-[color:var(--recall)]/15 px-1.5 py-0.5 font-mono text-[0.66rem] text-[color:var(--recall)]">
+                      <span className="rounded bg-[color:var(--recall)]/15 px-1.5 py-0.5 font-mono text-[0.7rem] text-[color:var(--recall)]">
                         [t9] consegna
                       </span>
                     </div>
@@ -421,34 +428,26 @@ function LaneColumn({
 
 /* ------------------------------------------------------------------ memory rail */
 
-function MemoryItem({
-  entry,
-  recalled,
-}: {
-  entry: StateLedgerEntry;
-  recalled: boolean;
-}) {
+function MemoryItem({ entry, recalled }: { entry: StateLedgerEntry; recalled: boolean }) {
   return (
     <div
       className={cn(
-        "animate-in fade-in slide-in-from-bottom-1 flex items-start gap-3 rounded-lg border px-3 py-2.5 duration-500",
+        "animate-in fade-in slide-in-from-bottom-1 flex items-start gap-2 rounded-md border px-2.5 py-2 duration-500",
         recalled
           ? "border-[color:var(--recall)]/60 bg-[color:var(--recall)]/10"
-          : "border-white/10 bg-[color:var(--surface-soft)]"
+          : "border-black/10 bg-[color:var(--surface-soft)]"
       )}
     >
       <CheckIcon
         className={cn(
-          "mt-0.5 size-3.5 shrink-0",
-          recalled
-            ? "text-[color:var(--recall)]"
-            : "text-[color:var(--voice-accent)]"
+          "mt-0.5 size-3 shrink-0",
+          recalled ? "text-[color:var(--recall)]" : "text-[color:var(--voice-accent)]"
         )}
       />
-      <p className="flex-1 text-[0.84rem] leading-6 text-foreground">{entry.text}</p>
+      <p className="flex-1 text-[0.78rem] leading-5 text-foreground">{entry.text}</p>
       <span
         className={cn(
-          "mt-0.5 shrink-0 font-mono text-[0.64rem]",
+          "mt-0.5 shrink-0 font-mono text-[0.6rem]",
           recalled ? "text-[color:var(--recall)]" : "text-muted-foreground"
         )}
       >
@@ -478,46 +477,45 @@ function MemoryRail({
   const recalledIds = ["f3", "f5"];
 
   return (
-    <aside className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[color:var(--surface-strong)]/60">
-      <header className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-3.5">
+    <aside className="flex min-h-0 flex-col overflow-hidden rounded-xl border border-black/10 bg-[color:var(--card)] shadow-sm">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-black/10 px-4 py-2.5">
         <div className="flex flex-col">
-          <h2 className="text-lg font-semibold leading-tight text-[color:var(--voice-accent)]">
+          <h2 className="text-base font-semibold leading-tight text-[color:var(--voice-accent)]">
             Memoria viva
           </h2>
-          <p className="text-[0.78rem] text-muted-foreground">si scrive da sola</p>
+          <p className="text-[0.72rem] text-muted-foreground">si scrive da sola</p>
         </div>
-        <span className="rounded-md bg-[color:var(--voice-accent)]/15 px-2.5 py-1 font-mono text-[0.68rem] text-[color:var(--voice-accent)]">
+        <span className="rounded bg-[color:var(--voice-accent)]/15 px-2 py-0.5 font-mono text-[0.64rem] text-[color:var(--voice-accent)]">
           {revealed}/{total}
         </span>
       </header>
 
-      <div className="h-[52vh] space-y-5 overflow-y-auto px-5 py-5">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {recallActive ? (
-          <div className="animate-in fade-in slide-in-from-bottom-1 rounded-lg border border-[color:var(--recall)] bg-[color:var(--recall)]/10 px-4 py-3 shadow-[0_0_30px_var(--recall-glow)] duration-500">
-            <p className="font-mono text-[0.68rem] uppercase tracking-wide text-[color:var(--recall)]">
+          <div className="animate-in fade-in slide-in-from-bottom-1 rounded-md border border-[color:var(--recall)] bg-[color:var(--recall)]/10 px-3 py-2 shadow-[0_0_24px_var(--recall-glow)] duration-500">
+            <p className="font-mono text-[0.62rem] uppercase tracking-wide text-[color:var(--recall)]">
               prova del recall · t41
             </p>
-            <p className="mt-1 text-[0.84rem] leading-6 text-foreground">
-              Il Suggeritore ha citato scadenza e consegna direttamente dalla
-              memoria.
+            <p className="mt-0.5 text-[0.78rem] leading-5 text-foreground">
+              Suggeritore cita scadenza e consegna dalla memoria.
             </p>
           </div>
         ) : null}
 
         <div>
-          <p className="mb-2 text-[0.7rem] font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
             Chi è
           </p>
-          <p className="rounded-lg border border-[color:var(--voice-accent)]/25 bg-[color:var(--voice-accent)]/10 px-3 py-2.5 text-[0.84rem] leading-6">
+          <p className="rounded-md border border-[color:var(--voice-accent)]/25 bg-[color:var(--voice-accent)]/10 px-2.5 py-2 text-[0.78rem] leading-5">
             {state.identity}
           </p>
         </div>
 
         <div>
-          <p className="mb-2 text-[0.7rem] font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
             Cosa vuole
           </p>
-          <p className="rounded-lg border border-white/10 bg-[color:var(--surface-soft)] px-3 py-2.5 text-[0.84rem] leading-6">
+          <p className="rounded-md border border-black/10 bg-[color:var(--surface-soft)] px-2.5 py-2 text-[0.78rem] leading-5">
             {state.objective}
           </p>
         </div>
@@ -525,12 +523,12 @@ function MemoryRail({
         <Separator />
 
         <div>
-          <p className="mb-2 text-[0.7rem] font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
             Cosa ho ricordato
           </p>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             {visibleFacts.length === 0 ? (
-              <p className="rounded-lg border border-dashed border-white/10 px-3 py-3 text-center text-[0.78rem] text-muted-foreground">
+              <p className="rounded-md border border-dashed border-black/10 px-2.5 py-2 text-center text-[0.74rem] text-muted-foreground">
                 in ascolto…
               </p>
             ) : (
@@ -546,12 +544,12 @@ function MemoryRail({
         </div>
 
         <div>
-          <p className="mb-2 text-[0.7rem] font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
             Cosa ho promesso
           </p>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             {visibleCommitments.length === 0 ? (
-              <p className="rounded-lg border border-dashed border-white/10 px-3 py-3 text-center text-[0.78rem] text-muted-foreground">
+              <p className="rounded-md border border-dashed border-black/10 px-2.5 py-2 text-center text-[0.74rem] text-muted-foreground">
                 nessun impegno ancora
               </p>
             ) : (
@@ -563,6 +561,95 @@ function MemoryRail({
         </div>
       </div>
     </aside>
+  );
+}
+
+/* ------------------------------------------------------------- verdict reveal bar */
+
+function VerdictBar({
+  verdicts,
+  recallActive,
+  onOpenProof,
+}: {
+  verdicts: VerdictsFixture;
+  recallActive: boolean;
+  onOpenProof: () => void;
+}) {
+  if (!recallActive) {
+    return (
+      <div className="flex shrink-0 items-center justify-center gap-3 rounded-lg border border-black/10 bg-[color:var(--card)] px-5 py-2.5 text-sm text-muted-foreground shadow-sm">
+        <span className="font-mono text-[0.66rem] uppercase tracking-wider">verdetto</span>
+        <span>Il giudice valuta la memoria a fine chiamata — N=10 run per lato</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-2 flex shrink-0 flex-wrap items-center justify-between gap-4 rounded-xl border border-[color:var(--recall)]/50 bg-[color:var(--card)] px-5 py-2.5 shadow-[0_12px_40px_-10px_var(--recall-glow)] duration-500">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+        <span className="font-mono text-[0.66rem] uppercase tracking-wider text-[color:var(--recall)]">
+          il verdetto · run-1330 · misurato
+        </span>
+        <div className="flex items-baseline gap-2">
+          <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground">base</span>
+          <span className="font-mono text-3xl font-bold tabular-nums leading-none text-[color:var(--fail)]">
+            {verdicts.score.base}
+          </span>
+        </div>
+        <span className="text-sm text-muted-foreground">vs</span>
+        <div className="flex items-baseline gap-2">
+          <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground">
+            suggeritore
+          </span>
+          <span className="font-mono text-3xl font-bold tabular-nums leading-none text-[color:var(--recall)]">
+            {verdicts.score.suggeritore}
+          </span>
+        </div>
+      </div>
+      <Button variant="outline" size="sm" className="h-9" onClick={onOpenProof}>
+        Le prove · {verdicts.runs.base.length + verdicts.runs.suggeritore.length} run
+      </Button>
+    </div>
+  );
+}
+
+function ProofOverlay({
+  verdicts,
+  onClose,
+}: {
+  verdicts: VerdictsFixture;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="animate-in fade-in fixed inset-0 z-50 grid place-items-center bg-black/75 p-6 backdrop-blur-sm duration-200"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        className="relative max-h-[86vh] w-full max-w-4xl overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute right-3 top-3 z-10 size-9"
+          onClick={onClose}
+          aria-label="Chiudi le prove"
+        >
+          <XIcon />
+        </Button>
+        <VerdictView verdicts={verdicts} />
+      </div>
+    </div>
   );
 }
 
@@ -583,17 +670,16 @@ export function TranscriptShell({
     () => Math.max(...allTurns.map((turn) => parseTimestamp(turn.ts))),
     [allTurns]
   );
-  const recallStart = useMemo(
-    () => secondsForTurn(baseTurns, "t38") ?? 596,
-    [baseTurns]
+  // first spoken line — we start the replay here so Play hits voice immediately
+  // (no dead air crawling from 00:00 to the first turn)
+  const firstTs = useMemo(
+    () => Math.min(...allTurns.map((turn) => parseTimestamp(turn.ts))),
+    [allTurns]
   );
-  const recallEnd = useMemo(
-    () => secondsForTurn(baseTurns, "t41") ?? 614,
-    [baseTurns]
-  );
+  const recallStart = useMemo(() => secondsForTurn(baseTurns, "t38") ?? 596, [baseTurns]);
+  const recallEnd = useMemo(() => secondsForTurn(baseTurns, "t41") ?? 614, [baseTurns]);
   const turnTimes = useMemo(
-    () =>
-      new Map(baseTurns.map((turn) => [turn.displayTurn, parseTimestamp(turn.ts)])),
+    () => new Map(baseTurns.map((turn) => [turn.displayTurn, parseTimestamp(turn.ts)])),
     [baseTurns]
   );
 
@@ -618,10 +704,14 @@ export function TranscriptShell({
   const [currentSeconds, setCurrentSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [speakingTurn, setSpeakingTurn] = useState<string | null>(null);
+  // 0→1 progress of the clip currently being spoken, drives the karaoke reveal
+  const [clipProgress, setClipProgress] = useState(0);
+  const [showProof, setShowProof] = useState(false);
   const recallToastFiredRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const prevSecondsRef = useRef(0);
-  const holdRef = useRef(false); // true while a nonna clip is speaking — pauses the clock
+  const holdRef = useRef(false);
 
   const recallActive = currentSeconds >= recallEnd;
 
@@ -642,7 +732,7 @@ export function TranscriptShell({
     [suggeritoreTurns, currentSeconds]
   );
 
-  // auto-advance the replay clock — but never while a clip is speaking (holdRef)
+  // auto-advance — frozen while a clip speaks (holdRef)
   useEffect(() => {
     if (!isPlaying) return;
     const id = window.setInterval(() => {
@@ -671,14 +761,12 @@ export function TranscriptShell({
     });
   }, [currentSeconds, recallEnd]);
 
-  // Play the real nonna voice on forward crossings, and HOLD the clock until the
-  // clip ends so the voice and the transcript stay in lockstep (forward only,
-  // never on load — only after the user presses Play / Vai al recall).
+  // play the real nonna voice on forward crossings and HOLD until the clip ends
   useEffect(() => {
     const prev = prevSecondsRef.current;
     prevSecondsRef.current = currentSeconds;
     if (currentSeconds < prev) {
-      holdRef.current = false; // seeking back releases any hold
+      holdRef.current = false;
       return;
     }
     if (muted || currentSeconds <= prev) return;
@@ -689,6 +777,7 @@ export function TranscriptShell({
     if (!el) return;
     const release = () => {
       holdRef.current = false;
+      setSpeakingTurn(null);
     };
     el.onended = release;
     el.onerror = release;
@@ -696,39 +785,99 @@ export function TranscriptShell({
     el.currentTime = 0;
     el.volume = 1;
     holdRef.current = true;
-    void el.play().catch(() => {
-      holdRef.current = false;
-    });
+    setClipProgress(0);
+    setSpeakingTurn(turn);
+    void el.play().catch(release);
   }, [currentSeconds, muted, audioTurns]);
 
-  const handleSeek = (value: number) => {
+  // karaoke clock — reveal the spoken line in sync with the real audio position.
+  // Driven by the audio element's currentTime so it freezes exactly on pause and
+  // resumes from the same word. Quantized to 1% to avoid 60fps re-renders.
+  useEffect(() => {
+    if (speakingTurn == null || !isPlaying) return;
+    let raf = 0;
+    const tick = () => {
+      const el = audioRef.current;
+      if (el && el.duration > 0) {
+        const next = Math.round(Math.min(1, el.currentTime / el.duration) * 100) / 100;
+        setClipProgress((prev) => (Math.abs(prev - next) >= 0.01 ? next : prev));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [speakingTurn, isPlaying]);
+
+  const stopClip = useCallback(() => {
+    const el = audioRef.current;
+    if (el) {
+      el.pause();
+      el.currentTime = 0;
+    }
     holdRef.current = false;
+    setSpeakingTurn(null);
+    setClipProgress(0);
+  }, []);
+
+  const handleSeek = (value: number) => {
+    stopClip();
     setCurrentSeconds(Math.min(duration, Math.max(0, value)));
   };
 
+  const handleRestart = () => {
+    stopClip();
+    // jump to just before the first spoken line so the voice + first bubble land
+    // in ~0.1s instead of after a long silent lead-in.
+    prevSecondsRef.current = firstTs - 1;
+    setCurrentSeconds(Math.max(0, firstTs - 0.5));
+    setIsPlaying(true);
+  };
+
   const handleJumpToRecall = () => {
-    holdRef.current = false;
-    // land just before t38 so the jump counts as a forward crossing of the
-    // recall question every time (replayable across rehearsal run-throughs),
-    // and only t38 fires — never the earlier clips.
+    stopClip();
+    // land just before t38 so the jump always counts as a forward crossing of
+    // the recall question (replayable across rehearsals) and ONLY t38 fires.
     prevSecondsRef.current = recallStart - 0.5;
     setCurrentSeconds(recallStart);
     setIsPlaying(true);
   };
 
+  const handlePlayPause = () => {
+    const el = audioRef.current;
+    if (isPlaying) {
+      // pause EVERYTHING — freeze the clock and the voice mid-clip
+      setIsPlaying(false);
+      if (el && !el.paused) el.pause();
+      return;
+    }
+    // resume
+    if (currentSeconds >= duration) {
+      handleRestart();
+      return;
+    }
+    if (holdRef.current && el && el.paused && el.currentSrc) {
+      // a clip was paused mid-way — finish it (onended releases the hold)
+      void el.play().catch(() => {
+        holdRef.current = false;
+        setSpeakingTurn(null);
+      });
+    } else {
+      prevSecondsRef.current = currentSeconds; // resume without replaying the last clip
+    }
+    setIsPlaying(true);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col gap-5 p-6 lg:p-8">
+    <main className="flex h-dvh flex-col gap-3 overflow-hidden p-5">
       <audio ref={audioRef} preload="auto" aria-hidden="true" />
 
-      {/* top strip — wordmark + demoted cost pressure meter */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* top strip — brand + demoted cost meter */}
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3">
         <div className="flex items-baseline gap-3">
           <span className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
             Il Suggeritore
           </span>
-          <span className="font-mono text-[0.72rem] text-muted-foreground">
-            HackRome · 13 giu 2026
-          </span>
+          <span className="font-mono text-[0.7rem] text-muted-foreground">HackRome · 13 giu 2026</span>
         </div>
         <PressureMeter
           cost={cost}
@@ -738,12 +887,12 @@ export function TranscriptShell({
         />
       </div>
 
-      {/* operative title — the drama, stated */}
-      <header className="flex flex-col gap-1.5">
-        <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground lg:text-4xl">
+      {/* operative title */}
+      <header className="flex shrink-0 flex-col">
+        <h1 className="text-2xl font-semibold leading-tight tracking-tight text-foreground lg:text-3xl">
           La stessa chiamata. Uno dimentica, uno ricorda.
         </h1>
-        <p className="text-base text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           {recallActive
             ? "A 10:14 il base richiede tutto da capo. Il Suggeritore conferma — con la prova."
             : "Stesso prompt, stessa voce. L'unica differenza è il layer di memoria."}
@@ -755,21 +904,25 @@ export function TranscriptShell({
         duration={duration}
         isPlaying={isPlaying}
         muted={muted}
+        speaking={speakingTurn != null && isPlaying}
         markers={markers}
-        onPlayToggle={() => setIsPlaying((playing) => !playing)}
+        onPlayPause={handlePlayPause}
+        onRestart={handleRestart}
         onSeek={handleSeek}
         onJumpToRecall={handleJumpToRecall}
         onToggleMute={() => setMuted((value) => !value)}
       />
 
-      {/* stage — the three panels are the hero */}
-      <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_21rem]">
+      {/* stage — the three panels are the hero, bounded to fit the viewport */}
+      <section className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_20rem]">
         <LaneColumn
           title="Agente base"
           subtitle="nessuna memoria · ripaga tutto il contesto"
           turns={baseWindow}
           lane="base"
           recallActive={recallActive}
+          speakingTurn={speakingTurn}
+          clipProgress={clipProgress}
         />
         <LaneColumn
           title="Suggeritore"
@@ -777,6 +930,8 @@ export function TranscriptShell({
           turns={suggeritoreWindow}
           lane="suggeritore"
           recallActive={recallActive}
+          speakingTurn={speakingTurn}
+          clipProgress={clipProgress}
         />
         <MemoryRail
           state={state}
@@ -786,13 +941,15 @@ export function TranscriptShell({
         />
       </section>
 
-      <p className="text-center font-mono text-[0.66rem] text-muted-foreground/70">
-        stima costi modellata sul pricing OpenAI Realtime · il numero del recall è
-        reale (run 13:30 · base 0/10 · suggeritore 10/10)
-      </p>
+      <VerdictBar
+        verdicts={verdicts}
+        recallActive={recallActive}
+        onOpenProof={() => setShowProof(true)}
+      />
 
-      {/* the payoff — il numero del judge */}
-      <VerdictView verdicts={verdicts} />
+      {showProof ? (
+        <ProofOverlay verdicts={verdicts} onClose={() => setShowProof(false)} />
+      ) : null}
     </main>
   );
 }

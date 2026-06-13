@@ -27,12 +27,12 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <TooltipProvider>
           {children}
-          <Toaster richColors theme="dark" />
+          <Toaster richColors theme="light" />
         </TooltipProvider>
       </body>
     </html>

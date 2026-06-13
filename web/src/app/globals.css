@@ -49,46 +49,50 @@
 }
 
 :root {
-  color-scheme: dark;
-  --background: oklch(0.129 0.012 285.805);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.145 0 0);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.637 0.237 25.331);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.75 0.13 304);
-  --chart-1: oklch(0.82 0.164 84.429);
-  --chart-2: oklch(0.637 0.237 25.331);
-  --chart-3: oklch(0.75 0.13 304);
-  --chart-4: oklch(0.705 0.015 286.067);
-  --chart-5: oklch(0.274 0.006 286.033);
+  /* Light premium — editorial evidence board. White cards on a soft off-white,
+     near-black text, status colors tuned for contrast on white. */
+  color-scheme: light;
+  --background: oklch(0.984 0.002 250);
+  --foreground: oklch(0.21 0.012 264);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.012 264);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.012 264);
+  --primary: oklch(0.24 0.012 264);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.955 0.004 250);
+  --secondary-foreground: oklch(0.24 0.012 264);
+  --muted: oklch(0.955 0.004 250);
+  --muted-foreground: oklch(0.5 0.02 262);
+  --accent: oklch(0.955 0.004 250);
+  --accent-foreground: oklch(0.24 0.012 264);
+  --destructive: oklch(0.585 0.22 27);
+  --border: oklch(0.9 0.004 255);
+  --input: oklch(0.9 0.004 255);
+  --ring: oklch(0.52 0.22 295);
+  --chart-1: oklch(0.66 0.16 60);
+  --chart-2: oklch(0.585 0.22 27);
+  --chart-3: oklch(0.52 0.22 295);
+  --chart-4: oklch(0.5 0.02 262);
+  --chart-5: oklch(0.955 0.004 250);
   --radius: 0.75rem;
-  --voice-accent: oklch(0.75 0.13 304);
-  --running: oklch(0.82 0.164 84.429);
-  --fail: oklch(0.637 0.237 25.331);
-  --recall: oklch(0.696 0.17 162.48);
-  --recall-glow: oklch(0.696 0.17 162.48 / 20%);
-  --surface-strong: oklch(0.21 0.006 285.885);
-  --surface-soft: oklch(0.18 0.006 285.885);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.75 0.13 304);
-  --sidebar-primary-foreground: oklch(0.145 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.75 0.13 304);
+  --voice-accent: oklch(0.52 0.22 295);
+  --running: oklch(0.62 0.16 58);
+  --fail: oklch(0.585 0.22 27);
+  /* deep emerald — dark enough for AA both as text-on-white and as a fill under
+     white text (CTA, win bubble): white↔emerald ≥ 4.5:1 */
+  --recall: oklch(0.5 0.13 162);
+  --recall-glow: oklch(0.5 0.13 162 / 32%);
+  --surface-strong: oklch(1 0 0);
+  --surface-soft: oklch(0.965 0.003 250);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.21 0.012 264);
+  --sidebar-primary: oklch(0.52 0.22 295);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.955 0.004 250);
+  --sidebar-accent-foreground: oklch(0.24 0.012 264);
+  --sidebar-border: oklch(0.9 0.004 255);
+  --sidebar-ring: oklch(0.52 0.22 295);
 }
 
 @layer base {
@@ -98,10 +102,23 @@
   body {
     @apply bg-background text-foreground;
     background:
-      radial-gradient(circle at 50% -20%, oklch(0.21 0.006 285.885 / 80%), transparent 42rem),
-      linear-gradient(180deg, oklch(0.129 0.012 285.805), oklch(0.21 0.006 285.885));
+      radial-gradient(circle at 50% -12%, oklch(1 0 0), transparent 40rem),
+      linear-gradient(180deg, oklch(0.99 0.002 250), oklch(0.972 0.003 255));
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Respect motion preferences — end states stay visible, only the motion stops.
+   The recall payoff reads via color + glow, so the demo survives reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

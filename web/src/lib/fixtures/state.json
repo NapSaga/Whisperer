@@ -1,15 +1,15 @@
 {
-  "identity": "you are ShopDemo's phone support agent",
-  "objective": "make sure the grandson's graduation watch arrives in time and is delivered to the neighbor",
+  "identity": "sei l'assistente telefonico del negozio",
+  "objective": "fare arrivare in tempo l'orologio per la laurea del nipote e farlo consegnare alla vicina",
   "facts": [
-    { "id": "f1", "text": "the order is a watch, a gift for the caller's grandson", "turn": "t1" },
-    { "id": "f2", "text": "the grandson is Luca, graduating", "turn": "t3" },
-    { "id": "f3", "text": "it must arrive BEFORE the 20th, for the graduation", "turn": "t5" },
-    { "id": "f4", "text": "the order number is 4471", "turn": "t7" },
-    { "id": "f5", "text": "deliver to the neighbor sig.ra Pina, interno 3 (caller's buzzer is broken)", "turn": "t9" }
+    { "id": "f1", "text": "l'ordine è un orologio, un regalo per il nipote della signora", "turn": "t1" },
+    { "id": "f2", "text": "il nipote è Luca e si sta per laureare", "turn": "t3" },
+    { "id": "f3", "text": "deve arrivare PRIMA del 20, per la laurea", "turn": "t5" },
+    { "id": "f4", "text": "il numero d'ordine è 4471", "turn": "t7" },
+    { "id": "f5", "text": "consegnare alla vicina, la sig.ra Pina, interno 3 (il citofono della signora è rotto)", "turn": "t9" }
   ],
   "commitments": [
-    { "id": "c1", "text": "agent will ensure delivery before the 20th to sig.ra Pina interno 3", "turn": "t10" }
+    { "id": "c1", "text": "garantire la consegna entro il 20 alla sig.ra Pina, interno 3", "turn": "t10" }
   ],
   "last_turn": 41
 }

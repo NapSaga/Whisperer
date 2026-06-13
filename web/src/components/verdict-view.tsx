@@ -55,7 +55,7 @@ function RunList({ runs, side }: { runs: VerdictRun[]; side: string }) {
       {runs.map((run) => (
         <div
           key={`${side}-${run.run}`}
-          className="flex items-start gap-3 rounded-lg border border-white/10 bg-[color:var(--surface-soft)] px-3 py-2 font-mono text-xs"
+          className="flex items-start gap-3 rounded-lg border border-black/10 bg-[color:var(--surface-soft)] px-3 py-2 font-mono text-xs"
         >
           <span className="text-muted-foreground">
             #{String(run.run).padStart(2, "0")}
@@ -85,7 +85,7 @@ export function VerdictView({ verdicts }: { verdicts: VerdictsFixture }) {
     verdicts.runs.base.length + verdicts.runs.suggeritore.length;
 
   return (
-    <section className="flex flex-col gap-5 rounded-2xl border border-white/10 bg-card/80 p-6 lg:p-8">
+    <section className="flex flex-col gap-5 rounded-2xl border border-black/10 bg-card p-6 shadow-2xl lg:p-8">
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-2xl font-semibold">Il verdetto — il numero</h2>
