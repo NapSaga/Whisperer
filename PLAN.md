@@ -8,8 +8,31 @@
 ```
 █████████████░░░░░░░  66%
 ```
-🎯 **IL NUMERO: base 0/10, suggeritore 10/10** — tag `run-1330` pushato. Fase 4 in corso.
-Stanotte: setup sample + fixtures coerenti (no codice di prodotto, no git).
+🎯 **IL NUMERO: base 0/10, suggeritore 10/10** — committato e validato. Build **CONGELATO**, tag `freeze-1630`.
+
+## 🧊 STATO FREEZE — LEGGERE PRIMA DEL PITCH (agg. 17:25)
+> Questo blocco **supera** ogni narrativa di costo precedente (in particolare l'entry changelog delle 16:05 "win reale misurato": **NON è più vera**).
+
+**Cosa è spedito (tag `freeze-1630`, commit `7a25bd9`):**
+- **Numero:** base **0/10** · suggeritore **10/10**, da `spec/fixtures/verdicts.json` (committato, validato). Path reale: **base = item-cap(8)** che fa dimenticare · **suggeritore = `compact_input` §3** (manda stato compatto, non la history).
+- Server: `injector.compact_input` + `server.py` (sug compatto, base item-cap). `truncation.py`/`batch_run.py` tornati al committato. Preambolo iniezione **non** trimmato.
+
+**§5 COSTI — la regola che salva il Q&A (leggere tutti):**
+- ⛔ **NON dire "costo misurato, base ≫ sug".** Sul path spedito il base item-cap è economico → il meter reale lì è piatto/inverso. La divergenza MISURATA drammatica **non esiste su chiamata corta** (28 turni ≈640 token: dimenticanza e magnitudine-costo sono accoppiate, solo una chiamata lunga le soddisfa entrambe).
+- ✅ **Cosa è vero e difendibile:** il suggeritore è **genuinamente più leggero** via §3 (stato compatto invece della history) — questo è reale. La **magnitudine** (7.6× ecc.) è **PROIEZIONE** da tariffe Realtime + StudierAI (€4,50 vs €0,13). A schermo il contatore va etichettato **"proiezione"**, MAI "measured", e il `cost.json` MOCK MAI spacciato per misura.
+
+**🧰 Arsenale Q&A (in `server/evidence/fullcontext-qa/`) — usarlo, non nasconderlo:**
+- **5/10 uncapped** = prova anti-trucco: *"anche senza cap, a contesto pieno, il base perde il fatto 5 volte su 10 — context rot documentata"*.
+- **Costo full-context misurato:** base ~$0.298 (sale) vs sug ~$0.229 (piatto) = **1.30× reale**, direzione giusta → *"la direzione l'abbiamo misurata; la magnitudine la proiettiamo"*.
+- **Framing del cap:** *"il base è cappato per riprodurre l'hard-cap a 32k delle piattaforme managed (Retell) e la truncation cieca che OpenAI documenta"*.
+- **Buco noto:** il costo del distiller non è contato → *"sì, gira un modello testo cheap, overhead limitato vs il contesto audio che il base ri-paga"*.
+
+**✅ Cosa manca entro le 18:30 (in ordine):**
+1. **Web (Giovanni):** contatore costi etichettato **"proiezione"** (non MOCK/measured) · verdict view su **0/10 · 10/10**.
+2. **VIDEO BACKUP** (obbligatorio, gira senza rete) — hook nonna → split → HUD → recall → numero → forma costi.
+3. **Pitch col timer ≥3 volte** (Gabriele consegna 2:30 + Q&A · Giovanni demo · Daniele guida tecnica).
+4. **Form entro le 18:15** (non alle 18:29).
+5. **Regola d'oro:** sotto-promettere = inattaccabili; sopra-promettere sul costo = un giudice tecnico smonta tutto. **Niente più codice.**
 
 ## Legenda
 `[fatto]` · `[in corso]` · `[todo]` — owner: **server=Daniele · harness=Gabriele · web=Giovanni** —
@@ -120,6 +143,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - **Stato di partenza**: `web/ server/ harness/` sono vuoti (solo README). Il numero "Fatto 5/35" conta lo scaffold + spec + fixtures + MCP — tutto reale, niente codice di prodotto ancora scritto.
 
 ## Changelog
+- **2026-06-13 (17:25)** — 🧊 **FREEZE — §5 risolto come ONESTÀ, non come numero drammatico.** Esito del fix (a): il lock a contesto pieno **è FALLITO** (giudice **base 5/10** > 3/10: a 28 turni il modello recupera il fatto troppo spesso). Confermato strutturale: a ~640 token di dialogo, *dimenticare* (serve finestra piccola → base economico) e *base ≫ sug* (serve contesto grande) sono **accoppiati e inconciliabili** senza allungare la chiamata (esclusa per il tempo). **Decisione:** spedito il numero validato **base 0/10 · sug 10/10** (item-cap, `verdicts.json` committato ripristinato); tenuto `compact_input` §3 sul sug (cost win reale, sug più leggero); **costo = proiezione etichettata**, NON misura. Esperimento full-context archiviato in `server/evidence/fullcontext-qa/` (5/10 + costo 1.30× misurato + finding) come **prova Q&A**, non headline. `recordings/` riportati al committato (coerenti col 0/10). Dupes `* 2.py` rimossi, `.venv` riparato (uv sync). Commit `7a25bd9`, tag `freeze-1630` pushato. ⚠️ **Supera l'entry 16:05**: il costo NON è un "win reale misurato" — vedi banner 🧊 in cima.
 - **2026-06-13 (16:05)** — 🎤 **Pitch riassegnato interamente a Gabriele** (consegna 2:30 + deck backup + Q&A + test audio sala); Giovanni resta owner della **demo**. Sezione `🎤` tradotta in **inglese** e narrativa di costo allineata alla decisione fix (a): il costo è ora un **win reale misurato** (base ≫ sug, il base ripaga la finestra di contesto, il suggeritore manda solo lo stato compatto), non più proiezione — col buco onesto del **distiller-cost** non contato. Aggiornato anche il task Daniele (cost fix (a) in rigenerazione, niente più "cost.json MOCK").
 - **2026-06-13 (15:55)** — 🔧 **harness pronto per il formato costi reale** (commit `73f0237`). `runner.py`: nuovo `--cost-dir` che aggrega i cost file **per-run** emessi da `batch_run.py` (`base_run*_cost.jsonl`/`sug_run*_cost.jsonl`) → media base vs suggeritore su N run; il vecchio `--cost` (file singolo) resta invariato. Ratio reso **direzione-aware** (`_ratio`): nomina il lato davvero più caro invece di assumere il base — necessario perché la divergenza è invertita. File/campo mancante → WARN, mai crash. Testato su dir sintetico (inverso → "suggeritore 1.5x") + regressione MOCK (→ "base 7.6x"). Aggiornato il task Q&A di Gabriele: il 7.6× va difeso come **proiezione/dato di produzione**, non come misura (la misura reale è invertita).
 - **2026-06-13 (15:10)** — 🔧 **Fix coerenza verdict (defork)**: `web/src/lib/fixtures/verdicts.json` era rimasto allo stato 13:54 (`question_turn t38`, `citation t41`, `base.objective_correct=false`, reason scritte a mano) mentre `spec/fixtures/verdicts.json` era stato rigenerato dal giudizio reale (`t15/t16`, `objective_correct=true`). Risultato: la demo mostrava prove (t41, base objective-fail) **diverse dal numero misurato** sui `recordings/`. Reso il file web **byte-identico** alla fixture reale → un'unica fonte: la verdict view ora mostra i 10+10 verdetti veri con `[t16]` (turno reale dei recordings). Verificato disaccoppiamento: `citation` è solo testo nel pannello, `question_turn` non è renderizzato → nessun conflitto col `t41` della timeline di replay. Aggiornata nota di coupling.
