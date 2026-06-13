@@ -36,6 +36,10 @@ Plus: a split-screen demo, a live HUD that **writes the ledger to screen by itse
 
 ## What we built — the precise truth
 
+```text
+caller speaks  →  distiller writes the ledger (every 4 turns)  →  injector sends [ledger + question]  →  agent answers from memory  →  judge scores recall (N=10)
+```
+
 Whisperer is a memory layer that sits next to the voice agent. Three real pieces, all in the code:
 
 1. **The distiller** — `gpt-4o-mini`, structured output. Every 4 turns it reads the live transcript and writes a typed, append-only **state ledger**: identity · objective · facts · commitments. Every entry cites the transcript turn that proves it. A deterministic `_reconcile` step drops any fact that doesn't point to a real caller turn → **no hallucinated memory**. *This is the IP.*
@@ -124,9 +128,19 @@ Four JSON shapes are the only coupling between folders; mocks live in `spec/fixt
 
 Real recordings of a grandmother (Neapolitan, with consent) live in `web/public/audio/`, named by transcript turn and matching `spec/fixtures/transcript.jsonl` word for word: the gift is **a watch for grandson Luca**, it must arrive **before the 20th** (graduation), order **4471**, delivered to neighbor **sig.ra Pina, interno 3**. At minute 10 the base asks the caller to repeat everything; **Whisperer confirms the deadline and delivery from memory**.
 
-## Built with Codex
+## Built with — an agentic coding stack
 
-Codex was the primary builder. Every feature was driven by an opening prompt of the form *"read `spec/SPEC.md`, propose the integration plan into the sample"* — never "build everything". One closed task at a time, a fresh session per task, gated against hallucination (library APIs via **Context7 MCP**, UI via the official **shadcn CLI**). The Codex-signed commit trail is the **proof of build**: the repo's history shows the layer, the judge, and the dashboard built today, in the open.
+**Codex was the primary builder**, and the Codex-signed commit trail is the **proof of build**: the repo's history shows the layer, the judge, and the dashboard built today, in the open. Every feature started from one closed prompt — *"read `spec/SPEC.md`, propose the integration plan into the sample"* — never "build everything". One task at a time, a fresh session per task, gated against hallucination.
+
+| Tool | Role in the build |
+|---|---|
+| **OpenAI Codex** | Primary builder — server, harness, dashboard · the signed commit trail |
+| **Claude Code** (Opus) | Orchestration — scaffold, `SPEC.md`, all fixtures, audio pipeline, verdict view, docs |
+| **Context7 MCP** | Fresh library docs at build time — zero hallucinated APIs |
+| **shadcn** | Official CLI + MCP for real UI components — never hand-rolled |
+| **Magic** (21st.dev) MCP | On-demand component generation |
+
+Discipline that kept it honest: library APIs via Context7, UI via the shadcn CLI, one closed task per session, **mock-first** against `spec/fixtures/` so every folder builds in parallel without touching the others.
 
 ## Sponsors used
 
