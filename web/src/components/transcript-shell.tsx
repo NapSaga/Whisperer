@@ -9,7 +9,9 @@ import type {
   DisplayTurn,
   StateLedger,
   StateLedgerEntry,
+  VerdictsFixture,
 } from "@/lib/contracts";
+import { VerdictView } from "@/components/verdict-view";
 import {
   Conversation,
   ConversationContent,
@@ -41,6 +43,7 @@ type TranscriptShellProps = {
   cost: CostFixture;
   suggeritoreTurns: DisplayTurn[];
   state: StateLedger;
+  verdicts: VerdictsFixture;
 };
 
 type LaneCardProps = {
@@ -681,6 +684,7 @@ export function TranscriptShell({
   cost,
   suggeritoreTurns,
   state,
+  verdicts,
 }: TranscriptShellProps) {
   const allTurns = useMemo(
     () => [...baseTurns, ...suggeritoreTurns],
@@ -857,6 +861,7 @@ export function TranscriptShell({
           recallActive={recallActive}
         />
       </section>
+      <VerdictView verdicts={verdicts} />
     </main>
   );
 }
