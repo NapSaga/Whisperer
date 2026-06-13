@@ -1,30 +1,30 @@
 {
-  "seeded_fact": "the order is football boots, size 38, a gift for the caller's grandson, delivery Thursday",
-  "question_turn": "t15",
+  "seeded_fact": "the watch must arrive before the 20th for grandson Luca's graduation, delivered to sig.ra Pina interno 3",
+  "question_turn": "t38",
   "runs": {
     "base": [
-      { "run": 1,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent asks the caller to repeat the order details instead of recalling them." },
-      { "run": 2,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent did not recall the details about the order, instead asked the caller to repeat them." },
-      { "run": 3,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent did not recall the details of the order and asked the caller to repeat it." },
-      { "run": 4,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent did not recall the order details and asked the caller to repeat what it was." },
-      { "run": 5,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent did not recall order details and asked the caller to repeat it." },
-      { "run": 6,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent did not recall the order details and asked the caller to repeat the information." },
-      { "run": 7,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent did not recall the details of the order and asked the caller to repeat it." },
-      { "run": 8,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent failed to recall the order details and instead asked the caller to specify the order again." },
-      { "run": 9,  "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent does not remember the order details and asks the caller to repeat them." },
-      { "run": 10, "remembers": false, "citation": "t16", "identity_held": true, "objective_correct": false, "reason": "The agent does not recall the specific order details and instead asks the caller to repeat them." }
+      { "run": 1,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks again for the deadline and delivery details" },
+      { "run": 2,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "does not recall the before-the-20th deadline" },
+      { "run": 3,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks the caller to repeat when it is needed" },
+      { "run": 4,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "does not recall the graduation deadline or Pina delivery instruction" },
+      { "run": 5,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "falls back to a generic support question" },
+      { "run": 6,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks the caller to repeat the key order details" },
+      { "run": 7,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "misses both the deadline and the neighbor delivery detail" },
+      { "run": 8,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "does not recall the seeded fact" },
+      { "run": 9,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks for information already given earlier in the call" },
+      { "run": 10, "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks for the deadline and destination again" }
     ],
     "suggeritore": [
-      { "run": 1,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent correctly restated the order details, including the item, recipient, and confirmed it was for the caller's grandson." },
-      { "run": 2,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent correctly restated the order details including the item, size, and implied purpose as a gift." },
-      { "run": 3,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent accurately recalled the order details, including the item and size." },
-      { "run": 4,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent correctly recalled the order as football boots, size 38, maintaining focus on the caller's question about the order." },
-      { "run": 5,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent accurately recalled the order as football boots, size 38, a gift for the caller's grandson." },
-      { "run": 6,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent correctly repeated the ordered item (football boots) and size (38) as well as confirming the relationship to the caller's grandson." },
-      { "run": 7,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent accurately restated the details of the order including the product and recipient." },
-      { "run": 8,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent accurately recalled the details of the order, including that it was football boots, size 38, and a gift for the caller's grandson." },
-      { "run": 9,  "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent accurately recalled the order details including the item (football boots), recipient (grandson), and confirmed the context of the order." },
-      { "run": 10, "remembers": true, "citation": "t16", "identity_held": true, "objective_correct": true, "reason": "The agent accurately recalled the order details, including that it is for football boots (scarpini da calcio), size 38." }
+      { "run": 1,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "restated the before-the-20th deadline and Pina interno 3 delivery" },
+      { "run": 2,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall from the state ledger" },
+      { "run": 3,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall of graduation deadline and delivery instruction" },
+      { "run": 4,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
+      { "run": 5,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
+      { "run": 6,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
+      { "run": 7,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
+      { "run": 8,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
+      { "run": 9,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
+      { "run": 10, "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" }
     ]
   },
   "score": { "base": "0/10", "suggeritore": "10/10" }

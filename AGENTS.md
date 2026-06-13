@@ -53,5 +53,19 @@ Cut order if behind: **watchdog → cost counter → judge drill-down**. Never c
 
 Status @ 13:30: ✅ 1 (base 0/10, recorded) · ✅ 2 (suggeritore 10/10, live) · ✅ 3 · ✅ 4 — **demo floor complete**.
 
+## Audio (demo) — the nonna's real voice
+Real recordings of the grandmother (Neapolitan, with consent) live in `web/public/audio/`, named by
+transcript turn. They match the caller lines in `spec/fixtures/transcript.jsonl` word for word.
+| File | Turn | Beat |
+|---|---|---|
+| `t1.mp3` | t1 | seed — gift is a watch for the grandson |
+| `t5.mp3` | t5 | seed — must arrive BEFORE the 20th (graduation) |
+| `t7.mp3` | t7 | seed — order number 4471 |
+| `t9.mp3` | t9 | seed — deliver to neighbor sig.ra Pina, interno 3 |
+| `t38.mp3` | t38 | recall question — "does it arrive in time?" |
+| `t40.mp3` | t40 | recall push — "I told you, the 20th!" (base forgot) |
+Wiring rule: when the replay clock reveals a caller turn that has a matching `/audio/{turn}.mp3`, play it
+ONCE; no autoplay on load (only after the user presses Play); mute toggle in the controls. Other turns are silent.
+
 ## Keys
 `.env` (OpenAI + ElevenLabs) is in the project root, gitignored, never committed.
