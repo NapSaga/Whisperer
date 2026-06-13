@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PauseIcon, PlayIcon, SkipForwardIcon } from "lucide-react";
+import { PauseIcon, PlayIcon, SkipForwardIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { toast } from "sonner";
 import type {
   CostEvent,
@@ -235,18 +235,22 @@ function ReplayControls({
   isPlaying,
   recallStart,
   recallEnd,
+  muted,
   onPlayToggle,
   onSeek,
   onJumpToRecall,
+  onToggleMute,
 }: {
   currentSeconds: number;
   duration: number;
   isPlaying: boolean;
   recallStart: number;
   recallEnd: number;
+  muted: boolean;
   onPlayToggle: () => void;
   onSeek: (value: number) => void;
   onJumpToRecall: () => void;
+  onToggleMute: () => void;
 }) {
   const progress = duration === 0 ? 0 : (currentSeconds / duration) * 100;
 
@@ -276,7 +280,20 @@ function ReplayControls({
           </Button>
           <Button variant="secondary" size="lg" onClick={onJumpToRecall}>
             <SkipForwardIcon data-icon="inline-start" />
-            Jump to recall
+            Vai al recall
+          </Button>
+          <Button
+            variant="ghost"
+            size="lg"
+            onClick={onToggleMute}
+            aria-label={muted ? "Riattiva audio" : "Disattiva audio"}
+          >
+            {muted ? (
+              <VolumeXIcon data-icon="inline-start" />
+            ) : (
+              <Volume2Icon data-icon="inline-start" />
+            )}
+            {muted ? "Muto" : "Audio"}
           </Button>
         </div>
       </CardHeader>
@@ -683,7 +700,10 @@ export function TranscriptShell({
   );
   const [currentSeconds, setCurrentSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
   const recallToastFiredRef = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const prevSecondsRef = useRef(0);
   const baseVisibleTurns = useMemo(
     () =>
       baseTurns.filter((turn) => isVisibleAt(turn, currentSeconds)).sort((a, b) => parseTurnNumber(a.displayTurn) - parseTurnNumber(b.displayTurn)),
@@ -696,6 +716,14 @@ export function TranscriptShell({
   );
   const turnTimes = useMemo(() => turnTimestampMap(baseTurns), [baseTurns]);
   const recallActive = currentSeconds >= recallEnd;
+  // turns that have a real nonna clip in /public/audio (see AGENTS.md "Audio")
+  const audioTurns = useMemo(() => {
+    const ids = ["t1", "t5", "t7", "t9", "t38", "t40"];
+    return ids
+      .map((id) => [id, turnTimes.get(id)] as const)
+      .filter((pair): pair is [string, number] => typeof pair[1] === "number")
+      .sort((a, b) => a[1] - b[1]);
+  }, [turnTimes]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -735,6 +763,30 @@ export function TranscriptShell({
     });
   }, [currentSeconds, recallEnd]);
 
+  // play the nonna's real voice when the clock crosses an audio'd caller turn
+  // (forward only; never on load — only once the user has pressed Play / Vai al recall)
+  useEffect(() => {
+    const prev = prevSecondsRef.current;
+    prevSecondsRef.current = currentSeconds;
+    if (muted || currentSeconds <= prev) {
+      return;
+    }
+    const crossed = audioTurns.filter(
+      ([, sec]) => sec > prev && sec <= currentSeconds
+    );
+    if (crossed.length === 0) {
+      return;
+    }
+    const [turn] = crossed[crossed.length - 1];
+    const el = audioRef.current;
+    if (!el) {
+      return;
+    }
+    el.src = `/audio/${turn}.mp3`;
+    el.currentTime = 0;
+    void el.play().catch(() => {});
+  }, [currentSeconds, muted, audioTurns]);
+
   const handleSeek = (value: number) => {
     setCurrentSeconds(Math.min(duration, Math.max(0, value)));
   };
@@ -746,6 +798,7 @@ export function TranscriptShell({
 
   return (
     <main className="flex min-h-screen flex-col gap-6 p-6 lg:p-8">
+      <audio ref={audioRef} preload="auto" aria-hidden="true" />
       <header className="grid gap-6 xl:grid-cols-[1fr_36rem]">
         <div className="flex flex-col justify-end gap-4">
           <Badge className="h-8 w-fit rounded-lg bg-secondary px-3 font-mono text-xs text-secondary-foreground">
@@ -773,9 +826,11 @@ export function TranscriptShell({
         isPlaying={isPlaying}
         recallStart={recallStart}
         recallEnd={recallEnd}
+        muted={muted}
         onPlayToggle={() => setIsPlaying((playing) => !playing)}
         onSeek={handleSeek}
         onJumpToRecall={handleJumpToRecall}
+        onToggleMute={() => setMuted((value) => !value)}
       />
 
       <section className="grid min-h-0 flex-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
