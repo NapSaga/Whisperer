@@ -4,11 +4,11 @@
 > ciò che non è nello scaffold non si fa. Questo file si aggiorna **durante** il lavoro —
 > deve dire a colpo d'occhio quanto sta e quanto manca.
 
-## Avanzamento — Fatto 19 / Totale 38 (50%)
+## Avanzamento — Fatto 22 / Totale 38 (58%)
 ```
-██████████░░░░░░░░░░  50%
+███████████░░░░░░░░░  58%
 ```
-Fase mock-first (web/ su fixtures entro 13:00) è la priorità: 8/11.
+Fase mock-first (web/ su fixtures entro 13:00): 8/11. server/ layer funzionante via testo, emit in corso.
 Stanotte: setup sample + fixtures coerenti (no codice di prodotto, no git).
 
 ## Legenda
@@ -58,11 +58,11 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 
 > 🛰️ **Team su origin/main (12:36)**: `harness: batch runner N=10` + `harness: requirements.txt` (Gabriele avanti) · `audio: registrazioni nonna` committate · Task 3 web **da pushare**.
 
-## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · 0/4
-- `[todo]` Agente vittima customer care sullo scheletro sample
-- `[todo]` **Distiller** ogni 4 turni → `state.json` (`SPEC §2`, structured output, `gpt-4o-mini`) — **→ state.json**
-- `[todo]` **Iniezione periodica** (`SPEC §3`, default sicuro)
-- `[todo]` **Emit** `transcript.jsonl` + `cost_event` (`SPEC §5,§7`) — **→ transcript turn · cost_event**
+## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · 3/4
+- `[fatto]` Agente vittima customer care sullo scheletro sample — layer funzionante end-to-end via testo (base dimentica, suggeritore ricorda)
+- `[fatto]` **Distiller** ogni 4 turni → `state.json` (`SPEC §2`, structured output, `gpt-4o-mini`) — **→ state.json** · live
+- `[fatto]` **Iniezione periodica** (`SPEC §3`, default sicuro) — funzionante
+- `[in corso]` **Emit** `transcript.jsonl` + `cost_event` (`SPEC §5,§7`) — **→ transcript turn · cost_event** · driver headless multi-run in costruzione · path concordata: `recordings/base_run{i}.jsonl` / `recordings/sug_run{i}.jsonl` · cost: `server/server/run/cost_event.jsonl` · **N=10, fallback N=5**
 
 ## Fase 3 — harness/ → checkpoint 13:30 · owner: **Gabriele** · ✅ 3/3
 - `[fatto]` **Judge binario** structured output: `{transcript, seeded_fact}` → verdict con `citation` (`SPEC §6`) — **→ verdict** · smoke test su fixture: FIXTURE OK
@@ -94,6 +94,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - **Stato di partenza**: `web/ server/ harness/` sono vuoti (solo README). Il numero "Fatto 5/35" conta lo scaffold + spec + fixtures + MCP — tutto reale, niente codice di prodotto ancora scritto.
 
 ## Changelog
+- **2026-06-13 (13:15)** — **server/ Fase 2 3/4**: Daniele conferma layer funzionante end-to-end via testo (base dimentica, suggeritore ricorda, state.json live). Manca solo emit + driver headless multi-run (in corso). Concordato: path `recordings/base_run{i}.jsonl` / `recordings/sug_run{i}.jsonl`, cost `server/server/run/cost_event.jsonl`, N=10 (fallback N=5), seeded_fact = scarpini 38 nipote giovedì (già in runner.py). 38 voci, **22 fatte (58%)**.
 - **2026-06-13 (13:10)** — **harness/ Fase 3 ✅ 3/3 CHIUSA**: cost meter check implementato (`check_cost()` in runner.py, `--cost` CLI flag, validazione campi SPEC §5 con warning non-fatal); `.env` loader stdlib aggiunto (no dipendenze nuove, non sovrascrive variabili già esportate). Smoke test completo: FIXTURE OK + `cost base=$3.94 suggeritore=$0.52 delta=$3.42 (7.6x)`. 38 voci, **19 fatte (50%)**. harness/ è pronto per l'integrazione 13:30 — aspetta solo i transcript da server/.
 - **2026-06-13 (13:00)** — **harness/ Fase 3 2/3**: judge.py + runner.py già committati e verificati — smoke test `FIXTURE OK` (base.remembers=false, suggeritore.remembers=true, citation=t41). Resta solo cost meter check (item 3). 38 voci, **18 fatte (47%)**.
 - **2026-06-13 (12:30)** — **web/ Task 3 DONE** (cost counter, build verificato da me): due readout `usd_cumulative` guidati dal clock, base $3.94 vs suggeritore $0.52 (7.6×), danger/violet, etichetta MOCK, zero verde. Code review web/ ok (server/client split, CSS vars, contratti). 38 voci, **17 fatte (45%)**. ⚠️ **Voce nonna**: 13 clip reali (~2,1 min) + consenso (Fontana Rosaria) pronti, ma (1) **chiave ElevenLabs BLOCCATA** (`missing voices_read`) → niente clone/TTS con questa chiave; (2) **le clip raccontano un copione DIVERSO dalla fixture** (nipote "Luca che studia a Milano", ordine 4471, citofono rotto/sig.ra Pina interno 3) vs fixture (Mattia, gioca a calcio, scarpini 38, giovedì) → audio e dashboard NON combaciano se sincronizzati. Opzioni: clip come hook romanesco ~20s non sincronizzato · ri-registrare la nonna sulle righe della fixture · rigenerare la chiave EL e clonare. Decisione di Giovanni.

@@ -51,5 +51,7 @@ If by 16:30 you have these 4, the demo exists:
 3. split-screen · 4. memory HUD writing itself.
 Cut order if behind: **watchdog → cost counter → judge drill-down**. Never cut: the judge number.
 
+Status @ 13:15: ✅ 3 · ✅ 4 · 🔨 2 (layer works in text, audio run pending) · ⏳ 1 (needs live recording at 13:30).
+
 ## Keys
 `.env` (OpenAI + ElevenLabs) is in the project root, gitignored, never committed.
