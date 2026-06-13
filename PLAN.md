@@ -4,11 +4,11 @@
 > ciò che non è nello scaffold non si fa. Questo file si aggiorna **durante** il lavoro —
 > deve dire a colpo d'occhio quanto sta e quanto manca.
 
-## Avanzamento — Fatto 22 / Totale 38 (58%)
+## Avanzamento — Fatto 25 / Totale 38 (66%)
 ```
-███████████░░░░░░░░░  58%
+█████████████░░░░░░░  66%
 ```
-Fase mock-first (web/ su fixtures entro 13:00): 8/11. server/ layer funzionante via testo, emit in corso.
+🎯 **IL NUMERO: base 0/10, suggeritore 10/10** — tag `run-1330` pushato. Fase 4 in corso.
 Stanotte: setup sample + fixtures coerenti (no codice di prodotto, no git).
 
 ## Legenda
@@ -16,8 +16,8 @@ Stanotte: setup sample + fixtures coerenti (no codice di prodotto, no git).
 contratto = oggetto di `SPEC §7` che la voce **produce →** o **consuma ←**.
 
 ## 🏁 Demo minima vincente (il pavimento — se alle 16:30 ci sono questi 4, la demo esiste)
-1. `[todo]` base dimentica (registrato, vero) · 2. `[todo]` suggeritore ricorda (live) ·
-3. `[todo]` split-screen · 4. `[todo]` memoria HUD che si scrive da sola.
+1. `[fatto]` base dimentica (0/10 batch reale, transcripts in `recordings/`) · 2. `[fatto]` suggeritore ricorda (10/10 batch reale) ·
+3. `[fatto]` split-screen · 4. `[fatto]` memoria HUD che si scrive da sola.
 Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge**. Mai tagliare: **il numero del judge**.
 
 ## 🔒 Regole vincolanti (anti-allucinazione + disciplina)
@@ -58,20 +58,20 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 
 > 🛰️ **Team su origin/main (12:36)**: `harness: batch runner N=10` + `harness: requirements.txt` (Gabriele avanti) · `audio: registrazioni nonna` committate · Task 3 web **da pushare**.
 
-## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · 3/4
+## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · ✅ 4/4
 - `[fatto]` Agente vittima customer care sullo scheletro sample — layer funzionante end-to-end via testo (base dimentica, suggeritore ricorda)
 - `[fatto]` **Distiller** ogni 4 turni → `state.json` (`SPEC §2`, structured output, `gpt-4o-mini`) — **→ state.json** · live
 - `[fatto]` **Iniezione periodica** (`SPEC §3`, default sicuro) — funzionante
-- `[in corso]` **Emit** `transcript.jsonl` + `cost_event` (`SPEC §5,§7`) — **→ transcript turn · cost_event** · driver headless multi-run in costruzione · path concordata: `recordings/base_run{i}.jsonl` / `recordings/sug_run{i}.jsonl` · cost: `server/server/run/cost_event.jsonl` · **N=10, fallback N=5**
+- `[fatto]` **Emit** `transcript.jsonl` + `cost_event` (`SPEC §5,§7`) — **→ transcript turn · cost_event** · driver headless `batch_run.py` pushato e girato · `recordings/base_run{1..10}.jsonl` + `recordings/sug_run{1..10}.jsonl` prodotti · cost: `server/server/run/cost_event.jsonl`
 
 ## Fase 3 — harness/ → checkpoint 13:30 · owner: **Gabriele** · ✅ 3/3
 - `[fatto]` **Judge binario** structured output: `{transcript, seeded_fact}` → verdict con `citation` (`SPEC §6`) — **→ verdict** · smoke test su fixture: FIXTURE OK
 - `[fatto]` **Batch runner N=10/lato** → `base X/10, suggeritore Y/10` (IL numero) — **→ verdict (aggregato)** · modalità `fixture` + `live` pronte
 - `[fatto]` **Cost meter check** (`SPEC §5`) — **← cost_event** · `check_cost()` in runner.py, stampa `base=$X suggeritore=$Y delta=$Z (Nx more expensive)` · fixture: base=$3.94 suggeritore=$0.52 (7.6x) · `.env` loader stdlib aggiunto, niente footgun
 
-## Fase 4 — Integrazione 13:30 (INSIEME, ordine `server → harness → web`) · 0/3
-- `[todo]` Registrare il **fallimento VERO** dell'agente base → replay (`SPEC §8`) — **← transcript**
-- `[todo]` Primo run lungo + batch N=10 → **IL NUMERO vero** (sostituisce il mock in `verdicts.json`) — tag `run-1330`
+## Fase 4 — Integrazione 13:30 (INSIEME, ordine `server → harness → web`) · 2/3
+- `[fatto]` Registrare il **fallimento VERO** dell'agente base → `recordings/base_run{1..10}.jsonl` (0/10 recall) — judge confermato
+- `[fatto]` Batch N=10 → **IL NUMERO: base 0/10, suggeritore 10/10** — `verdicts.json` aggiornato con dati reali — tag `run-1330`
 - `[todo]` Wire `web ↔ server` (poll/WS) **oppure** replay del JSON registrato
 
 ## Fase 5 — 14:00–16:30 (raffinamento, zero feature nuove dopo le 14:00) · 0/4
@@ -94,6 +94,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - **Stato di partenza**: `web/ server/ harness/` sono vuoti (solo README). Il numero "Fatto 5/35" conta lo scaffold + spec + fixtures + MCP — tutto reale, niente codice di prodotto ancora scritto.
 
 ## Changelog
+- **2026-06-13 (13:30)** — 🎯 **IL NUMERO: base 0/10, suggeritore 10/10** — batch reale girato con `batch_run.py` (N=10/lato, testo scriptato, layer live); judge binario su tutti i 20 transcript; `verdicts.json` aggiornato con verdetti reali (citation=t16, tutti deterministici); tag `run-1330` pushato. Demo minima vincente: **tutti e 4 i pezzi in verde**. 38 voci, **25 fatte (66%)**.
 - **2026-06-13 (13:15)** — **server/ Fase 2 3/4**: Daniele conferma layer funzionante end-to-end via testo (base dimentica, suggeritore ricorda, state.json live). Manca solo emit + driver headless multi-run (in corso). Concordato: path `recordings/base_run{i}.jsonl` / `recordings/sug_run{i}.jsonl`, cost `server/server/run/cost_event.jsonl`, N=10 (fallback N=5), seeded_fact = scarpini 38 nipote giovedì (già in runner.py). 38 voci, **22 fatte (58%)**.
 - **2026-06-13 (13:10)** — **harness/ Fase 3 ✅ 3/3 CHIUSA**: cost meter check implementato (`check_cost()` in runner.py, `--cost` CLI flag, validazione campi SPEC §5 con warning non-fatal); `.env` loader stdlib aggiunto (no dipendenze nuove, non sovrascrive variabili già esportate). Smoke test completo: FIXTURE OK + `cost base=$3.94 suggeritore=$0.52 delta=$3.42 (7.6x)`. 38 voci, **19 fatte (50%)**. harness/ è pronto per l'integrazione 13:30 — aspetta solo i transcript da server/.
 - **2026-06-13 (13:00)** — **harness/ Fase 3 2/3**: judge.py + runner.py già committati e verificati — smoke test `FIXTURE OK` (base.remembers=false, suggeritore.remembers=true, citation=t41). Resta solo cost meter check (item 3). 38 voci, **18 fatte (47%)**.
