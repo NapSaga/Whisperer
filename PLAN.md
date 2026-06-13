@@ -89,27 +89,26 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 
 ---
 
-## 🎤 Task di tutti → pitch (chi fa cosa) — agg. 14:45
-> **Repo allineato** (`origin/main` pulito, builda) · **demo web/ costruita**: audio nonna forte · recall-green a t41 · verdetto reale **0/10 · 10/10** · cost pressure-meter · transcript a finestra. Scenario **orologio lockato**; citazione verdetto `t16` = **scelta di design** (batch reale ≠ replay; vedi Note di coupling). Resta solo il run-up al pitch.
+## 🎤 Everyone's tasks → pitch (who does what) — upd. 14:45
+> **Repo aligned** (`origin/main` clean, builds) · **web/ demo built**: loud nonna audio · recall-green at t41 · real verdict **0/10 · 10/10** · cost pressure-meter · windowed transcript. Scenario **watch locked**; verdict citation `t16` = **design choice** (real batch ≠ replay; see Coupling notes). Only the run-up to the pitch remains.
 
-### 👤 Giovanni — demo + pitch (owner)
-- [ ] **Testa la demo** dopo `Cmd+Shift+R`: **"Vai al momento del recall"** = cold-open (t38→t40 voce nonna FORTE → t41 il base annaspa). Audio chiaro su cassa?
-- [ ] **Pitch 2:30 col timer ≥3 volte** — hook audio → problema (drift OpenAI + costo) → perché ora → demo → sponsor (Agents SDK · structured outputs · ElevenLabs · Codex) → why-us StudierAI. *La demo È il pitch.*
-- [ ] **Deck backup leggero** (3-4 slide: problema+fonti · come · why-us+numeri). Dossier fonti sul telefono per il Q&A.
-- [ ] **Consegna form 17:30** (non alle 18:29).
+### 👤 Giovanni — demo (owner)
+- [ ] **Test the demo** after `Cmd+Shift+R`: **"Jump to the recall moment"** = cold-open (t38→t40 nonna's voice LOUD → at t41 the base flounders). Audio clear on the speaker?
+- [ ] **Submit the form by 17:30** (not at 18:29).
 
-### 👤 Daniele — motore + dati reali
-- [ ] **Test live del server** (in corso): layer live per il backup se la rete regge; altrimenti replay `recordings/` (batch reale pronto, 0/10·10/10).
-- [ ] *(opzionale, non blocca)* **`cost_event` reale**: oggi `cost.json` è MOCK (etichettato) → emetterlo dal server solo se si vuole il costo misurato a schermo.
+### 👤 Daniele — engine + real data
+- [ ] **Live server test** (in progress): live layer for the backup if the network holds; otherwise replay `recordings/` (real batch ready, 0/10·10/10).
+- [ ] **Cost fix (a) — in regeneration** (decided): the suggeritore sends the compact ledger instead of resending the full history, and the base runs on a real token cap → real cost meter, divergence in the right direction. Regenerate `recordings/` + the per-run cost files so harness can re-validate. Cutoff ≤16:00.
 
-### 👤 Gabriele — la misura → Q&A
-- [ ] **Q&A numeri difendibili**: 0/10 vs 10/10 (metodo judge + citazione `[t16]` dal batch reale, ri-validato live 15:42), drift OpenAI documentato. **Sul costo = ONESTÀ**: il 7.6× del `cost.json` è MOCK/proiezione long-call; la misura reale sul batch corto è **invertita** (base cappato più economico, vedi nodo Fase 5). Difendere il win di costo come **dato di produzione** (Realtime $/min, session-rotation §3) — **mai** spacciare il 7.6× come misurato. "Giudice cattivo" alle prove.
-- [ ] **Test proiettore + AUDIO in sala**: la demo è audio-first → volume nonna forte sul proiettore reale.
-- [ ] **Cronometra** le prove del pitch di Giovanni.
+### 👤 Gabriele — the pitch (owner) + the measure → Q&A
+- [ ] **Deliver the 2:30 pitch, rehearsed & timed ≥3 times** — audio hook → problem (OpenAI drift + cost) → why now → demo → sponsors (Agents SDK · structured outputs · ElevenLabs · Codex) → why-us StudierAI. *The demo IS the pitch.*
+- [ ] **Light backup deck** (3–4 slides: problem+sources · how · why-us+numbers). Sources dossier on the phone for Q&A.
+- [ ] **Q&A defensible numbers**: 0/10 vs 10/10 (judge method + `[t16]` citation from the real batch, re-validated live; re-confirm on the regenerated batch). OpenAI drift documented. **On cost — with fix (a) it's now a REAL, MEASURED win** (base ≫ suggeritore: the base keeps re-paying its context window while the suggeritore sends only the compact state), no longer a projection. **But flag the known gap honestly**: the distiller's own cost isn't counted (cheap model, limited overhead). "Mean judge" at the rehearsals.
+- [ ] **Projector + AUDIO test in the room**: the demo is audio-first → loud nonna volume on the real projector.
 
-### 🤝 Insieme — freeze 16:30
-- [ ] **VIDEO BACKUP** della demo (obbligatorio ≤16:30, sopravvive senza rete) — lo registra chi non è collo di bottiglia.
-- [ ] tag `freeze-1630` (da qui solo fix) · pitch provato · consegna 17:30.
+### 🤝 Together — freeze 16:30
+- [ ] **VIDEO BACKUP** of the demo (mandatory ≤16:30, survives without network) — recorded by whoever isn't the bottleneck.
+- [ ] tag `freeze-1630` (only fixes from here) · pitch rehearsed · form submitted by 17:30.
 
 ---
 
@@ -121,6 +120,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - **Stato di partenza**: `web/ server/ harness/` sono vuoti (solo README). Il numero "Fatto 5/35" conta lo scaffold + spec + fixtures + MCP — tutto reale, niente codice di prodotto ancora scritto.
 
 ## Changelog
+- **2026-06-13 (16:05)** — 🎤 **Pitch riassegnato interamente a Gabriele** (consegna 2:30 + deck backup + Q&A + test audio sala); Giovanni resta owner della **demo**. Sezione `🎤` tradotta in **inglese** e narrativa di costo allineata alla decisione fix (a): il costo è ora un **win reale misurato** (base ≫ sug, il base ripaga la finestra di contesto, il suggeritore manda solo lo stato compatto), non più proiezione — col buco onesto del **distiller-cost** non contato. Aggiornato anche il task Daniele (cost fix (a) in rigenerazione, niente più "cost.json MOCK").
 - **2026-06-13 (15:55)** — 🔧 **harness pronto per il formato costi reale** (commit `73f0237`). `runner.py`: nuovo `--cost-dir` che aggrega i cost file **per-run** emessi da `batch_run.py` (`base_run*_cost.jsonl`/`sug_run*_cost.jsonl`) → media base vs suggeritore su N run; il vecchio `--cost` (file singolo) resta invariato. Ratio reso **direzione-aware** (`_ratio`): nomina il lato davvero più caro invece di assumere il base — necessario perché la divergenza è invertita. File/campo mancante → WARN, mai crash. Testato su dir sintetico (inverso → "suggeritore 1.5x") + regressione MOCK (→ "base 7.6x"). Aggiornato il task Q&A di Gabriele: il 7.6× va difeso come **proiezione/dato di produzione**, non come misura (la misura reale è invertita).
 - **2026-06-13 (15:10)** — 🔧 **Fix coerenza verdict (defork)**: `web/src/lib/fixtures/verdicts.json` era rimasto allo stato 13:54 (`question_turn t38`, `citation t41`, `base.objective_correct=false`, reason scritte a mano) mentre `spec/fixtures/verdicts.json` era stato rigenerato dal giudizio reale (`t15/t16`, `objective_correct=true`). Risultato: la demo mostrava prove (t41, base objective-fail) **diverse dal numero misurato** sui `recordings/`. Reso il file web **byte-identico** alla fixture reale → un'unica fonte: la verdict view ora mostra i 10+10 verdetti veri con `[t16]` (turno reale dei recordings). Verificato disaccoppiamento: `citation` è solo testo nel pannello, `question_turn` non è renderizzato → nessun conflitto col `t41` della timeline di replay. Aggiornata nota di coupling.
 - **2026-06-13 (14:30)** — 🎯 **IL NUMERO REALE su orologio: base 0/10, suggeritore 10/10** — catena completamente riallineata e rigenerata. (1) Allineati `runner.py`/`judge.py` (`SEEDED_FACT`) + `batch_run.py` (`CALLER_SCRIPT`/markers/docstring) al copione orologio. (2) Rigenerati i 20 `recordings/*.jsonl` con `batch_run.py` (layer live, ledger pulito per run). (3) `verdicts.json` rigenerato dal giudizio reale via `harness/gen_verdicts.py`. **Prima passata = 0/10 vs 5/10**: il distiller catturava tutto (ledger perfetto) ma l'agente temporeggiava al recall → rinforzato il prompt d'iniezione in `injector.py` ("rispondi DIRETTAMENTE dal ledger, non chiedere 'vuoi che controlli?'") → re-run → **10/10 reale**. Smoke fixture: FIXTURE OK.
