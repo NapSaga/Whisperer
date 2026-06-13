@@ -128,10 +128,11 @@ async def _drain_distill(wf: Workflow) -> None:
         await asyncio.sleep(0.05)
 
 
-async def run_one(mode: str, run_idx: int) -> list[dict]:
+async def run_one(mode: str, run_idx: int, out_dir: Path) -> list[dict]:
     """Drive the real Workflow once over CALLER_SCRIPT, returning the captured
     SPEC §7 transcript turns.
     """
+    prefix = "base_run" if mode == "base" else "sug_run"
     if mode == "suggeritore":
         os.environ["SUGGERITORE_MODE"] = "on"
         state_path = _BATCH_STATE_DIR / f"sug_run{run_idx}_state.json"
@@ -140,6 +141,13 @@ async def run_one(mode: str, run_idx: int) -> list[dict]:
     else:
         os.environ["SUGGERITORE_MODE"] = "off"
         os.environ.pop("SUGGERITORE_STATE_PATH", None)
+
+    # Per-run cost file beside the transcript, so each recorded run carries its
+    # own real cost (§5). Unlink any stale copy so re-runs start fresh; a fresh
+    # Workflow already means a fresh CostMeter (no cumulative leak across runs).
+    cost_path = out_dir / f"{prefix}{run_idx}_cost.jsonl"
+    os.environ["SUGGERITORE_COST_PATH"] = str(cost_path)
+    cost_path.unlink(missing_ok=True)
 
     conn = HeadlessConnection(starting_agent)
     wf = Workflow(conn)
@@ -191,7 +199,7 @@ async def main_async(mode: str, n: int, out_dir: Path) -> None:
 
     recalled = 0
     for i in range(1, n + 1):
-        turns = await run_one(mode, i)
+        turns = await run_one(mode, i, out_dir)
         _validate(turns)
         path = out_dir / f"{prefix}{i}.jsonl"
         with open(path, "w", encoding="utf-8") as fh:

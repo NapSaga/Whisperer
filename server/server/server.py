@@ -12,7 +12,8 @@ from agents.voice import (
     VoicePipelineConfig,
     VoiceWorkflowBase,
 )
-from app import distiller, injector, state_store, truncation
+from app import cost_meter, distiller, injector, state_store, truncation
+from app.cost_meter import CostMeter
 from app.agent_config import starting_agent
 from app.utils import (
     WebsocketHelper,
@@ -61,6 +62,8 @@ class Workflow(VoiceWorkflowBase):
         self._msg_no = 0
         self._pending_turns: list[dict] = []
         self._distilling = False
+        # One meter per Workflow so cumulative cost never leaks across runs (§5).
+        self._cost = CostMeter()
 
     async def run(self, input_text: str) -> AsyncIterator[str]:
         conversation_history, latest_agent = await self.connection.show_user_input(
@@ -103,6 +106,18 @@ class Workflow(VoiceWorkflowBase):
 
         await self.connection.text_output_complete(output, is_done=True)
 
+        # Cost event (SPEC §5). Streamed usage is only final after the stream
+        # drains, so sum it here. Defensive: a usage hiccup must never break the
+        # turn — same posture as the injection/distill blocks.
+        try:
+            tokens_in = sum(r.usage.input_tokens for r in output.raw_responses)
+            tokens_out = sum(r.usage.output_tokens for r in output.raw_responses)
+            agent = "suggeritore" if injector.is_enabled() else "base"
+            self._cost.add(tokens_in, tokens_out)
+            self._cost.emit(agent, caller_turn["turn"])
+        except Exception:
+            logger.exception("suggeritore: cost emit skipped")
+
         # Record this exchange as contract transcript turns, then distill
         # periodically (SPEC §2) in suggeritore mode only — the live state.json
         # feeds the injector through the same path it reads.
@@ -141,6 +156,10 @@ async def websocket_endpoint(websocket: WebSocket):
         # (the fixture is never read at runtime). Base mode never reads state.
         if injector.is_enabled():
             state_store.reset()
+
+        # Truncate the cost file so the web counter shows only this call (§5).
+        # Runs for BOTH modes — base and suggeritore each emit cost events.
+        cost_meter.reset()
 
         connection = WebsocketHelper(websocket, [], starting_agent)
         audio_buffer = []
