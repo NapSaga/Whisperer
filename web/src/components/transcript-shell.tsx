@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PauseIcon, PlayIcon, SkipForwardIcon } from "lucide-react";
+import { toast } from "sonner";
 import type {
   CostEvent,
   CostFixture,
@@ -47,6 +48,7 @@ type LaneCardProps = {
   description: string;
   turns: DisplayTurn[];
   lane: "base" | "suggeritore";
+  recallActive: boolean;
 };
 
 const REPLAY_RATE = 18;
@@ -105,7 +107,22 @@ function latestCostEvent(
     )[0];
 }
 
-function LaneCard({ title, description, turns, lane }: LaneCardProps) {
+function LaneCard({
+  title,
+  description,
+  turns,
+  lane,
+  recallActive,
+}: LaneCardProps) {
+  const transcriptEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    transcriptEndRef.current?.scrollIntoView({
+      block: "end",
+      behavior: "smooth",
+    });
+  }, [turns.length]);
+
   return (
     <Card className="min-h-0 border-white/10 bg-card/90 shadow-2xl shadow-black/30">
       <CardHeader className="border-b border-white/10 pb-5">
@@ -140,7 +157,9 @@ function LaneCard({ title, description, turns, lane }: LaneCardProps) {
               ) : null}
               {turns.map((turn) => {
                 const isCaller = turn.role === "caller";
-                const isDivergent = turn.displayTurn === "t41";
+                const isDivergent = recallActive && turn.displayTurn === "t41";
+                const isRecallWin = isDivergent && lane === "suggeritore";
+                const isRecallFail = isDivergent && lane === "base";
 
                 return (
                   <Message
@@ -149,12 +168,10 @@ function LaneCard({ title, description, turns, lane }: LaneCardProps) {
                     className={cn(
                       "max-w-[92%]",
                       !isCaller && "mr-auto",
-                      isDivergent &&
-                        lane === "base" &&
+                      isRecallFail &&
                         "rounded-xl border border-[color:var(--fail)]/60 bg-[color:var(--fail)]/10 p-3",
-                      isDivergent &&
-                        lane === "suggeritore" &&
-                        "rounded-xl border border-[color:var(--voice-accent)]/60 bg-[color:var(--voice-accent)]/10 p-3"
+                      isRecallWin &&
+                        "rounded-xl border border-[color:var(--recall)] bg-[color:var(--recall)]/10 p-3 shadow-[0_0_44px_var(--recall-glow)]"
                     )}
                   >
                     <div
@@ -168,13 +185,34 @@ function LaneCard({ title, description, turns, lane }: LaneCardProps) {
                       <span className="text-[color:var(--voice-accent)]">
                         {roleLabel(turn.role)}
                       </span>
+                      {isRecallFail ? (
+                        <Badge
+                          variant="destructive"
+                          className="h-7 rounded-lg px-3 font-mono text-[0.72rem]"
+                        >
+                          DIMENTICA ✗
+                        </Badge>
+                      ) : null}
+                      {isRecallWin ? (
+                        <Badge
+                          variant="outline"
+                          className="h-7 rounded-lg border-[color:var(--recall)] bg-[color:var(--recall)]/15 px-3 font-mono text-[0.72rem] text-[color:var(--recall)] shadow-[0_0_28px_var(--recall-glow)]"
+                        >
+                          RICORDA ✓
+                        </Badge>
+                      ) : null}
                     </div>
                     <MessageContent
                       className={cn(
                         "text-lg leading-8",
-                        isCaller
-                          ? "rounded-xl bg-secondary px-5 py-4"
-                          : "rounded-xl border border-white/10 bg-[color:var(--surface-soft)] px-5 py-4"
+                        isCaller &&
+                          "rounded-xl bg-secondary px-5 py-4",
+                        !isCaller &&
+                          "rounded-xl border border-white/10 bg-[color:var(--surface-soft)] px-5 py-4",
+                        isRecallFail &&
+                          "border-[color:var(--fail)] bg-[color:var(--fail)]/15 text-foreground shadow-[0_0_32px_color-mix(in_oklch,var(--fail),transparent_76%)]",
+                        isRecallWin &&
+                          "border-[color:var(--recall)] bg-[color:var(--recall)] text-black shadow-[0_0_52px_var(--recall-glow)]"
                       )}
                     >
                       <MessageResponse>{turn.text}</MessageResponse>
@@ -182,6 +220,7 @@ function LaneCard({ title, description, turns, lane }: LaneCardProps) {
                   </Message>
                 );
               })}
+              <div ref={transcriptEndRef} aria-hidden="true" />
             </ConversationContent>
           </Conversation>
         </ScrollArea>
@@ -423,25 +462,42 @@ function LedgerEntryRow({
   entry,
   label,
   isVisible,
+  isRecalled,
 }: {
   entry: StateLedgerEntry;
   label: string;
   isVisible: boolean;
+  isRecalled: boolean;
 }) {
   if (!isVisible) {
     return null;
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-2 rounded-xl border border-white/10 bg-[color:var(--surface-soft)] p-4 duration-500">
+    <div
+      className={cn(
+        "animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-2 rounded-xl border border-white/10 bg-[color:var(--surface-soft)] p-4 duration-500",
+        isRecalled &&
+          "border-[color:var(--recall)] bg-[color:var(--recall)]/10 shadow-[0_0_34px_var(--recall-glow)]"
+      )}
+    >
       <div className="flex items-center justify-between gap-3">
         <Badge
-          variant="secondary"
-          className="h-6 rounded-lg px-2 font-mono text-[0.7rem]"
+          variant={isRecalled ? "outline" : "secondary"}
+          className={cn(
+            "h-6 rounded-lg px-2 font-mono text-[0.7rem]",
+            isRecalled &&
+              "border-[color:var(--recall)] bg-[color:var(--recall)]/15 text-[color:var(--recall)]"
+          )}
         >
           {label}
         </Badge>
-        <span className="font-mono text-xs text-muted-foreground">
+        <span
+          className={cn(
+            "font-mono text-xs text-muted-foreground",
+            isRecalled && "text-[color:var(--recall)]"
+          )}
+        >
           [{entry.turn}]
         </span>
       </div>
@@ -454,10 +510,12 @@ function MemoryHud({
   state,
   currentSeconds,
   turnTimes,
+  recallActive,
 }: {
   state: StateLedger;
   currentSeconds: number;
   turnTimes: Map<string, number>;
+  recallActive: boolean;
 }) {
   const visibleFacts = state.facts.filter(
     (entry) => (turnTimes.get(entry.turn) ?? Infinity) <= currentSeconds
@@ -467,6 +525,9 @@ function MemoryHud({
   );
   const revealedCount = visibleFacts.length + visibleCommitments.length;
   const totalCount = state.facts.length + state.commitments.length;
+  const recalledFacts = state.facts.filter((entry) =>
+    ["f3", "f5"].includes(entry.id)
+  );
 
   return (
     <Card className="h-full border-white/10 bg-card/80">
@@ -502,6 +563,31 @@ function MemoryHud({
           </Badge>
         </div>
         <Separator />
+        {recallActive ? (
+          <div className="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-3 rounded-xl border border-[color:var(--recall)] bg-[color:var(--recall)]/10 p-4 shadow-[0_0_34px_var(--recall-glow)] duration-500">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-mono text-xs font-semibold uppercase tracking-normal text-[color:var(--recall)]">
+                recall evidence
+              </span>
+              <Badge
+                variant="outline"
+                className="h-6 rounded-lg border-[color:var(--recall)] px-2 font-mono text-[0.7rem] text-[color:var(--recall)]"
+              >
+                f3 + f5
+              </Badge>
+            </div>
+            {recalledFacts.map((entry) => (
+              <div key={`recall-${entry.id}`} className="flex flex-col gap-1">
+                <div className="flex items-center justify-between gap-3 font-mono text-xs text-[color:var(--recall)]">
+                  <span>{entry.id}</span>
+                  <span>[{entry.turn}]</span>
+                </div>
+                <p className="text-base leading-7">{entry.text}</p>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {recallActive ? <Separator /> : null}
         <div className="flex flex-col gap-3 rounded-xl border border-[color:var(--voice-accent)]/30 bg-[color:var(--voice-accent)]/10 p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="text-sm font-medium text-[color:var(--voice-accent)]">
@@ -538,6 +624,7 @@ function MemoryHud({
               entry={entry}
               label={entry.id}
               isVisible={visibleFacts.some((fact) => fact.id === entry.id)}
+              isRecalled={recallActive && ["f3", "f5"].includes(entry.id)}
             />
           ))}
           {visibleFacts.length === 0 ? (
@@ -560,6 +647,7 @@ function MemoryHud({
               isVisible={visibleCommitments.some(
                 (commitment) => commitment.id === entry.id
               )}
+              isRecalled={false}
             />
           ))}
           {visibleCommitments.length === 0 ? (
@@ -595,6 +683,7 @@ export function TranscriptShell({
   );
   const [currentSeconds, setCurrentSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const recallToastFiredRef = useRef(false);
   const baseVisibleTurns = useMemo(
     () =>
       baseTurns.filter((turn) => isVisibleAt(turn, currentSeconds)).sort((a, b) => parseTurnNumber(a.displayTurn) - parseTurnNumber(b.displayTurn)),
@@ -606,6 +695,7 @@ export function TranscriptShell({
     [suggeritoreTurns, currentSeconds]
   );
   const turnTimes = useMemo(() => turnTimestampMap(baseTurns), [baseTurns]);
+  const recallActive = currentSeconds >= recallEnd;
 
   useEffect(() => {
     if (!isPlaying) {
@@ -626,6 +716,24 @@ export function TranscriptShell({
 
     return () => window.clearInterval(interval);
   }, [duration, isPlaying]);
+
+  useEffect(() => {
+    if (currentSeconds < recallEnd) {
+      recallToastFiredRef.current = false;
+      return;
+    }
+
+    if (recallToastFiredRef.current) {
+      return;
+    }
+
+    recallToastFiredRef.current = true;
+    toast("Ricorda ✓", {
+      duration: 2400,
+      className:
+        "border-[color:var(--recall)] bg-[color:var(--surface-strong)] text-[color:var(--recall)] shadow-[0_0_44px_var(--recall-glow)]",
+    });
+  }, [currentSeconds, recallEnd]);
 
   const handleSeek = (value: number) => {
     setCurrentSeconds(Math.min(duration, Math.max(0, value)));
@@ -677,18 +785,21 @@ export function TranscriptShell({
             description="No memory layer"
             turns={baseVisibleTurns}
             lane="base"
+            recallActive={recallActive}
           />
           <LaneCard
             title="Suggeritore"
             description="Same prompt and voice, memory layer on"
             turns={suggeritoreVisibleTurns}
             lane="suggeritore"
+            recallActive={recallActive}
           />
         </div>
         <MemoryHud
           state={state}
           currentSeconds={currentSeconds}
           turnTimes={turnTimes}
+          recallActive={recallActive}
         />
       </section>
     </main>

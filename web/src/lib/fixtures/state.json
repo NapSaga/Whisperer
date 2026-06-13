@@ -1,15 +1,15 @@
 {
   "identity": "you are ShopDemo's phone support agent",
-  "objective": "tell the caller the delivery date of her grandson's gift order",
+  "objective": "make sure the grandson's graduation watch arrives in time and is delivered to the neighbor",
   "facts": [
-    { "id": "f1", "text": "the order is a gift for the caller's grandson", "turn": "t1" },
-    { "id": "f2", "text": "the grandson plays football", "turn": "t1" },
-    { "id": "f3", "text": "the item ordered is football boots, size 38", "turn": "t3" },
-    { "id": "f4", "text": "the order was placed last week", "turn": "t5" },
-    { "id": "f5", "text": "delivery is scheduled for Thursday", "turn": "t9" }
+    { "id": "f1", "text": "the order is a watch, a gift for the caller's grandson", "turn": "t1" },
+    { "id": "f2", "text": "the grandson is Luca, graduating", "turn": "t3" },
+    { "id": "f3", "text": "it must arrive BEFORE the 20th, for the graduation", "turn": "t5" },
+    { "id": "f4", "text": "the order number is 4471", "turn": "t7" },
+    { "id": "f5", "text": "deliver to the neighbor sig.ra Pina, interno 3 (caller's buzzer is broken)", "turn": "t9" }
   ],
   "commitments": [
-    { "id": "c1", "text": "agent will confirm the warehouse dispatch date", "turn": "t9" }
+    { "id": "c1", "text": "agent will ensure delivery before the 20th to sig.ra Pina interno 3", "turn": "t10" }
   ],
   "last_turn": 41
 }

@@ -1,31 +1,31 @@
 {
-  "seeded_fact": "the order is football boots, size 38, a gift for the caller's grandson, delivery Thursday",
+  "seeded_fact": "the watch must arrive before the 20th for grandson Luca's graduation, delivered to sig.ra Pina interno 3",
   "question_turn": "t38",
   "runs": {
     "base": [
-      { "run": 1,  "remembers": false, "citation": "t41", "identity_held": true,  "objective_correct": false, "reason": "asks for the order number, lost the item" },
-      { "run": 2,  "remembers": false, "citation": "t41", "identity_held": true,  "objective_correct": false, "reason": "no recall of recipient or item" },
-      { "run": 3,  "remembers": true,  "citation": "t41", "identity_held": true,  "objective_correct": true,  "reason": "recovered the boots from recent context" },
-      { "run": 4,  "remembers": false, "citation": "t41", "identity_held": true,  "objective_correct": false, "reason": "invented a different product" },
-      { "run": 5,  "remembers": false, "citation": "t41", "identity_held": false, "objective_correct": false, "reason": "drifted into generic support script" },
-      { "run": 6,  "remembers": false, "citation": "t41", "identity_held": true,  "objective_correct": false, "reason": "asks caller to repeat everything" },
-      { "run": 7,  "remembers": true,  "citation": "t41", "identity_held": true,  "objective_correct": true,  "reason": "recalled item, missed delivery date" },
-      { "run": 8,  "remembers": false, "citation": "t41", "identity_held": true,  "objective_correct": false, "reason": "no recall" },
-      { "run": 9,  "remembers": false, "citation": "t41", "identity_held": true,  "objective_correct": false, "reason": "no recall" },
-      { "run": 10, "remembers": false, "citation": "t41", "identity_held": true,  "objective_correct": false, "reason": "asks for the order number again" }
+      { "run": 1,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks again for the deadline and delivery details" },
+      { "run": 2,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "does not recall the before-the-20th deadline" },
+      { "run": 3,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks the caller to repeat when it is needed" },
+      { "run": 4,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "does not recall the graduation deadline or Pina delivery instruction" },
+      { "run": 5,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "falls back to a generic support question" },
+      { "run": 6,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks the caller to repeat the key order details" },
+      { "run": 7,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "misses both the deadline and the neighbor delivery detail" },
+      { "run": 8,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "does not recall the seeded fact" },
+      { "run": 9,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks for information already given earlier in the call" },
+      { "run": 10, "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": false, "reason": "asks for the deadline and destination again" }
     ],
     "suggeritore": [
-      { "run": 1,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "restated boots, size 38, grandson, Thursday" },
-      { "run": 2,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall from state ledger" },
-      { "run": 3,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
+      { "run": 1,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "restated the before-the-20th deadline and Pina interno 3 delivery" },
+      { "run": 2,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall from the state ledger" },
+      { "run": 3,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall of graduation deadline and delivery instruction" },
       { "run": 4,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
       { "run": 5,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
       { "run": 6,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
-      { "run": 7,  "remembers": false, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "recalled item and recipient, dropped the delivery date" },
+      { "run": 7,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
       { "run": 8,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
       { "run": 9,  "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" },
       { "run": 10, "remembers": true, "citation": "t41", "identity_held": true, "objective_correct": true, "reason": "full recall" }
     ]
   },
-  "score": { "base": "2/10", "suggeritore": "9/10" }
+  "score": { "base": "0/10", "suggeritore": "10/10" }
 }

@@ -77,6 +77,8 @@
   --voice-accent: oklch(0.75 0.13 304);
   --running: oklch(0.82 0.164 84.429);
   --fail: oklch(0.637 0.237 25.331);
+  --recall: oklch(0.696 0.17 162.48);
+  --recall-glow: oklch(0.696 0.17 162.48 / 20%);
   --surface-strong: oklch(0.21 0.006 285.885);
   --surface-soft: oklch(0.18 0.006 285.885);
   --sidebar: oklch(0.21 0.006 285.885);
