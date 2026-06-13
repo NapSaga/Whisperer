@@ -8,7 +8,7 @@
 ```
 ██████████░░░░░░░░░░  50%
 ```
-Fase mock-first (web/ su fixtures entro 13:00) è la priorità: 7/11.
+Fase mock-first (web/ su fixtures entro 13:00) è la priorità: 8/11.
 Stanotte: setup sample + fixtures coerenti (no codice di prodotto, no git).
 
 ## Legenda
@@ -42,7 +42,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - `[fatto]` **Primo push (~10:45)** → repo `NapSaga/suggeritore` (commit `b78b473`) · safety gate ok (nessun `.env`/`node_modules`/`.venv` tracciato) · ⚠️ **PRIVATO** (scelta Giovanni — proteggere l'idea in build; **valutare flip a `public` poco prima del pitch**: il commit-trail Codex visibile è la prova per il premio OpenAI/Fazio)
 - `[todo]` **LOCK 10:30 (INSIEME)**: nome · scope · 5 frasi-scope · ruoli · transport dei contratti · domande organizzatori (riuso OSS? split 10k?)
 
-## Fase 1 — web/ mock-first → checkpoint 13:00 · owner: **Giovanni** · 7/11 · ✅ Task 1 (app·componenti·tokens·fixtures·split-screen) · ✅ Task 2 (replay clock + memoria HUD, zero verde, lint ok) · 🔨 Task 3 next (**cost counter — NON ancora costruito**)
+## Fase 1 — web/ mock-first → checkpoint 13:00 · owner: **Giovanni** · 8/11 · ✅ Task 1 · ✅ Task 2 · ✅ Task 3 (cost counter — **build ok**, $3.94 vs $0.52, zero verde) · 🔨 Task 4 next (recall-green)
 > Gira **interamente** su `spec/fixtures/` finché il server non c'è. Grande, leggibile da proiettore, dark-only.
 - `[fatto]` **App Next.js** in `web/` — single page, App Router, dark-only · *(Context7: Next.js)*
 - `[fatto]` **shadcn init + add** (`card badge button table tabs separator progress skeleton sonner scroll-area collapsible`) + **ai-elements** (`conversation message response`) · *(shadcn CLI/MCP — registry ai-elements configurato)*
@@ -51,10 +51,12 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - `[fatto]` **Replay driver**: timeline `ts` (0→10), play/pause + Slider, salto a `t38→t41` *(Task 2)*
 - `[fatto]` **Split-screen** base (sx) vs suggeritore (dx) — transcript con ai-elements `conversation`/`message` — **← transcript turn**
 - `[fatto]` **Memoria HUD live**: `state.json` riga per riga ("append-only state ledger"), ogni fatto/impegno col suo **`[t{n}]`**, si scrive mentre la timeline scorre — **← state.json** *(Task 2)*
-- `[todo]` **Cost counter divergente** (Task 3): base sale ripido, suggeritore quasi piatto, `usd_cumulative` a schermo — **← cost_event** · fixture pronta: `spec/fixtures/cost.json` (22 eventi, $3.94 vs $0.52, MOCK)
+- `[fatto]` **Cost counter divergente** (Task 3): base $3.94 vs suggeritore $0.52 (7.6×), `usd_cumulative` guidato dal replay clock, danger-tint base / violet suggeritore, etichetta MOCK — **← cost_event** · `spec/fixtures/cost.json` · **build verificato**
 - `[todo]` **Momento recall**: `emerald-500` + glow + toast `sonner` **SOLO** su `t41_suggeritore` (il verde non appare mai prima) — **← transcript/state**
 - `[todo]` **Verdict view**: `base 2/10 · suggeritore 9/10` da `verdicts.json`, **etichetta "MOCK — numero reale alle 13:30"**, drill-down per run con `citation` `[t{n}]` (`collapsible`) — **← verdict**
 - `[todo]` **Passata proiettore**: type ampia (≥`text-base`), spacing generoso, contrasti alti, prova su 16:9
+
+> 🛰️ **Team su origin/main (12:36)**: `harness: batch runner N=10` + `harness: requirements.txt` (Gabriele avanti) · `audio: registrazioni nonna` committate · Task 3 web **da pushare**.
 
 ## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · 0/4
 - `[todo]` Agente vittima customer care sullo scheletro sample
@@ -94,6 +96,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 ## Changelog
 - **2026-06-13 (13:10)** — **harness/ Fase 3 ✅ 3/3 CHIUSA**: cost meter check implementato (`check_cost()` in runner.py, `--cost` CLI flag, validazione campi SPEC §5 con warning non-fatal); `.env` loader stdlib aggiunto (no dipendenze nuove, non sovrascrive variabili già esportate). Smoke test completo: FIXTURE OK + `cost base=$3.94 suggeritore=$0.52 delta=$3.42 (7.6x)`. 38 voci, **19 fatte (50%)**. harness/ è pronto per l'integrazione 13:30 — aspetta solo i transcript da server/.
 - **2026-06-13 (13:00)** — **harness/ Fase 3 2/3**: judge.py + runner.py già committati e verificati — smoke test `FIXTURE OK` (base.remembers=false, suggeritore.remembers=true, citation=t41). Resta solo cost meter check (item 3). 38 voci, **18 fatte (47%)**.
+- **2026-06-13 (12:30)** — **web/ Task 3 DONE** (cost counter, build verificato da me): due readout `usd_cumulative` guidati dal clock, base $3.94 vs suggeritore $0.52 (7.6×), danger/violet, etichetta MOCK, zero verde. Code review web/ ok (server/client split, CSS vars, contratti). 38 voci, **17 fatte (45%)**. ⚠️ **Voce nonna**: 13 clip reali (~2,1 min) + consenso (Fontana Rosaria) pronti, ma (1) **chiave ElevenLabs BLOCCATA** (`missing voices_read`) → niente clone/TTS con questa chiave; (2) **le clip raccontano un copione DIVERSO dalla fixture** (nipote "Luca che studia a Milano", ordine 4471, citofono rotto/sig.ra Pina interno 3) vs fixture (Mattia, gioca a calcio, scarpini 38, giovedì) → audio e dashboard NON combaciano se sincronizzati. Opzioni: clip come hook romanesco ~20s non sincronizzato · ri-registrare la nonna sulle righe della fixture · rigenerare la chiave EL e clonare. Decisione di Giovanni.
 - **2026-06-13 (12:10)** — **web/ Task 2 DONE** (verificato dal sorgente): replay clock (Play/Pause/Slider/`isPlaying`) + memoria HUD append-only (`state.json` riga per riga coi `[t{n}]`), zero verde, lint ok. ⚠️ **Task 3 (cost counter) NON costruito** nonostante il claim — il sorgente non ha `cost`/`usd`/`token` in `transcript-shell.tsx`. 38 voci, **16 fatte (42%)**. Push Task 1+2 → poi Task 3.
 - **2026-06-13 (11:58)** — **web/ Task 1 DONE + booted**: Next.js App Router+TS, shadcn + ai-elements (`conversation`/`message`), fixtures in `web/src/lib/fixtures`, contratti SPEC §7 in `contracts.ts`, loader+normalizzazione `t41` in `fixtures.ts`, split-screen in `transcript-shell.tsx`. lint+build ok, dev su :3000, browser verificato, audit colore = zero verde. 38 voci, **14 fatte (37%)**. Next: Task 2 = memoria HUD + replay clock.
 - **2026-06-13 (11:40)** — Primo push fatto (`NapSaga/suggeritore`, commit `b78b473`, **privato**, safety gate ok). Codex su **web/ Task 1** (app+componenti+tokens+fixtures+split-screen) — gate anti-allucinazione rispettato (Context7 + shadcn MCP, registry ai-elements configurato, niente guesswork). 38 voci, 9 fatte (24%).
