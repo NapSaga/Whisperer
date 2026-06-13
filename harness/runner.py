@@ -12,8 +12,29 @@ harness/ (`python runner.py ...`).
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
+
+
+def _load_dotenv() -> None:
+    """Load KEY=value pairs from .env in the repo root into os.environ (stdlib only)."""
+    root = Path(__file__).resolve().parent.parent
+    env_file = root / ".env"
+    if not env_file.exists():
+        return
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+_load_dotenv()
 
 # Import judge() whether we're launched from the repo root or from harness/.
 try:
@@ -31,6 +52,10 @@ except ImportError:
 
 HERE = Path(__file__).resolve().parent
 FIXTURES = HERE.parent / "spec" / "fixtures"
+COST_FIXTURE = FIXTURES / "cost.json"
+
+# Fields every cost_event must carry (SPEC §5).
+COST_FIELDS = ("agent", "turn", "tokens_in", "tokens_out", "usd_cumulative")
 
 SEEDED_FACT = (
     "the order is football boots, size 38, a gift for the caller's grandson, "
@@ -53,7 +78,59 @@ def print_verdict(label: str, verdict) -> None:
     print(f"{label}: {verdict.model_dump_json()}")
 
 
-def run_fixture() -> int:
+def check_cost(cost_path: Path) -> None:
+    """Print the diverging audio cost meter (SPEC §5) from a cost.json file.
+
+    Accepts either a bare array of cost_event objects or the bundled
+    ``{"events": [...]}`` wrapper. Splits events by agent, then prints the
+    final usd_cumulative for each side plus the delta and how many times more
+    expensive the base agent is. A missing required field warns but never
+    crashes the run.
+    """
+    try:
+        data = json.loads(cost_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"cost  WARN: could not read {cost_path}: {e}")
+        return
+
+    events = data.get("events") if isinstance(data, dict) else data
+    if not isinstance(events, list):
+        print(f"cost  WARN: no events array found in {cost_path}")
+        return
+
+    last = {"base": None, "suggeritore": None}
+    for i, ev in enumerate(events):
+        if not isinstance(ev, dict):
+            print(f"cost  WARN: event {i} is not an object, skipping")
+            continue
+        missing = [f for f in COST_FIELDS if f not in ev]
+        if missing:
+            print(
+                f"cost  WARN: event {i} (turn={ev.get('turn', '?')}) "
+                f"missing {', '.join(missing)}"
+            )
+        agent = ev.get("agent")
+        if agent in last and "usd_cumulative" in ev:
+            last[agent] = ev["usd_cumulative"]
+
+    base, sug = last["base"], last["suggeritore"]
+    if base is None or sug is None:
+        print(f"cost  WARN: incomplete data (base={base}, suggeritore={sug})")
+        return
+
+    delta = base - sug
+    ratio = (
+        f"base {base / sug:.1f}x more expensive"
+        if sug > 0
+        else "base infinitely more expensive"
+    )
+    print(
+        f"cost  base=${base:.2f}  suggeritore=${sug:.2f}  "
+        f"delta=${delta:.2f} ({ratio})"
+    )
+
+
+def run_fixture(cost_path: Path = COST_FIXTURE) -> int:
     rows = load_jsonl(FIXTURES / "transcript.jsonl")
 
     def build(exclude_marker: str, rename_from: str) -> list[dict]:
@@ -93,9 +170,13 @@ def run_fixture() -> int:
 
     if problems:
         print("FIXTURE FAIL: " + "; ".join(problems))
-        return 1
-    print("FIXTURE OK")
-    return 0
+        rc = 1
+    else:
+        print("FIXTURE OK")
+        rc = 0
+
+    check_cost(cost_path)
+    return rc
 
 
 def run_live(base_files: list[str], sug_files: list[str]) -> int:
@@ -144,14 +225,23 @@ def main() -> int:
         default=[],
         help="live mode: transcript files for the suggeritore side (one per run).",
     )
+    parser.add_argument(
+        "--cost",
+        default=None,
+        help="path to a cost.json (SPEC §5 cost meter). Fixture mode defaults to "
+        "the bundled fixture; live mode only checks cost when this is passed.",
+    )
     args = parser.parse_args()
 
     if args.mode == "fixture":
-        return run_fixture()
+        return run_fixture(Path(args.cost) if args.cost else COST_FIXTURE)
 
     if not args.base or not args.sug:
         parser.error("--mode live requires both --base and --sug with at least one file each")
-    return run_live(args.base, args.sug)
+    rc = run_live(args.base, args.sug)
+    if args.cost:
+        check_cost(Path(args.cost))
+    return rc
 
 
 if __name__ == "__main__":
