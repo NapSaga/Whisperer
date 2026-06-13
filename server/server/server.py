@@ -135,6 +135,13 @@ class Workflow(VoiceWorkflowBase):
 async def websocket_endpoint(websocket: WebSocket):
     with trace("Voice Agent Chat"):
         await websocket.accept()
+
+        # Fresh call starts empty: wipe the runtime ledger to BLANK so the
+        # suggeritore demo builds state.json from ONLY what the caller says
+        # (the fixture is never read at runtime). Base mode never reads state.
+        if injector.is_enabled():
+            state_store.reset()
+
         connection = WebsocketHelper(websocket, [], starting_agent)
         audio_buffer = []
 

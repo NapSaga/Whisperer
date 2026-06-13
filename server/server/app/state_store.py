@@ -2,9 +2,10 @@
 
 The live ledger lives at a runtime file (``server/server/run/state.json``) that
 the distiller writes and the injector reads — they couple only through this
-path, never through code. The committed ``spec/fixtures/state.json`` is a
-read-only seed: when the runtime file does not exist yet, it is read and
-returned, but it is never written to.
+path, never through code. When the runtime file does not exist yet, a BLANK
+ledger (identity + objective only) is returned, so a fresh live call builds its
+state from ONLY what the caller says. ``spec/fixtures/state.json`` is never read
+at runtime — it is a mock for the web HUD, not a seed for the live agent.
 """
 
 import json
@@ -37,9 +38,23 @@ class StateLedger(BaseModel):
 
 
 # Resolve relative to this file (not cwd). This file is server/server/app/...,
-# so parents[1] is server/server/ and parents[3] is the repo root (suggeritore/).
+# so parents[1] is server/server/ and run/ is the runtime ledger location.
 _RUNTIME_DEFAULT = Path(__file__).resolve().parents[1] / "run" / "state.json"
-_FIXTURE_SEED = Path(__file__).resolve().parents[3] / "spec" / "fixtures" / "state.json"
+
+
+def blank() -> StateLedger:
+    """The empty starting ledger: identity + objective only, no caller facts.
+
+    A fresh live call starts here so the distiller earns every fact from the
+    conversation — the committed fixture is never read at runtime (SPEC §1/§8).
+    """
+    return StateLedger(
+        identity="you are ShopDemo's phone support agent",
+        objective="help the caller with their existing order",
+        facts=[],
+        commitments=[],
+        last_turn=0,
+    )
 
 
 def state_path() -> Path:
@@ -54,11 +69,11 @@ def _read(p: Path) -> StateLedger:
 
 
 def load(path: Path | None = None) -> StateLedger:
-    """Read the ledger. If the runtime file does not exist yet, seed from the
-    read-only fixture (read and return it) — never write to the fixture.
+    """Read the ledger. If the runtime file does not exist yet, return a BLANK
+    ledger — the fixture is never read at runtime.
     """
     target = Path(path) if path else state_path()
-    return _read(target if target.exists() else _FIXTURE_SEED)
+    return _read(target) if target.exists() else blank()
 
 
 def current() -> StateLedger:
@@ -83,3 +98,12 @@ def save(state: StateLedger, path: Path | None = None) -> None:
         json.dump(state.model_dump(), fh, ensure_ascii=False, indent=2)
         fh.write("\n")
     tmp.replace(p)
+
+
+def reset(path: Path | None = None) -> None:
+    """Wipe the runtime ledger back to BLANK so a fresh call starts empty.
+
+    Called at the start of a new suggeritore connection — each rehearsal run
+    builds its state from scratch instead of inheriting the previous call's.
+    """
+    save(blank(), path)
