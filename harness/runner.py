@@ -119,14 +119,81 @@ def check_cost(cost_path: Path) -> None:
         return
 
     delta = base - sug
-    ratio = (
-        f"base {base / sug:.1f}x more expensive"
-        if sug > 0
-        else "base infinitely more expensive"
-    )
     print(
         f"cost  base=${base:.2f}  suggeritore=${sug:.2f}  "
-        f"delta=${delta:.2f} ({ratio})"
+        f"delta=${delta:.2f} ({_ratio(base, sug)})"
+    )
+
+
+def _ratio(base: float, sug: float) -> str:
+    """Direction-aware ratio: name whichever side is dearer.
+
+    The cost divergence can point either way — the base may be cheap when its
+    context is capped while the suggeritore carries injected state — so we never
+    assume the base is the expensive one.
+    """
+    if base == sug:
+        return "equal cost"
+    hi, lo, name = (base, sug, "base") if base > sug else (sug, base, "suggeritore")
+    if lo <= 0:
+        return f"{name} infinitely more expensive"
+    return f"{name} {hi / lo:.1f}x more expensive"
+
+
+def _last_cumulative(path: Path) -> float | None:
+    """Final usd_cumulative in a per-run cost JSONL (last event carrying it)."""
+    try:
+        lines = [ln for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    except OSError as e:
+        print(f"cost  WARN: could not read {path}: {e}")
+        return None
+    for line in reversed(lines):
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(ev, dict) and "usd_cumulative" in ev:
+            missing = [f for f in COST_FIELDS if f not in ev]
+            if missing:
+                print(f"cost  WARN: {path.name} last event missing {', '.join(missing)}")
+            return ev["usd_cumulative"]
+    print(f"cost  WARN: no usd_cumulative found in {path.name}")
+    return None
+
+
+def check_cost_dir(cost_dir: Path) -> None:
+    """Aggregate the per-run cost files batch_run.py writes (SPEC §5).
+
+    batch_run.py emits one JSONL per run per side next to each transcript:
+    ``base_run{i}_cost.jsonl`` and ``sug_run{i}_cost.jsonl``. Each file's last
+    event carries that run's final ``usd_cumulative``. We average each side over
+    its runs and print the divergence, naming whichever side is more expensive
+    (it is NOT always the base — see the cost nodo in PLAN.md). A missing file or
+    field warns but never crashes.
+    """
+    sides = {
+        "base": sorted(cost_dir.glob("base_run*_cost.jsonl")),
+        "suggeritore": sorted(cost_dir.glob("sug_run*_cost.jsonl")),
+    }
+    means: dict[str, float | None] = {}
+    for label, files in sides.items():
+        totals = [c for c in (_last_cumulative(p) for p in files) if c is not None]
+        if not totals:
+            print(f"cost  WARN: no {label} run files (*_cost.jsonl) in {cost_dir}")
+            means[label] = None
+            continue
+        mean = sum(totals) / len(totals)
+        means[label] = mean
+        print(f"cost  {label:11s} mean=${mean:.4f} over {len(totals)} run(s)")
+
+    base, sug = means["base"], means["suggeritore"]
+    if base is None or sug is None:
+        print("cost  WARN: incomplete data, no aggregate printed")
+        return
+    delta = base - sug
+    print(
+        f"cost  base=${base:.4f}  suggeritore=${sug:.4f}  "
+        f"delta=${delta:.4f} ({_ratio(base, sug)})"
     )
 
 
@@ -228,19 +295,29 @@ def main() -> int:
     parser.add_argument(
         "--cost",
         default=None,
-        help="path to a cost.json (SPEC §5 cost meter). Fixture mode defaults to "
-        "the bundled fixture; live mode only checks cost when this is passed.",
+        help="path to a single cost.json (SPEC §5 cost meter). Fixture mode "
+        "defaults to the bundled fixture; live mode only checks cost when passed.",
+    )
+    parser.add_argument(
+        "--cost-dir",
+        default=None,
+        help="directory of per-run cost files from batch_run.py "
+        "(base_run*_cost.jsonl / sug_run*_cost.jsonl); prints the mean base vs "
+        "suggeritore cost across runs. Works in either mode.",
     )
     args = parser.parse_args()
 
     if args.mode == "fixture":
-        return run_fixture(Path(args.cost) if args.cost else COST_FIXTURE)
+        rc = run_fixture(Path(args.cost) if args.cost else COST_FIXTURE)
+    else:
+        if not args.base or not args.sug:
+            parser.error("--mode live requires both --base and --sug with at least one file each")
+        rc = run_live(args.base, args.sug)
+        if args.cost:
+            check_cost(Path(args.cost))
 
-    if not args.base or not args.sug:
-        parser.error("--mode live requires both --base and --sug with at least one file each")
-    rc = run_live(args.base, args.sug)
-    if args.cost:
-        check_cost(Path(args.cost))
+    if args.cost_dir:
+        check_cost_dir(Path(args.cost_dir))
     return rc
 
 
