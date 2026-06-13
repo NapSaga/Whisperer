@@ -10,6 +10,7 @@ from agents.voice import (
     VoicePipelineConfig,
     VoiceWorkflowBase,
 )
+from app import injector, state_store
 from app.agent_config import starting_agent
 from app.utils import (
     WebsocketHelper,
@@ -47,15 +48,30 @@ app.add_middleware(
 class Workflow(VoiceWorkflowBase):
     def __init__(self, connection: WebsocketHelper):
         self.connection = connection
+        self._turn = 0
 
     async def run(self, input_text: str) -> AsyncIterator[str]:
         conversation_history, latest_agent = await self.connection.show_user_input(
             input_text
         )
 
+        # Suggeritore re-grounding (SPEC §3, periodic). Base mode is a no-op:
+        # run_input stays the unmodified conversation_history.
+        self._turn += 1
+        run_input = conversation_history
+        if injector.is_enabled():
+            injector.strip(conversation_history)  # drop any stale injection carried over
+            if injector.should_inject(self._turn):
+                try:
+                    run_input = injector.with_injection(
+                        conversation_history, state_store.current()
+                    )
+                except Exception:
+                    logger.exception("suggeritore: injection skipped")
+
         output = Runner.run_streamed(
             latest_agent,
-            conversation_history,
+            run_input,
         )
 
         async for event in output.stream_events():
