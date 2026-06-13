@@ -4,11 +4,11 @@
 > ciò che non è nello scaffold non si fa. Questo file si aggiorna **durante** il lavoro —
 > deve dire a colpo d'occhio quanto sta e quanto manca.
 
-## Avanzamento — Fatto 16 / Totale 38 (42%)
+## Avanzamento — Fatto 18 / Totale 38 (47%)
 ```
-████████░░░░░░░░░░░░  42%
+█████████░░░░░░░░░░░  47%
 ```
-Fase mock-first (web/ su fixtures entro 13:00) è la priorità: 0/11.
+Fase mock-first (web/ su fixtures entro 13:00) è la priorità: 7/11.
 Stanotte: setup sample + fixtures coerenti (no codice di prodotto, no git).
 
 ## Legenda
@@ -62,9 +62,9 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - `[todo]` **Iniezione periodica** (`SPEC §3`, default sicuro)
 - `[todo]` **Emit** `transcript.jsonl` + `cost_event` (`SPEC §5,§7`) — **→ transcript turn · cost_event**
 
-## Fase 3 — harness/ → checkpoint 13:30 · owner: **Gabriele** · 0/3
-- `[todo]` **Judge binario** structured output: `{transcript, seeded_fact}` → verdict con `citation` (`SPEC §6`) — **→ verdict**
-- `[todo]` **Batch runner N=10/lato** → `base X/10, suggeritore Y/10` (IL numero) — **→ verdict (aggregato)**
+## Fase 3 — harness/ → checkpoint 13:30 · owner: **Gabriele** · 2/3
+- `[fatto]` **Judge binario** structured output: `{transcript, seeded_fact}` → verdict con `citation` (`SPEC §6`) — **→ verdict** · smoke test su fixture: FIXTURE OK
+- `[fatto]` **Batch runner N=10/lato** → `base X/10, suggeritore Y/10` (IL numero) — **→ verdict (aggregato)** · modalità `fixture` + `live` pronte
 - `[todo]` **Cost meter check** (`SPEC §5`) — **← cost_event**
 
 ## Fase 4 — Integrazione 13:30 (INSIEME, ordine `server → harness → web`) · 0/3
@@ -92,6 +92,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - **Stato di partenza**: `web/ server/ harness/` sono vuoti (solo README). Il numero "Fatto 5/35" conta lo scaffold + spec + fixtures + MCP — tutto reale, niente codice di prodotto ancora scritto.
 
 ## Changelog
+- **2026-06-13 (13:00)** — **harness/ Fase 3 2/3**: judge.py + runner.py già committati e verificati — smoke test `FIXTURE OK` (base.remembers=false, suggeritore.remembers=true, citation=t41). Resta solo cost meter check (item 3). 38 voci, **18 fatte (47%)**.
 - **2026-06-13 (12:10)** — **web/ Task 2 DONE** (verificato dal sorgente): replay clock (Play/Pause/Slider/`isPlaying`) + memoria HUD append-only (`state.json` riga per riga coi `[t{n}]`), zero verde, lint ok. ⚠️ **Task 3 (cost counter) NON costruito** nonostante il claim — il sorgente non ha `cost`/`usd`/`token` in `transcript-shell.tsx`. 38 voci, **16 fatte (42%)**. Push Task 1+2 → poi Task 3.
 - **2026-06-13 (11:58)** — **web/ Task 1 DONE + booted**: Next.js App Router+TS, shadcn + ai-elements (`conversation`/`message`), fixtures in `web/src/lib/fixtures`, contratti SPEC §7 in `contracts.ts`, loader+normalizzazione `t41` in `fixtures.ts`, split-screen in `transcript-shell.tsx`. lint+build ok, dev su :3000, browser verificato, audit colore = zero verde. 38 voci, **14 fatte (37%)**. Next: Task 2 = memoria HUD + replay clock.
 - **2026-06-13 (11:40)** — Primo push fatto (`NapSaga/suggeritore`, commit `b78b473`, **privato**, safety gate ok). Codex su **web/ Task 1** (app+componenti+tokens+fixtures+split-screen) — gate anti-allucinazione rispettato (Context7 + shadcn MCP, registry ai-elements configurato, niente guesswork). 38 voci, 9 fatte (24%).
