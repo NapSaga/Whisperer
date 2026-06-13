@@ -17,6 +17,8 @@ and re-grounds the agent every turn — so it never loses the thread, and the au
 
 <p align="center"><sub>Built at HackRome · 13 Jun 2026 — <a href="https://www.linkedin.com/in/giovanni-di-fonzo-111692297/">Giovanni Di Fonzo</a> (product) · <a href="https://www.linkedin.com/in/daniele-giovanardi/">Daniele Giovanardi</a> (engine) · <a href="https://www.linkedin.com/in/gabriele-loreti-b4a537155/">Gabriele Loreti</a> (measurement)</sub></p>
 
+<p align="center"><b><a href="https://www.facebook.com/share/v/1BBnwLGhvK/">Watch the demo →</a></b></p>
+
 ---
 
 > **Long voice calls drift and get expensive.** OpenAI itself notes that *"instruction adherence can drift"* as context grows, and that *"turns later in the session will be more expensive."* Managed platforms ship hard limits to cope — Retell caps context around 32k, OpenAI documents blind truncation — so by minute 10 the agent has quietly **forgotten what the caller said at minute 1**.
