@@ -70,7 +70,7 @@ class Workflow(VoiceWorkflowBase):
             input_text
         )
 
-        # Suggeritore re-grounding (SPEC §3, session-rotation): each turn sends a
+        # Whisperer re-grounding (SPEC §3, session-rotation): each turn sends a
         # compact input rehydrated from the ledger instead of the full history.
         # Base mode re-grounds nothing and caps context so early facts fall away.
         self._turn += 1

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Il Suggeritore",
+  title: "Whisperer",
   description: "Split-screen memory layer demo dashboard",
 };
 

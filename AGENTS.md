@@ -1,4 +1,4 @@
-# AGENTS.md — Il Suggeritore
+# AGENTS.md — Whisperer
 
 > A drop-in memory layer for long voice-agent calls. A cheap model distills the live
 > conversation into a typed, evidence-backed **state ledger** and re-grounds the agent so

@@ -1,4 +1,4 @@
-# PLAN.md — Il Suggeritore · cruscotto vivo del build
+# PLAN.md — Whisperer · cruscotto vivo del build
 
 > Coupling: `AGENTS.md` + `spec/SPEC.md §7` + `spec/fixtures/`. Non si reinventa nulla:
 > ciò che non è nello scaffold non si fa. Questo file si aggiorna **durante** il lavoro —
