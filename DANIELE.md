@@ -46,8 +46,8 @@ Se meno di 10, concordiamo N adesso e lo diciamo nella slide ("base X/N").
 - **Per i tuoi N file separati** (`base_run{i}.jsonl` / `sug_run{i}.jsonl`) serve un **driver headless**
   che giri l'agente N volte sullo stesso copione e salvi un file per run. Lo costruisco io in `server/`
   (gira il `Workflow` senza websocket, prende `mode` + copione + output path).
-- **DA CONCORDARE (rispondimi):** dove vuoi la cartella? Proposta `recordings/` in root, naming
-  `recordings/base_run{i}.jsonl` / `recordings/sug_run{i}.jsonl`. Confermi?
+- **CONCORDATO ✓:** cartella `recordings/` in root, naming `recordings/base_run{i}.jsonl` /
+  `recordings/sug_run{i}.jsonl`. Le produce il driver headless (in costruzione).
 
 ## R2 — cost_event
 - **Sì, lo emetto.** File `server/server/run/cost_event.jsonl`, una riga per evento, shape SPEC §5
@@ -60,8 +60,7 @@ Se meno di 10, concordiamo N adesso e lo diciamo nella slide ("base X/N").
 ## R3 — Quanti run entro le 13:30
 - I run del batch sono **testo scriptato** (veloci, niente audio/STT), quindi una volta pronto il driver
   **N=10 per lato è fattibile**. Puntiamo a **N=10**.
-- **Fallback concordato:** se il driver non è pronto in tempo → **N=5**, slide dice "base X/5". Ok per te?
-- **Copione/seeded_fact del batch (DA CONCORDARE):** i run usano un copione di testo fisso. Propongo i fatti
-  già nei fixtures — *scarpini numero 38, regalo per il nipote, consegna giovedì* → quello è il tuo
-  `seeded_fact` per il judge. (La voce della nonna napoletana resta per il run-demo singolo, non per il batch.)
-  Confermi che il batch gira su questo scenario?
+- **CONCORDATO ✓:** puntiamo **N=10**; fallback **N=5** se i tempi stringono, slide "base X/5".
+- **CONCORDATO ✓ — scenario batch:** copione fisso sui fatti dei fixtures — *scarpini numero 38, regalo
+  per il nipote, consegna giovedì* → questo è il `seeded_fact` del judge. La voce della nonna napoletana
+  resta per il run-demo singolo, non per il batch.
