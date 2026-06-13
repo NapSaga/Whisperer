@@ -19,7 +19,7 @@ Ogni affermazione porta la sua citazione `[tN]` = ricevute, non vibes.
 | `--border` / hairline | `border-black/10` | `0.9 0.004 255` ≈ #E4E5E8 |
 | `--fail` (base) | rosso — chi dimentica = il problema | `0.585 0.22 27` ≈ #DC2626 |
 | `--recall` (sugg.) | emerald — la soluzione, SCARSO | `0.6 0.135 162` ≈ #059669 |
-| `--voice-accent` | violet — memoria / voce nonna | `0.52 0.22 295` ≈ #7C3AED |
+| `--voice-accent` | indigo profondo — memoria / voce nonna | `0.48 0.13 264` ≈ #3F46A8 |
 | `--running` | amber — live | `0.62 0.16 58` ≈ #C2700A |
 
 **Regola dello scarso**: l'emerald compare SOLO al recall (t41) e sulle due prove
@@ -46,7 +46,8 @@ verdetto     teaser → ESPLODE al recall (0/10 vs 10/10) shrink-0
 Solo i corpi dei pannelli scrollano internamente. Prove (20 run) in **overlay**, mai sotto la piega.
 
 ## Voce / movimento
-- **Karaoke**: il testo della Nonna si rivela parola-per-parola guidato dal `currentTime` reale dell'audio → si congela in pausa, riprende dalla stessa parola.
+- **Karaoke live caption**: il testo della Nonna appare parola-per-parola guidato dal `currentTime` reale dell'audio, **senza anteprima** delle parole future (solo il detto + cursore). Si congela in pausa, riprende dalla stessa parola.
+- **Avanzamento**: % grande + fase (`ascolto` / `avanti veloce 2×` / `recall`). Da consegna (t9) a test-memoria (t38) il replay va a **2×**.
 - Clip audio: clock congelato + "Nonna sta parlando…" → freeze intenzionale.
 - `prefers-reduced-motion`: stati finali restano, si ferma solo il moto.
 

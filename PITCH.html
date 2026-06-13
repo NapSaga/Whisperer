@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Il Suggeritore — Copione del pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF8;
+    --ink:#1A1916;
+    --muted:#6E6C66;
+    --faint:#9A988F;
+    --line:#E4E2DB;
+    --surface:#F2F1EC;
+    --serif:"Source Serif 4",Georgia,"Iowan Old Style","Times New Roman",serif;
+    --display:"Playfair Display",Georgia,serif;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    padding:64px 22px 120px;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:44rem;margin:0 auto}
+
+  /* header */
+  .kick{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+        text-transform:uppercase;color:var(--faint)}
+  h1{font-family:var(--display);font-weight:700;
+     font-size:clamp(2.6rem,7vw,3.5rem);line-height:1.04;letter-spacing:-.01em;
+     margin:.5rem 0 .6rem}
+  .lede{font-size:1.12rem;color:var(--muted);max-width:34rem;margin:0}
+  .score{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
+         font-family:var(--mono);font-size:.86rem;color:var(--muted);letter-spacing:.02em}
+  .score b{color:var(--ink);font-weight:500}
+
+  /* beats */
+  .beat{padding:2.4rem 0;border-top:1px solid var(--line)}
+  .time{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;
+        text-transform:uppercase;color:var(--faint);margin-bottom:1rem}
+  .beat h2{font-family:var(--display);font-weight:500;font-size:1.4rem;
+           margin:0 0 1rem;color:var(--ink)}
+  .lbl{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;
+       text-transform:uppercase;color:var(--faint);display:block;margin-bottom:.5rem}
+
+  .do{background:var(--surface);border-radius:8px;padding:.95rem 1.15rem;margin:0 0 1.25rem;
+      font-style:italic;color:var(--muted);font-size:1.02rem;line-height:1.5}
+  .do .lbl{font-style:normal}
+
+  .say{font-size:clamp(1.35rem,2.6vw,1.65rem);line-height:1.55;
+       color:var(--ink);margin:0;font-weight:400}
+  .say.q::before{content:"\201C";color:var(--faint)}
+  .say.q::after{content:"\201D";color:var(--faint)}
+  .say b{font-weight:600}
+  .say .u{font-weight:600;box-shadow:inset 0 -.5em 0 var(--surface)}
+
+  /* sections */
+  h3{font-family:var(--display);font-weight:700;font-size:1.6rem;
+     margin:3.5rem 0 1.2rem;padding-top:2rem;border-top:2px solid var(--ink)}
+  .row{padding:1rem 0;border-top:1px solid var(--line);font-size:1.08rem;line-height:1.5}
+  .row:first-of-type{border-top:0}
+  .row b{font-weight:600}
+
+  /* q&a */
+  details{border-top:1px solid var(--line);}
+  summary{cursor:pointer;list-style:none;padding:1rem 0;font-weight:600;font-size:1.08rem;
+          display:flex;gap:.7rem;align-items:baseline;outline:none}
+  summary::-webkit-details-marker{display:none}
+  summary .mk{font-family:var(--mono);color:var(--faint);font-weight:500;flex:0 0 auto}
+  summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:3px}
+  details[open] summary .mk::before{content:"–"}
+  summary .mk::before{content:"+"}
+  .answer{padding:0 0 1.1rem 1.6rem;color:var(--muted);font-size:1.05rem;line-height:1.55}
+
+  /* checklist */
+  .check{display:flex;gap:.85rem;align-items:flex-start;padding:.8rem 0;
+         border-top:1px solid var(--line);font-size:1.06rem;line-height:1.5}
+  .box{flex:0 0 auto;width:16px;height:16px;border:1.5px solid var(--faint);
+       border-radius:3px;margin-top:.35rem}
+  code{font-family:var(--mono);font-size:.84em;background:var(--surface);
+       padding:.1em .4em;border-radius:4px}
+
+  .end{margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--line);
+       color:var(--muted);font-size:1rem;font-style:italic}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kick">HackRome &middot; 13 giugno 2026 &middot; copione da ripetere a voce</div>
+    <h1>Il Suggeritore</h1>
+    <p class="lede">Pitch di due minuti e mezzo. La demo è il pitch. Per ogni momento: cosa fai sullo schermo, e cosa dici parola per parola.</p>
+    <div class="score">Numero misurato &mdash; base <b>0 su 10</b> &middot; suggeritore <b>10 su 10</b></div>
+  </header>
+
+  <section class="beat">
+    <div class="time">0:00 – 0:20 &middot; apertura, prima senza parlare</div>
+    <h2>Parte da sola la voce della nonna</h2>
+    <div class="do"><span class="lbl">Fai</span>Premi "Vai al momento del recall". Parte la voce della nonna ("…ve l'ho detto, la laurea, il 20!") e l'agente che non sa più rispondere ("di quale ordine parliamo?"). Aspetta, lascia che la sala senta.</div>
+    <p class="say q"><span class="lbl">Dici</span>Al minuto uno questa signora aveva detto tutto: un orologio per la laurea di suo nipote, da consegnare <b>prima del 20</b>. Al minuto dieci l'agente ha dimenticato chi è e perché ha chiamato.</p>
+  </section>
+
+  <section class="beat">
+    <div class="time">0:20 – 0:45 &middot; il problema</div>
+    <p class="say q"><span class="lbl">Dici</span>Un agente che non fa niente costa poco. Ma appena lo rendi <b>utile</b> — gli dai le istruzioni, gli fai tenere il contesto della chiamata — su una conversazione lunga succedono due cose insieme: il <b>costo esplode</b>, e <b>perde lo stesso il filo</b>. Lo dice OpenAI: la coerenza si degrada man mano che il contesto cresce. Le chiamate vere durano dieci minuti, non due. Per questo non li vedete ancora in produzione.</p>
+  </section>
+
+  <section class="beat">
+    <div class="time">0:45 – 1:00 &middot; perché adesso</div>
+    <p class="say q"><span class="lbl">Dici</span>Oggi una soluzione esiste, ma è artigianale: ogni team se la riscrive da capo. Noi l'abbiamo impacchettata. Un layer che chiunque costruisce un voice agent aggiunge alla sua app, e funziona.</p>
+  </section>
+
+  <section class="beat">
+    <div class="time">1:00 – 2:00 &middot; la demo, il cuore</div>
+    <div class="do"><span class="lbl">Fai</span>Mostra le due colonne al minuto dieci. Indica, una alla volta: la sinistra che dimentica, la destra che ricorda, la memoria che si scrive a lato, il costo che si allontana.</div>
+    <p class="say q"><span class="lbl">Dici</span>Stesso agente, stessa voce, stessa chiamata. A sinistra senza il nostro layer: <b>dimentica</b>. A destra, con il Suggeritore: <b>ricorda</b> tutto — l'orologio, la laurea, prima del 20, la consegna dalla signora Pina.<br><br>
+    Come? Un modello piccolo distilla la chiamata in un <b>riassunto vivo</b> — questo qui — e l'agente porta quello, non tutta la conversazione. Ricorda il minuto uno <b>senza trascinarsi dieci minuti di contesto</b>, che è quello che fa esplodere il costo nel modo normale.<br><br>
+    E il numero lo abbiamo <b>misurato</b>: senza il layer <b>zero volte su dieci</b>, con il layer <b>dieci su dieci</b>. Con una citazione per ogni verdetto. Non a sensazione.</p>
+  </section>
+
+  <section class="beat">
+    <div class="time">2:00 – 2:10 &middot; come, dì i nomi degli sponsor</div>
+    <p class="say q"><span class="lbl">Dici</span>Costruito sopra <b>OpenAI Agents SDK</b>, giudice con <b>structured outputs</b>, voce clonata con <b>ElevenLabs</b>, scritto oggi con <b>Codex</b>.</p>
+  </section>
+
+  <section class="beat">
+    <div class="time">2:10 – 2:30 &middot; perché noi, e dove va</div>
+    <p class="say q"><span class="lbl">Dici</span>In StudierAI abbiamo <b>55.000 studenti</b> — sono co-founder con il mio socio. Abbiamo fatto un tutor che interroga a voce: gli abbiamo dato le istruzioni e tutto il contesto, e ci costava <b>4 euro e 50</b> a interrogazione contro 13 centesimi in testo — e dopo pochi minuti <b>perdeva il filo lo stesso</b>. È rimasto in beta. Oggi abbiamo costruito il pezzo che ci mancava. <b>Lunedì lo mettiamo dentro StudierAI.</b> E ho già clienti piccoli, ristoranti e negozi, dove il telefono è il primo canale. È lì che va.</p>
+  </section>
+
+  <h3>Cosa fa vincere</h3>
+  <p class="row">L'<b>apertura con la voce vera</b> della nonna, forte e pulita.</p>
+  <p class="row">La frase: <b>«zero su dieci, dieci su dieci, misurato, con citazione»</b>. È quella che convince.</p>
+  <p class="row">Il <b>perché noi</b>: un problema vissuto, utenti già in attesa, e "lunedì in produzione".</p>
+
+  <h3>Da non sbagliare</h3>
+  <p class="row"><b>Mai dire "da solo".</b> Si dice "co-founder con il mio socio". Davanti a un investitore la precisione è credibilità.</p>
+  <p class="row"><b>Il numero 0 su 10 e 10 su 10 è misurato</b>, vero. Sul costo non dire "costiamo meno del base" (un base che dimentica costa meno): di' che ricordare nel modo normale, tenendo tutto il contesto, fa esplodere il costo, e noi lo facciamo a una frazione. Dato vero da citare: StudierAI, 4,50 contro 0,13.</p>
+  <p class="row"><b>Non nominare l'AI Act.</b> Non serve e ci espone.</p>
+
+  <h3>Domande e risposte</h3>
+  <details><summary><span class="mk"></span><span>"Pipecat ce l'ha già"</span></summary><div class="answer">Sì, dentro il loro framework, spenta di default e usabile solo lì. Vuol dire che il bisogno è reale. Noi siamo il pezzo che aggiungi a Vapi, Retell, Bland o all'API diretta, dove oggi non c'è niente.</div></details>
+  <details><summary><span class="mk"></span><span>"Esiste già Mem0"</span></summary><div class="answer">Mem0 ricorda l'utente tra una chiamata e l'altra. Noi teniamo il filo dentro la stessa chiamata lunga. È lo spazio che resta scoperto.</div></details>
+  <details><summary><span class="mk"></span><span>"Ma aggiungere un modello non costa di più?"</span></summary><div class="answer">Sì, un po' più di un agente che taglia e dimentica — ma quello dimentica, non è un prodotto. Il confronto giusto è con l'unico altro modo di ricordare: tenere tutta la conversazione nel contesto. E lì il costo esplode. Noi diamo la stessa memoria a una frazione di quel costo. Non è gratis: è l'unico modo di ricordare senza far esplodere il conto.</div></details>
+  <details><summary><span class="mk"></span><span>"La nuova finestra da 128k risolve tutto"</span></summary><div class="answer">No. OpenAI stessa dice che la coerenza cala quando il contesto cresce, il taglio dei vecchi messaggi resta cieco, e tutto il contesto si ripaga a ogni turno. Finestra più grande vuol dire anche costo più grande.</div></details>
+  <details><summary><span class="mk"></span><span>"Come avete misurato il numero?"</span></summary><div class="answer">Un giudice automatico: stesso transcript, stessa domanda di recall, dieci run per lato, risposta sì o no con la citazione del turno. Si ripete e dà sempre lo stesso risultato.</div></details>
+
+  <h3>Prima di salire</h3>
+  <div class="check"><span class="box"></span><span>Audio provato sulle casse della sala: la nonna si sente forte.</span></div>
+  <div class="check"><span class="box"></span><span>Il tasto <code>Vai al recall</code> parte al primo colpo.</span></div>
+  <div class="check"><span class="box"></span><span>Video di backup pronto, se salta la rete.</span></div>
+  <div class="check"><span class="box"></span><span>Provato col cronometro almeno tre volte, sotto i 2:30.</span></div>
+  <div class="check"><span class="box"></span><span>Alla fine lo schermo resta fermo sul numero, mentre dici il perché noi.</span></div>
+
+  <p class="end">Ripetilo a voce con il cronometro. Dove ti blocchi o una frase non ti viene naturale, segnalo e la riscriviamo più semplice.</p>
+
+</div>
+</body>
+</html>

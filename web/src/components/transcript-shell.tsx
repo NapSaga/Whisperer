@@ -149,6 +149,8 @@ function ReplayBar({
   isPlaying,
   muted,
   speaking,
+  phase,
+  percent,
   markers,
   onPlayPause,
   onRestart,
@@ -161,6 +163,8 @@ function ReplayBar({
   isPlaying: boolean;
   muted: boolean;
   speaking: boolean;
+  phase: string;
+  percent: number;
   markers: { label: string; seconds: number; recall?: boolean }[];
   onPlayPause: () => void;
   onRestart: () => void;
@@ -204,15 +208,20 @@ function ReplayBar({
 
         <div className="ml-auto flex items-center gap-3">
           {speaking ? (
-            <span className="flex items-center gap-1.5 font-mono text-xs text-[color:var(--voice-accent)]">
+            <span className="flex items-center gap-1.5 font-mono text-sm text-[color:var(--voice-accent)]">
               <span className="size-2 animate-pulse rounded-full bg-[color:var(--voice-accent)]" />
               Nonna sta parlando…
             </span>
-          ) : null}
-          <span className="font-mono text-sm tabular-nums text-muted-foreground">
-            <span className="text-foreground">{formatTimestamp(currentSeconds)}</span>
-            {" / "}
-            {formatTimestamp(duration)}
+          ) : (
+            <span className="rounded-md bg-[color:var(--surface-soft)] px-2.5 py-1 font-mono text-[0.7rem] font-medium uppercase tracking-wide text-muted-foreground">
+              {phase}
+            </span>
+          )}
+          <span className="font-mono text-xl font-bold tabular-nums text-foreground">
+            {percent}%
+          </span>
+          <span className="font-mono text-xs tabular-nums text-muted-foreground">
+            {formatTimestamp(currentSeconds)} / {formatTimestamp(duration)}
           </span>
         </div>
       </div>
@@ -258,25 +267,24 @@ function ReplayBar({
 
 /* ------------------------------------------------------------------------- lane */
 
-// Reveal a spoken line word-by-word in sync with the audio: revealed words are
-// solid, the rest stay faint and "light up" as the voice reaches them.
+// Live caption: reveal the spoken line word-by-word in sync with the audio.
+// Upcoming words are NOT shown (no preview) — only what's already been said,
+// followed by a blinking caret. The bubble grows as the voice speaks.
 function KaraokeText({ text, progress }: { text: string; progress: number }) {
   const tokens = text.split(" ");
-  const reveal = Math.round(progress * tokens.length);
+  const reveal =
+    progress <= 0 ? 0 : Math.max(1, Math.round(progress * tokens.length));
+  const shown = tokens.slice(0, reveal).join(" ");
+  const done = reveal >= tokens.length;
   return (
     <>
-      {tokens.map((word, i) => (
+      {shown}
+      {!done ? (
         <span
-          key={i}
-          className={cn(
-            "transition-opacity duration-200",
-            i < reveal ? "opacity-100" : "opacity-25"
-          )}
-        >
-          {word}
-          {i < tokens.length - 1 ? " " : ""}
-        </span>
-      ))}
+          aria-hidden="true"
+          className="ml-0.5 inline-block h-[0.95em] w-[2px] translate-y-[1px] animate-pulse rounded-full bg-[color:var(--voice-accent)] align-middle"
+        />
+      ) : null}
     </>
   );
 }
@@ -378,12 +386,12 @@ function LaneColumn({
 
                   <div
                     className={cn(
-                      "max-w-[95%] rounded-lg px-3 py-2 text-[0.88rem] leading-6 transition-all",
+                      "max-w-[95%] rounded-lg px-3 py-2 text-[0.95rem] leading-6 transition-all",
                       isCaller && "bg-secondary text-foreground",
                       !isCaller &&
                         "border border-black/10 bg-[color:var(--surface-soft)] text-foreground",
                       isSpeaking &&
-                        "border-[color:var(--voice-accent)]/60 ring-2 ring-[color:var(--voice-accent)]/70 shadow-[0_0_34px_color-mix(in_oklch,var(--voice-accent),transparent_66%)]",
+                        "border-[color:var(--voice-accent)]/45 text-[1.06rem] font-medium ring-1 ring-[color:var(--voice-accent)]/35 shadow-sm",
                       isFail &&
                         "border-[color:var(--fail)] bg-[color:var(--fail)]/12 text-foreground shadow-[0_0_24px_color-mix(in_oklch,var(--fail),transparent_82%)]",
                       isWin &&
@@ -678,6 +686,9 @@ export function TranscriptShell({
   );
   const recallStart = useMemo(() => secondsForTurn(baseTurns, "t38") ?? 596, [baseTurns]);
   const recallEnd = useMemo(() => secondsForTurn(baseTurns, "t41") ?? 614, [baseTurns]);
+  // from consegna (t9) to the memory test (t38) there is no voice — fast-forward
+  // it at 2× so the replay reaches the recall quickly.
+  const consegnaSeconds = useMemo(() => secondsForTurn(baseTurns, "t9") ?? 168, [baseTurns]);
   const turnTimes = useMemo(
     () => new Map(baseTurns.map((turn) => [turn.displayTurn, parseTimestamp(turn.ts)])),
     [baseTurns]
@@ -738,13 +749,17 @@ export function TranscriptShell({
     const id = window.setInterval(() => {
       if (holdRef.current) return;
       setCurrentSeconds((seconds) => {
-        const next = Math.min(duration, seconds + REPLAY_RATE * (FRAME_MS / 1000));
+        const rate =
+          seconds >= consegnaSeconds && seconds < recallStart
+            ? REPLAY_RATE * 2
+            : REPLAY_RATE;
+        const next = Math.min(duration, seconds + rate * (FRAME_MS / 1000));
         if (next >= duration) window.setTimeout(() => setIsPlaying(false), 0);
         return next;
       });
     }, FRAME_MS);
     return () => window.clearInterval(id);
-  }, [duration, isPlaying]);
+  }, [duration, isPlaying, consegnaSeconds, recallStart]);
 
   // recall payoff toast
   useEffect(() => {
@@ -905,6 +920,16 @@ export function TranscriptShell({
         isPlaying={isPlaying}
         muted={muted}
         speaking={speakingTurn != null && isPlaying}
+        phase={
+          currentSeconds >= recallEnd
+            ? "recall ✓"
+            : currentSeconds >= recallStart
+              ? "recall"
+              : currentSeconds >= consegnaSeconds
+                ? "avanti veloce 2×"
+                : "ascolto"
+        }
+        percent={duration ? Math.round((currentSeconds / duration) * 100) : 0}
         markers={markers}
         onPlayPause={handlePlayPause}
         onRestart={handleRestart}
