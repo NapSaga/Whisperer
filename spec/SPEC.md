@@ -87,5 +87,6 @@ The "remember minute 1" moment must be reproducible on command. Land the plane b
 
 ## 9. Fixtures (`spec/fixtures/`) — build the mocks first
 - `state.json` — the ledger at minute 10 (what the HUD renders).
-- `transcript.jsonl` — one full base call: fact seeded at t1, base forgets at t41.
+- `transcript.jsonl` — one full base call (t1→t41): fact seeded at t1, base forgets at t41.
 - `verdicts.json` — 10 base + 10 suggeritore verdicts → the X/10 vs Y/10 number for the UI.
+- `cost.json` — per-turn `cost_event`s (§5) for both agents → the diverging cost counter (MOCK; real from the 13:30 run).
