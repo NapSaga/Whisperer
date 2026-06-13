@@ -788,6 +788,7 @@ export function TranscriptShell({
     }
     el.src = `/audio/${turn}.mp3`;
     el.currentTime = 0;
+    el.volume = 1;
     void el.play().catch(() => {});
   }, [currentSeconds, muted, audioTurns]);
 
