@@ -29,6 +29,17 @@ export type CostEvent = {
   usd_cumulative: number;
 };
 
+export type CostFixture = {
+  pricing_note: string;
+  unit?: string;
+  final: {
+    base: number;
+    suggeritore: number;
+    ratio: string;
+  };
+  events: CostEvent[];
+};
+
 export type Verdict = {
   remembers: boolean;
   citation: string;

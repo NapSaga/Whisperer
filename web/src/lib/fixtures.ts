@@ -3,6 +3,7 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type {
+  CostFixture,
   DisplayTurn,
   StateLedger,
   TranscriptLane,
@@ -54,6 +55,10 @@ export function getStateLedger(): StateLedger {
 
 export function getVerdicts(): VerdictsFixture {
   return parseJsonFile<VerdictsFixture>("verdicts.json");
+}
+
+export function getCostFixture(): CostFixture {
+  return parseJsonFile<CostFixture>("cost.json");
 }
 
 export function getTranscriptLane(

@@ -1,0 +1,29 @@
+{
+  "pricing_note": "OpenAI Realtime audio ~ $32/M tokens in, $64/M out (≈ $0.06/min listen + $0.24/min speak). The base agent re-pays the full audio context every turn; the suggeritore sends a compact text state instead. MOCK values for the UI — the real number comes from the 13:30 run.",
+  "unit": "usd_cumulative = running audio cost in USD",
+  "final": { "base": 3.94, "suggeritore": 0.52, "ratio": "7.6x" },
+  "events": [
+    { "agent": "base", "turn": "t1",  "tokens_in": 480,  "tokens_out": 160, "usd_cumulative": 0.04 },
+    { "agent": "base", "turn": "t5",  "tokens_in": 1600, "tokens_out": 170, "usd_cumulative": 0.28 },
+    { "agent": "base", "turn": "t9",  "tokens_in": 2900, "tokens_out": 180, "usd_cumulative": 0.62 },
+    { "agent": "base", "turn": "t13", "tokens_in": 4100, "tokens_out": 185, "usd_cumulative": 1.05 },
+    { "agent": "base", "turn": "t17", "tokens_in": 5200, "tokens_out": 190, "usd_cumulative": 1.52 },
+    { "agent": "base", "turn": "t21", "tokens_in": 6200, "tokens_out": 195, "usd_cumulative": 2.01 },
+    { "agent": "base", "turn": "t25", "tokens_in": 7100, "tokens_out": 200, "usd_cumulative": 2.48 },
+    { "agent": "base", "turn": "t29", "tokens_in": 7900, "tokens_out": 205, "usd_cumulative": 2.93 },
+    { "agent": "base", "turn": "t33", "tokens_in": 8500, "tokens_out": 205, "usd_cumulative": 3.31 },
+    { "agent": "base", "turn": "t38", "tokens_in": 9200, "tokens_out": 210, "usd_cumulative": 3.68 },
+    { "agent": "base", "turn": "t41", "tokens_in": 9800, "tokens_out": 210, "usd_cumulative": 3.94 },
+    { "agent": "suggeritore", "turn": "t1",  "tokens_in": 460, "tokens_out": 150, "usd_cumulative": 0.03 },
+    { "agent": "suggeritore", "turn": "t5",  "tokens_in": 720, "tokens_out": 160, "usd_cumulative": 0.11 },
+    { "agent": "suggeritore", "turn": "t9",  "tokens_in": 780, "tokens_out": 165, "usd_cumulative": 0.18 },
+    { "agent": "suggeritore", "turn": "t13", "tokens_in": 800, "tokens_out": 170, "usd_cumulative": 0.24 },
+    { "agent": "suggeritore", "turn": "t17", "tokens_in": 820, "tokens_out": 175, "usd_cumulative": 0.29 },
+    { "agent": "suggeritore", "turn": "t21", "tokens_in": 830, "tokens_out": 180, "usd_cumulative": 0.34 },
+    { "agent": "suggeritore", "turn": "t25", "tokens_in": 840, "tokens_out": 185, "usd_cumulative": 0.38 },
+    { "agent": "suggeritore", "turn": "t29", "tokens_in": 850, "tokens_out": 190, "usd_cumulative": 0.42 },
+    { "agent": "suggeritore", "turn": "t33", "tokens_in": 860, "tokens_out": 195, "usd_cumulative": 0.45 },
+    { "agent": "suggeritore", "turn": "t38", "tokens_in": 880, "tokens_out": 200, "usd_cumulative": 0.49 },
+    { "agent": "suggeritore", "turn": "t41", "tokens_in": 900, "tokens_out": 200, "usd_cumulative": 0.52 }
+  ]
+}

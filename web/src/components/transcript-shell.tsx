@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { PauseIcon, PlayIcon, SkipForwardIcon } from "lucide-react";
 import type {
+  CostEvent,
+  CostFixture,
   DisplayTurn,
   StateLedger,
   StateLedgerEntry,
@@ -30,10 +32,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
 type TranscriptShellProps = {
   baseTurns: DisplayTurn[];
+  cost: CostFixture;
   suggeritoreTurns: DisplayTurn[];
   state: StateLedger;
 };
@@ -70,11 +74,35 @@ function parseTurnNumber(turn: string) {
 }
 
 function turnTimestampMap(turns: DisplayTurn[]) {
-  return new Map(turns.map((turn) => [turn.displayTurn, parseTimestamp(turn.ts)]));
+  return new Map(
+    turns.map((turn) => [turn.displayTurn, parseTimestamp(turn.ts)])
+  );
 }
 
 function isVisibleAt(turn: DisplayTurn, currentSeconds: number) {
   return parseTimestamp(turn.ts) <= currentSeconds;
+}
+
+function formatUsd(value: number) {
+  return `$${value.toFixed(2)}`;
+}
+
+function latestCostEvent(
+  events: CostEvent[],
+  agent: CostEvent["agent"],
+  currentSeconds: number,
+  turnTimes: Map<string, number>
+) {
+  return events
+    .filter(
+      (event) =>
+        event.agent === agent &&
+        (turnTimes.get(event.turn) ?? Infinity) <= currentSeconds
+    )
+    .sort(
+      (a, b) =>
+        (turnTimes.get(b.turn) ?? 0) - (turnTimes.get(a.turn) ?? 0)
+    )[0];
 }
 
 function LaneCard({ title, description, turns, lane }: LaneCardProps) {
@@ -237,26 +265,155 @@ function ReplayControls({
   );
 }
 
-function CostPlaceholder() {
+function CostReadout({
+  event,
+  finalValue,
+  label,
+  tone,
+}: {
+  event: CostEvent | undefined;
+  finalValue: number;
+  label: string;
+  tone: "runaway" | "steady";
+}) {
+  const currentValue = event?.usd_cumulative ?? 0;
+  const progress = finalValue === 0 ? 0 : (currentValue / finalValue) * 100;
+
+  return (
+    <Card
+      className={cn(
+        "border-white/10 bg-[color:var(--surface-soft)]",
+        tone === "runaway" &&
+          "border-[color:var(--fail)]/50 shadow-[0_0_36px_color-mix(in_oklch,var(--fail),transparent_78%)]",
+        tone === "steady" && "border-[color:var(--voice-accent)]/40"
+      )}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between gap-4">
+          <CardTitle className="text-xl">{label}</CardTitle>
+          <Badge
+            variant={tone === "runaway" ? "destructive" : "outline"}
+            className={cn(
+              "h-7 rounded-lg px-3 font-mono text-[0.72rem]",
+              tone === "steady" &&
+                "border-[color:var(--voice-accent)]/60 text-[color:var(--voice-accent)]"
+            )}
+          >
+            {event?.turn ?? "t0"}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div
+          className={cn(
+            "font-mono text-5xl font-semibold leading-none tracking-normal",
+            tone === "runaway"
+              ? "text-[color:var(--fail)]"
+              : "text-[color:var(--voice-accent)]"
+          )}
+        >
+          {formatUsd(currentValue)}
+        </div>
+        <Progress
+          value={progress}
+          className={cn(
+            "[&_[data-slot=progress-track]]:h-3",
+            tone === "runaway" &&
+              "[&_[data-slot=progress-indicator]]:bg-[color:var(--fail)]",
+            tone === "steady" &&
+              "[&_[data-slot=progress-indicator]]:bg-[color:var(--voice-accent)]"
+          )}
+        />
+        <div className="flex items-center justify-between gap-3 font-mono text-xs text-muted-foreground">
+          <span>
+            in {event?.tokens_in ?? 0} · out {event?.tokens_out ?? 0}
+          </span>
+          <span>{Math.round(progress)}%</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function CostCounter({
+  cost,
+  currentSeconds,
+  turnTimes,
+}: {
+  cost: CostFixture;
+  currentSeconds: number;
+  turnTimes: Map<string, number>;
+}) {
+  const baseEvent = latestCostEvent(
+    cost.events,
+    "base",
+    currentSeconds,
+    turnTimes
+  );
+  const suggeritoreEvent = latestCostEvent(
+    cost.events,
+    "suggeritore",
+    currentSeconds,
+    turnTimes
+  );
+  const hasBothAdvanced = Boolean(baseEvent && suggeritoreEvent);
+  const gap =
+    (baseEvent?.usd_cumulative ?? 0) -
+    (suggeritoreEvent?.usd_cumulative ?? 0);
+
   return (
     <Card className="border-white/10 bg-card/80">
-      <CardHeader className="grid gap-3 pb-4 md:grid-cols-[1fr_auto] md:items-center">
+      <CardHeader className="grid gap-4 pb-4 xl:grid-cols-[1fr_auto] xl:items-center">
         <div className="flex flex-col gap-1">
           <CardTitle className="text-2xl">Cost counter</CardTitle>
           <CardDescription className="text-base">
-            Placeholder for Task 3 integration
+            MOCK — real number from the 13:30 run
           </CardDescription>
         </div>
-        <Button variant="outline" size="lg" disabled>
-          Mock data only
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-3 md:grid-cols-3">
-          <Skeleton className="h-14 rounded-xl" />
-          <Skeleton className="h-14 rounded-xl" />
-          <Skeleton className="h-14 rounded-xl" />
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge
+            variant="outline"
+            className="h-8 rounded-lg border-[color:var(--running)]/70 px-3 font-mono text-xs text-[color:var(--running)]"
+          >
+            {hasBothAdvanced
+              ? `${cost.final.ratio.replace("x", "×")} final`
+              : "waiting"}
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="h-8 rounded-lg px-3 font-mono text-xs"
+          >
+            gap {formatUsd(Math.max(0, gap))}
+          </Badge>
         </div>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div className="grid gap-4 lg:grid-cols-[1fr_1fr_auto]">
+          <CostReadout
+            event={baseEvent}
+            finalValue={cost.final.base}
+            label="Agente base"
+            tone="runaway"
+          />
+          <CostReadout
+            event={suggeritoreEvent}
+            finalValue={cost.final.suggeritore}
+            label="Suggeritore"
+            tone="steady"
+          />
+          <div className="flex min-w-44 flex-col justify-center gap-2 rounded-xl border border-white/10 bg-[color:var(--surface-soft)] p-4">
+            <span className="text-sm text-muted-foreground">Divergence</span>
+            <span className="font-mono text-4xl font-semibold text-[color:var(--fail)]">
+              {hasBothAdvanced ? cost.final.ratio.replace("x", "×") : "—"}
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">
+              final base / suggeritore
+            </span>
+          </div>
+        </div>
+        <p className="max-w-5xl text-sm leading-6 text-muted-foreground">
+          {cost.pricing_note}
+        </p>
       </CardContent>
     </Card>
   );
@@ -416,6 +573,7 @@ function MemoryHud({
 
 export function TranscriptShell({
   baseTurns,
+  cost,
   suggeritoreTurns,
   state,
 }: TranscriptShellProps) {
@@ -495,7 +653,11 @@ export function TranscriptShell({
             </p>
           </div>
         </div>
-        <CostPlaceholder />
+        <CostCounter
+          cost={cost}
+          currentSeconds={currentSeconds}
+          turnTimes={turnTimes}
+        />
       </header>
       <ReplayControls
         currentSeconds={currentSeconds}
