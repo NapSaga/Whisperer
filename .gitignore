@@ -16,8 +16,5 @@ dist/
 out/
 *.log
 
-# batch transcripts (server/server/batch_run.py output)
-/recordings/
-
 # os
 .DS_Store
