@@ -1,42 +1,42 @@
-{ "turn": "t1", "role": "caller", "text": "Pronto? Buongiorno… sentite, chiammavo pe' n'ordine c'aggio fatto. È nu rialo pe' 'o nipote mio, n'orologio.", "ts": "00:18" }
-{ "turn": "t2", "role": "agent", "text": "Certo signora, mi dica pure, l'aiuto subito. Un orologio, regalo per suo nipote: di che ordine si tratta?", "ts": "00:30" }
-{ "turn": "t3", "role": "caller", "text": "Eh, 'o nipote mio Luca, chillo ca studia 'ncoppa a Milano, povero figlio, s'è fatto gruosso.", "ts": "00:48" }
-{ "turn": "t4", "role": "agent", "text": "Capisco signora. Torniamo all'orologio: mi dica per quando le serve.", "ts": "01:02" }
-{ "turn": "t5", "role": "caller", "text": "Allora, isso se piglia 'a laurea 'o vinte, e chist'orologio ce 'o voglio rialà pe' 'a laurea. Ha da arrivà primma d' 'o vinte, mi raccumanno.", "ts": "01:28" }
-{ "turn": "t6", "role": "agent", "text": "Perfetto: orologio per la laurea, deve arrivare prima del 20. Mi serve il numero d'ordine, signora.", "ts": "01:45" }
-{ "turn": "t7", "role": "caller", "text": "'O nummero d' 'ordine… aspettate ca piglio 'e llente… quatto, quatto, settantuno. Quattromilaquattuciento settantuno.", "ts": "02:05" }
-{ "turn": "t8", "role": "agent", "text": "Grazie, ordine 4471. Risulta tutto a sistema.", "ts": "02:20" }
-{ "turn": "t9", "role": "caller", "text": "Mi raccumanno 'na cosa pe' 'a consegna: 'a casa mia 'o citofono è rutto, nun fonziona. Quanno arriva 'o curriere, lassatelo add' 'a vicina, 'a signora Pina, interno tre.", "ts": "02:48" }
-{ "turn": "t10", "role": "agent", "text": "Annotato: consegna alla signora Pina, interno 3, perché il citofono non funziona.", "ts": "03:05" }
-{ "turn": "t11", "role": "caller", "text": "Pecché ll'ata vota m'hanno lassato nu pacco 'nnanz' 'a porta e m'è sparuto, 'na vrogogna.", "ts": "03:25" }
-{ "turn": "t12", "role": "agent", "text": "Mi dispiace per la volta scorsa. Stia tranquilla, questa volta la seguiamo noi.", "ts": "03:40" }
-{ "turn": "t13", "role": "caller", "text": "Sentite, ma chist'orologio è chillo d'oro o chillo normale? Pecché 'ncopp' 'o sito ne aveva visto duje.", "ts": "04:00" }
-{ "turn": "t14", "role": "agent", "text": "Verifico il modello sul suo ordine, signora, un attimo.", "ts": "04:15" }
-{ "turn": "t15", "role": "caller", "text": "Va bbuo'. Aggio pagato c' 'a carta 'e mia figlia, speriamo bbuono. Quant'era, scusate?", "ts": "04:38" }
-{ "turn": "t16", "role": "agent", "text": "Il pagamento risulta andato a buon fine, signora, tutto regolare.", "ts": "04:52" }
-{ "turn": "t17", "role": "caller", "text": "E po', sapite, Luca è 'o primmo d' 'a famiglia ca se piglia 'a laurea. Tutta cuntenta sto.", "ts": "05:10" }
-{ "turn": "t18", "role": "agent", "text": "Dev'essere una grande soddisfazione, signora.", "ts": "05:24" }
-{ "turn": "t19", "role": "caller", "text": "Fa nu calore ccà, e 'a Pina 'e sotto tene 'o condizionatore acceso tutt''o juorno.", "ts": "05:42" }
-{ "turn": "t20", "role": "agent", "text": "Immagino, con questo caldo.", "ts": "05:55" }
-{ "turn": "t21", "role": "caller", "text": "'A festa p' 'a laurea 'a facimmo add' 'a casa, vène pure 'a sora mia 'a Caserta.", "ts": "06:14" }
-{ "turn": "t22", "role": "agent", "text": "Che bella occasione.", "ts": "06:28" }
-{ "turn": "t23", "role": "caller", "text": "Speriamo ca nun chiove 'o vinte, ca m'aggia mettere bona pe' Luca.", "ts": "06:46" }
-{ "turn": "t24", "role": "agent", "text": "Speriamo di no, signora.", "ts": "07:00" }
-{ "turn": "t25", "role": "caller", "text": "Luca dice ca nun me preoccupo, ma comme nun me preoccupo, è 'o regalo p' 'a laurea!", "ts": "07:18" }
-{ "turn": "t26", "role": "agent", "text": "La capisco, è un regalo importante.", "ts": "07:32" }
-{ "turn": "t27", "role": "caller", "text": "'A figlia mia dice ca spenno troppo, ma 'a nonna 'e regale 'e fa, o no?", "ts": "07:50" }
-{ "turn": "t28", "role": "agent", "text": "Ha proprio ragione lei, signora.", "ts": "08:04" }
-{ "turn": "t29", "role": "caller", "text": "Sentite, ma site sicure ca v'è arrivato tutto buono, l'indirizzo, 'o nummero?", "ts": "08:22" }
-{ "turn": "t30", "role": "agent", "text": "Tutto corretto a sistema, signora, stia serena.", "ts": "08:36" }
-{ "turn": "t31", "role": "caller", "text": "Pecché io cu 'sti telefuni nun ce capisco niente, m''e fa sempe 'a figlia mia.", "ts": "08:54" }
-{ "turn": "t32", "role": "agent", "text": "Nessun problema, ci pensiamo noi.", "ts": "09:08" }
-{ "turn": "t33", "role": "caller", "text": "Embè… allora dicìteme vuje, ca mo' mme so' pure scurdata che stevo a dì.", "ts": "09:22" }
-{ "turn": "t34", "role": "agent", "text": "Faccia con calma, signora, sono qui.", "ts": "09:30" }
-{ "turn": "t35", "role": "caller", "text": "Aspettate ca mo' me vène… aggia addimannà 'na cosa ca me preme.", "ts": "09:38" }
-{ "turn": "t36", "role": "caller", "text": "Ah, ecco, 'na cosa ca me preme me stevo a scurdà.", "ts": "09:46" }
-{ "turn": "t37", "role": "agent", "text": "Mi dica pure, signora.", "ts": "09:51" }
-{ "turn": "t38", "role": "caller", "text": "Sentite 'na cosa ca me preme assaje: ma arriva 'n tiempo, sì o no?", "ts": "09:56" }
-{ "turn": "t39", "role": "agent", "text": "Certo signora, mi faccia controllare un attimo.", "ts": "10:02" }
-{ "turn": "t40", "role": "caller", "text": "Uè, ma comme «pe' quanno»?! V' 'aggio ritto 'a laurea d' 'o nipote mio, 'o vinte!", "ts": "10:08" }
-{ "turn": "t41_base", "role": "agent", "text": "Mi scusi signora, mi ripete per quando le serve e a quale indirizzo dobbiamo consegnare?", "ts": "10:14" }
-{ "turn": "t41_suggeritore", "role": "agent", "text": "L'orologio per la laurea di Luca arriva prima del 20, signora, e lo lasciamo alla signora Pina, interno 3. Tutto confermato.", "ts": "10:14" }
+{"turn": "t1", "role": "caller", "text": "Pronto? Buongiorno… sentite, chiammavo pe' n'ordine c'aggio fatto. È nu rialo pe' 'o nipote mio, n'orologio.", "ts": "00:01"}
+{"turn": "t2", "role": "agent", "text": "Certo signora, mi dica pure, l'aiuto subito. Un orologio, regalo per suo nipote: di che ordine si tratta?", "ts": "00:13"}
+{"turn": "t3", "role": "caller", "text": "Eh, 'o nipote mio Luca, chillo ca studia 'ncoppa a Milano, povero figlio, s'è fatto gruosso.", "ts": "00:31"}
+{"turn": "t4", "role": "agent", "text": "Capisco signora. Torniamo all'orologio: mi dica per quando le serve.", "ts": "00:45"}
+{"turn": "t5", "role": "caller", "text": "Allora, isso se piglia 'a laurea 'o vinte, e chist'orologio ce 'o voglio rialà pe' 'a laurea. Ha da arrivà primma d' 'o vinte, mi raccumanno.", "ts": "01:11"}
+{"turn": "t6", "role": "agent", "text": "Perfetto: orologio per la laurea, deve arrivare prima del 20. Mi serve il numero d'ordine, signora.", "ts": "01:28"}
+{"turn": "t7", "role": "caller", "text": "'O nummero d' 'ordine… aspettate ca piglio 'e llente… quatto, quatto, settantuno. Quattromilaquattuciento settantuno.", "ts": "01:48"}
+{"turn": "t8", "role": "agent", "text": "Grazie, ordine 4471. Risulta tutto a sistema.", "ts": "02:03"}
+{"turn": "t9", "role": "caller", "text": "Mi raccumanno 'na cosa pe' 'a consegna: 'a casa mia 'o citofono è rutto, nun fonziona. Quanno arriva 'o curriere, lassatelo add' 'a vicina, 'a signora Pina, interno tre.", "ts": "02:31"}
+{"turn": "t10", "role": "agent", "text": "Annotato: consegna alla signora Pina, interno 3, perché il citofono non funziona.", "ts": "02:48"}
+{"turn": "t11", "role": "caller", "text": "Pecché ll'ata vota m'hanno lassato nu pacco 'nnanz' 'a porta e m'è sparuto, 'na vrogogna.", "ts": "03:08"}
+{"turn": "t12", "role": "agent", "text": "Mi dispiace per la volta scorsa. Stia tranquilla, questa volta la seguiamo noi.", "ts": "03:23"}
+{"turn": "t13", "role": "caller", "text": "Sentite, ma chist'orologio è chillo d'oro o chillo normale? Pecché 'ncopp' 'o sito ne aveva visto duje.", "ts": "03:43"}
+{"turn": "t14", "role": "agent", "text": "Verifico il modello sul suo ordine, signora, un attimo.", "ts": "03:58"}
+{"turn": "t15", "role": "caller", "text": "Va bbuo'. Aggio pagato c' 'a carta 'e mia figlia, speriamo bbuono. Quant'era, scusate?", "ts": "04:21"}
+{"turn": "t16", "role": "agent", "text": "Il pagamento risulta andato a buon fine, signora, tutto regolare.", "ts": "04:35"}
+{"turn": "t17", "role": "caller", "text": "E po', sapite, Luca è 'o primmo d' 'a famiglia ca se piglia 'a laurea. Tutta cuntenta sto.", "ts": "04:53"}
+{"turn": "t18", "role": "agent", "text": "Dev'essere una grande soddisfazione, signora.", "ts": "05:07"}
+{"turn": "t19", "role": "caller", "text": "Fa nu calore ccà, e 'a Pina 'e sotto tene 'o condizionatore acceso tutt''o juorno.", "ts": "05:25"}
+{"turn": "t20", "role": "agent", "text": "Immagino, con questo caldo.", "ts": "05:38"}
+{"turn": "t21", "role": "caller", "text": "'A festa p' 'a laurea 'a facimmo add' 'a casa, vène pure 'a sora mia 'a Caserta.", "ts": "05:57"}
+{"turn": "t22", "role": "agent", "text": "Che bella occasione.", "ts": "06:11"}
+{"turn": "t23", "role": "caller", "text": "Speriamo ca nun chiove 'o vinte, ca m'aggia mettere bona pe' Luca.", "ts": "06:29"}
+{"turn": "t24", "role": "agent", "text": "Speriamo di no, signora.", "ts": "06:43"}
+{"turn": "t25", "role": "caller", "text": "Luca dice ca nun me preoccupo, ma comme nun me preoccupo, è 'o regalo p' 'a laurea!", "ts": "07:01"}
+{"turn": "t26", "role": "agent", "text": "La capisco, è un regalo importante.", "ts": "07:15"}
+{"turn": "t27", "role": "caller", "text": "'A figlia mia dice ca spenno troppo, ma 'a nonna 'e regale 'e fa, o no?", "ts": "07:33"}
+{"turn": "t28", "role": "agent", "text": "Ha proprio ragione lei, signora.", "ts": "07:47"}
+{"turn": "t29", "role": "caller", "text": "Sentite, ma site sicure ca v'è arrivato tutto buono, l'indirizzo, 'o nummero?", "ts": "08:05"}
+{"turn": "t30", "role": "agent", "text": "Tutto corretto a sistema, signora, stia serena.", "ts": "08:19"}
+{"turn": "t31", "role": "caller", "text": "Pecché io cu 'sti telefuni nun ce capisco niente, m''e fa sempe 'a figlia mia.", "ts": "08:37"}
+{"turn": "t32", "role": "agent", "text": "Nessun problema, ci pensiamo noi.", "ts": "08:51"}
+{"turn": "t33", "role": "caller", "text": "Embè… allora dicìteme vuje, ca mo' mme so' pure scurdata che stevo a dì.", "ts": "09:05"}
+{"turn": "t34", "role": "agent", "text": "Faccia con calma, signora, sono qui.", "ts": "09:13"}
+{"turn": "t35", "role": "caller", "text": "Aspettate ca mo' me vène… aggia addimannà 'na cosa ca me preme.", "ts": "09:21"}
+{"turn": "t36", "role": "caller", "text": "Ah, ecco, 'na cosa ca me preme me stevo a scurdà.", "ts": "09:29"}
+{"turn": "t37", "role": "agent", "text": "Mi dica pure, signora.", "ts": "09:34"}
+{"turn": "t38", "role": "caller", "text": "Sentite 'na cosa ca me preme assaje: ma arriva 'n tiempo, sì o no?", "ts": "09:39"}
+{"turn": "t39", "role": "agent", "text": "Certo signora, mi faccia controllare un attimo.", "ts": "09:45"}
+{"turn": "t40", "role": "caller", "text": "Uè, ma comme «pe' quanno»?! V' 'aggio ritto 'a laurea d' 'o nipote mio, 'o vinte!", "ts": "09:51"}
+{"turn": "t41_base", "role": "agent", "text": "Mi scusi signora, mi ripete per quando le serve e a quale indirizzo dobbiamo consegnare?", "ts": "09:57"}
+{"turn": "t41_suggeritore", "role": "agent", "text": "L'orologio per la laurea di Luca arriva prima del 20, signora, e lo lasciamo alla signora Pina, interno 3. Tutto confermato.", "ts": "09:57"}

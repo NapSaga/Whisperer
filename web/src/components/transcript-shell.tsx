@@ -49,7 +49,9 @@ type TranscriptShellProps = {
 const REPLAY_RATE = 12;
 const FRAME_MS = 100;
 const WINDOW = 6;
-const AUDIO_TURNS = ["t1", "t5", "t7", "t9", "t38", "t40"];
+// caller turns = real nonna recordings; agent turns (t6/t10/t39/t41) = ElevenLabs
+// "Aurora" Italian voice → botta e risposta on scadenza / consegna / test memoria.
+const AUDIO_TURNS = ["t1", "t5", "t6", "t7", "t9", "t10", "t38", "t39", "t40", "t41"];
 
 function parseTimestamp(ts: string) {
   const [minutes = "0", seconds = "0"] = ts.split(":");
@@ -149,6 +151,7 @@ function ReplayBar({
   isPlaying,
   muted,
   speaking,
+  speakerLabel,
   phase,
   percent,
   markers,
@@ -163,6 +166,7 @@ function ReplayBar({
   isPlaying: boolean;
   muted: boolean;
   speaking: boolean;
+  speakerLabel: string;
   phase: string;
   percent: number;
   markers: { label: string; seconds: number; recall?: boolean }[];
@@ -210,7 +214,7 @@ function ReplayBar({
           {speaking ? (
             <span className="flex items-center gap-1.5 font-mono text-sm text-[color:var(--voice-accent)]">
               <span className="size-2 animate-pulse rounded-full bg-[color:var(--voice-accent)]" />
-              Nonna sta parlando…
+              {speakerLabel} sta parlando…
             </span>
           ) : (
             <span className="rounded-md bg-[color:var(--surface-soft)] px-2.5 py-1 font-mono text-[0.7rem] font-medium uppercase tracking-wide text-muted-foreground">
@@ -360,7 +364,11 @@ function LaneColumn({
               const isDivergent = recallActive && turn.displayTurn === "t41";
               const isWin = isDivergent && isSug;
               const isFail = isDivergent && !isSug;
-              const isSpeaking = speakingTurn === turn.displayTurn && isCaller;
+              // the t41 clip is the suggeritore WIN line — only that lane karaokes
+              // it; the base lane shows its FAIL text in full.
+              const isSpeaking =
+                speakingTurn === turn.displayTurn &&
+                !(turn.displayTurn === "t41" && lane === "base");
 
               return (
                 <div
@@ -725,6 +733,20 @@ export function TranscriptShell({
   const holdRef = useRef(false);
 
   const recallActive = currentSeconds >= recallEnd;
+  const speakerLabel = useMemo(() => {
+    if (!speakingTurn) return "";
+    const t = allTurns.find((x) => x.displayTurn === speakingTurn);
+    return t?.role === "agent" ? "Agente" : "Nonna";
+  }, [speakingTurn, allTurns]);
+
+  // warm the first clip so the opening voice starts with no cold-start delay
+  useEffect(() => {
+    const el = audioRef.current;
+    if (el && !el.getAttribute("src")) {
+      el.src = "/audio/t1.mp3";
+      el.load();
+    }
+  }, []);
 
   const baseWindow = useMemo(
     () =>
@@ -809,7 +831,10 @@ export function TranscriptShell({
   // Driven by the audio element's currentTime so it freezes exactly on pause and
   // resumes from the same word. Quantized to 1% to avoid 60fps re-renders.
   useEffect(() => {
-    if (speakingTurn == null || !isPlaying) return;
+    if (speakingTurn == null) return;
+    // tracks the audio's real currentTime — frozen automatically when the clip is
+    // paused, and keeps running even after the clock reaches the end (the t41 win
+    // clip plays out as the timeline finishes).
     let raf = 0;
     const tick = () => {
       const el = audioRef.current;
@@ -821,7 +846,7 @@ export function TranscriptShell({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [speakingTurn, isPlaying]);
+  }, [speakingTurn]);
 
   const stopClip = useCallback(() => {
     const el = audioRef.current;
@@ -843,8 +868,8 @@ export function TranscriptShell({
     stopClip();
     // jump to just before the first spoken line so the voice + first bubble land
     // in ~0.1s instead of after a long silent lead-in.
-    prevSecondsRef.current = firstTs - 1;
-    setCurrentSeconds(Math.max(0, firstTs - 0.5));
+    prevSecondsRef.current = firstTs - 0.2;
+    setCurrentSeconds(Math.max(0, firstTs - 0.05));
     setIsPlaying(true);
   };
 
@@ -920,6 +945,7 @@ export function TranscriptShell({
         isPlaying={isPlaying}
         muted={muted}
         speaking={speakingTurn != null && isPlaying}
+        speakerLabel={speakerLabel}
         phase={
           currentSeconds >= recallEnd
             ? "recall ✓"
