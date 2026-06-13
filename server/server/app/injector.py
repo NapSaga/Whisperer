@@ -87,3 +87,23 @@ def with_injection(history: list, state: StateLedger) -> list:
             idx = i
             break
     return history[:idx] + [item] + history[idx:]
+
+
+def compact_input(history: list, state: StateLedger) -> list:
+    """SPEC §3 *session-rotation*: rehydrate a FRESH input from the ledger.
+
+    Returns ``[ledger item, current user turn]`` — the prior conversation
+    history is NOT resent. The agent reads the compact state then the question,
+    so the suggeritore pays compact tokens every turn instead of re-paying the
+    growing audio/text context (this is the cost win, §5). Does not mutate
+    ``history``; falls back to the last user item alone if no ledger is built.
+    """
+    last_user = None
+    for it in reversed(history):
+        if isinstance(it, dict) and it.get("role") == "user":
+            last_user = it
+            break
+    out = [build_item(state)]
+    if last_user is not None:
+        out.append(last_user)
+    return out

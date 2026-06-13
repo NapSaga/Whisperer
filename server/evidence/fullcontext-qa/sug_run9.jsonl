@@ -1,0 +1,28 @@
+{"turn": "t1", "role": "caller", "text": "Buongiorno, chiamo per l'ordine 4471, è un orologio, il regalo per mio nipote Luca.", "ts": "00:18"}
+{"turn": "t2", "role": "agent", "text": "Buongiorno! Quindi stai chiamando per l'ordine 4471, che è un orologio per Luca. C'è qualcosa in particolare che vuoi sapere su quest'ordine?", "ts": "00:31"}
+{"turn": "t3", "role": "caller", "text": "Luca si laurea il venti, e l'orologio glielo regalo per la laurea: deve arrivare prima del venti.", "ts": "00:44"}
+{"turn": "t4", "role": "agent", "text": "Capisco, l'orologio per la laurea di Luca deve arrivare entro il venti. Posso chiederti quando hai effettuato l'ordine?", "ts": "00:57"}
+{"turn": "t5", "role": "caller", "text": "Mi raccomando per la consegna: a casa mia il citofono è rotto, lasciatelo dalla vicina, la signora Pina, interno tre.", "ts": "01:10"}
+{"turn": "t6", "role": "agent", "text": "Certo, posso annotare che la consegna deve essere lasciata dalla signora Pina, interno tre. Posso chiederti quale ordine stai aspettando?", "ts": "01:23"}
+{"turn": "t7", "role": "caller", "text": "Va bene. Posso pagare alla consegna?", "ts": "01:36"}
+{"turn": "t8", "role": "agent", "text": "Purtroppo, non offriamo il pagamento alla consegna. Puoi pagare online prima della spedizione. Hai altre domande sul tuo ordine?", "ts": "01:49"}
+{"turn": "t9", "role": "caller", "text": "E se non sono in casa quando arriva?", "ts": "02:02"}
+{"turn": "t10", "role": "agent", "text": "Non preoccuparti, il pacco sarà lasciato con la tua vicina, signora Pina, nell’appartamento tre.", "ts": "02:15"}
+{"turn": "t11", "role": "caller", "text": "Mi sapete dire se fate anche il pacchetto regalo?", "ts": "02:28"}
+{"turn": "t12", "role": "agent", "text": "Al momento, non offriamo il servizio di pacchetti regalo. Hai bisogno di aiuto con qualcos'altro riguardo al tuo ordine?", "ts": "02:41"}
+{"turn": "t13", "role": "caller", "text": "Volevo chiedere, c'è un modo per seguire la spedizione online?", "ts": "02:54"}
+{"turn": "t14", "role": "agent", "text": "Certo! Puoi seguire la spedizione online utilizzando il numero d'ordine. Vorresti che ti aiutassi a trovare il link per il tracciamento?", "ts": "03:07"}
+{"turn": "t15", "role": "caller", "text": "Ah, e di solito quanto dura la garanzia?", "ts": "03:20"}
+{"turn": "t16", "role": "agent", "text": "La garanzia di solito dura un anno. Hai bisogno di informazioni specifiche su qualche prodotto?", "ts": "03:33"}
+{"turn": "t17", "role": "caller", "text": "Scusi se la trattengo, è che ci tengo che vada tutto bene.", "ts": "03:46"}
+{"turn": "t18", "role": "agent", "text": "Non si preoccupi, sono qui per aiutarla. Posso sapere se ci sono dei dettagli specifici riguardo all'ordine che la preoccupano?", "ts": "03:59"}
+{"turn": "t19", "role": "caller", "text": "Una curiosità: l'assistenza lavora anche il sabato?", "ts": "04:12"}
+{"turn": "t20", "role": "agent", "text": "Sì, l'assistenza è disponibile anche il sabato. Hai bisogno di aiuto per qualcosa in particolare?", "ts": "04:25"}
+{"turn": "t21", "role": "caller", "text": "Va bene, allora resto in attesa di vostre notizie.", "ts": "04:38"}
+{"turn": "t22", "role": "agent", "text": "Non preoccuparti, la consegna del orologio per Luca dovrebbe arrivare prima del 20. È previsto che venga lasciato con la signora Pina, appartamento tre.", "ts": "04:51"}
+{"turn": "t23", "role": "caller", "text": "Perfetto, la ringrazio molto della pazienza.", "ts": "05:04"}
+{"turn": "t24", "role": "agent", "text": "Non c'è di che! Sono qui per aiutarti. Cosa posso fare per te riguardo all'ordine?", "ts": "05:17"}
+{"turn": "t25", "role": "caller", "text": "Ah, un'ultima cosa che mi ero quasi dimenticata.", "ts": "05:30"}
+{"turn": "t26", "role": "agent", "text": "Certo! Che cosa hai bisogno di sapere?", "ts": "05:43"}
+{"turn": "t27", "role": "caller", "text": "Senti, scusa: ma arriva in tempo? E dove lo lasciate?", "ts": "05:56"}
+{"turn": "t28", "role": "agent", "text": "La consegna dell'orologio per Luca arriverà prima del 20. Sarà lasciato con la vicina, signora Pina, nell'appartamento tre.", "ts": "06:09"}
