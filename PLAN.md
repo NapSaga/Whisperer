@@ -89,26 +89,27 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 
 ---
 
-## 🎤 Compiti finali → pitch (per persona) — agg. 14:20
-> Stato: demo `web/` **costruita** — audio nonna (pause tagliate, loud) + recall-green + verdetto **reale 0/10·10/10** + cost pressure-meter + transcript a finestra. Resta il run-up al pitch. Daniele sui test live. Giovanni: demo + pitch. Gabriele: misura → supporto pitch/Q&A.
+## 🎤 Task di tutti → pitch (chi fa cosa) — agg. 14:45
+> **Repo allineato** (`origin/main` pulito, builda) · **demo web/ costruita**: audio nonna forte · recall-green a t41 · verdetto reale **0/10 · 10/10** · cost pressure-meter · transcript a finestra. Scenario **orologio lockato**; citazione verdetto `t16` = **scelta di design** (batch reale ≠ replay; vedi Note di coupling). Resta solo il run-up al pitch.
 
 ### 👤 Giovanni — demo + pitch (owner)
-- [ ] **Demo end-to-end** dopo `Cmd+Shift+R`: **"Vai al momento del recall"** = il cold-open (t38→t40 voce nonna FORTE → t41 il base annaspa). Verificare audio chiaro su cassa.
-- [ ] **Pitch 2:30 provato col timer ≥3 volte** — scaletta brief: hook audio → problema (drift OpenAI + costo) → perché ora → demo → come/sponsor (Agents SDK · structured outputs · ElevenLabs · Codex) → why-us StudierAI. *La demo È il pitch.*
-- [ ] **Pitch deck = backup leggero**: 3-4 slide solo per sicurezza (problema+fonti · come · why-us+numeri). Dossier fonti già sul telefono per il Q&A.
+- [ ] **Testa la demo** dopo `Cmd+Shift+R`: **"Vai al momento del recall"** = cold-open (t38→t40 voce nonna FORTE → t41 il base annaspa). Audio chiaro su cassa?
+- [ ] **Pitch 2:30 col timer ≥3 volte** — hook audio → problema (drift OpenAI + costo) → perché ora → demo → sponsor (Agents SDK · structured outputs · ElevenLabs · Codex) → why-us StudierAI. *La demo È il pitch.*
+- [ ] **Deck backup leggero** (3-4 slide: problema+fonti · come · why-us+numeri). Dossier fonti sul telefono per il Q&A.
 - [ ] **Consegna form 17:30** (non alle 18:29).
 
-### 👤 Gabriele — la misura → supporto pitch/Q&A
-- [ ] **Q&A numeri pronti e difendibili**: 0/10 vs 10/10 (metodologia judge + citazione `[t41]`), 7.6× costo, drift documentato. Fa il "giudice cattivo" alle prove.
-- [ ] **Test proiettore + AUDIO in sala** appena possibile: la demo è audio-first, le casse sono parte della demo → controllare il volume della nonna sul proiettore reale.
+### 👤 Daniele — motore + dati reali
+- [ ] **Test live del server** (in corso): layer live per il backup se la rete regge; altrimenti replay `recordings/` (batch reale pronto, 0/10·10/10).
+- [ ] *(opzionale, non blocca)* **`cost_event` reale**: oggi `cost.json` è MOCK (etichettato) → emetterlo dal server solo se si vuole il costo misurato a schermo.
+
+### 👤 Gabriele — la misura → Q&A
+- [ ] **Q&A numeri difendibili**: 0/10 vs 10/10 (metodo judge + citazione `[t16]` dal batch reale), 7.6× costo, drift OpenAI documentato. "Giudice cattivo" alle prove.
+- [ ] **Test proiettore + AUDIO in sala**: la demo è audio-first → volume nonna forte sul proiettore reale.
 - [ ] **Cronometra** le prove del pitch di Giovanni.
 
-### 👤 Daniele — il motore
-- [ ] **Test live del server** (in corso): layer live per il backup se la rete del venue regge; altrimenti replay registrato (`recordings/`).
-- [ ] **VIDEO BACKUP della demo** (obbligatorio ≤16:30, sopravvive senza rete) — lo registra chi non è collo di bottiglia.
-
 ### 🤝 Insieme — freeze 16:30
-- [ ] tag `freeze-1630` (da qui solo fix) · video backup pronto · pitch provato.
+- [ ] **VIDEO BACKUP** della demo (obbligatorio ≤16:30, sopravvive senza rete) — lo registra chi non è collo di bottiglia.
+- [ ] tag `freeze-1630` (da qui solo fix) · pitch provato · consegna 17:30.
 
 ---
 
