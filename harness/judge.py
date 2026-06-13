@@ -94,8 +94,8 @@ if __name__ == "__main__":
     suggeritore_transcript = build("_base", "t41_suggeritore")
 
     seeded_fact = (
-        "the order is football boots, size 38, a gift for the caller's grandson, "
-        "delivery Thursday"
+        "the watch must arrive before the 20th for grandson Luca's graduation, "
+        "delivered to sig.ra Pina interno 3"
     )
 
     base_verdict = judge(base_transcript, seeded_fact)

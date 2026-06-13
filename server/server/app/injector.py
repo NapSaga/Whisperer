@@ -54,7 +54,11 @@ def strip(history: list) -> None:
 def build_text(state: StateLedger) -> str:
     lines = [
         f"{INJECTION_PREFIX} — established facts from earlier in this call. "
-        "Stay grounded in them and do not ask the caller to repeat what is already known.",
+        "Stay grounded in them and do not ask the caller to repeat what is already known. "
+        "When the caller asks about status, timing, or delivery, ANSWER DIRECTLY and "
+        "concretely by restating the relevant known facts (the item, the deadline/date, "
+        "the recipient, the delivery location). Do NOT defer with 'shall I check?', "
+        "'do you want me to verify?', or ask for an order number you already have.",
         f"Identity: {state.identity}",
         f"Objective: {state.objective}",
     ]

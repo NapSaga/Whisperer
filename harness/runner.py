@@ -58,8 +58,8 @@ COST_FIXTURE = FIXTURES / "cost.json"
 COST_FIELDS = ("agent", "turn", "tokens_in", "tokens_out", "usd_cumulative")
 
 SEEDED_FACT = (
-    "the order is football boots, size 38, a gift for the caller's grandson, "
-    "delivery Thursday"
+    "the watch must arrive before the 20th for grandson Luca's graduation, "
+    "delivered to sig.ra Pina interno 3"
 )
 
 

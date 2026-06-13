@@ -1,16 +1,16 @@
-{"turn": "t1", "role": "caller", "text": "Buongiorno, chiamo per l'ordine 4471, è il regalo per mio nipote che gioca a calcio.", "ts": "00:18"}
-{"turn": "t2", "role": "agent", "text": "Buongiorno! Posso sapere cosa ha ordinato per suo nipote?", "ts": "00:31"}
-{"turn": "t3", "role": "caller", "text": "Sono gli scarpini da calcio, numero 38.", "ts": "00:44"}
-{"turn": "t4", "role": "agent", "text": "Perfetto! Quando ha effettuato l'ordine?", "ts": "00:57"}
-{"turn": "t5", "role": "caller", "text": "Mi avevate detto consegna giovedì, è corretto?", "ts": "01:10"}
-{"turn": "t6", "role": "agent", "text": "Lasciami controllare. Ha ricevuto un'email di conferma con i dettagli della spedizione?", "ts": "01:23"}
+{"turn": "t1", "role": "caller", "text": "Buongiorno, chiamo per l'ordine 4471, è un orologio, il regalo per mio nipote Luca.", "ts": "00:18"}
+{"turn": "t2", "role": "agent", "text": "Buongiorno! Grazie per aver chiamato. Puoi dirmi quale informazione ti serve riguardo all'ordine 4471?", "ts": "00:31"}
+{"turn": "t3", "role": "caller", "text": "Luca si laurea il venti, e l'orologio glielo regalo per la laurea: deve arrivare prima del venti.", "ts": "00:44"}
+{"turn": "t4", "role": "agent", "text": "Capisco, vuoi assicurarti che l'orologio arrivi prima del venti. Quando hai effettuato l'ordine?", "ts": "00:57"}
+{"turn": "t5", "role": "caller", "text": "Mi raccomando per la consegna: a casa mia il citofono è rotto, lasciatelo dalla vicina, la signora Pina, interno tre.", "ts": "01:10"}
+{"turn": "t6", "role": "agent", "text": "Va bene, posso segnare questa richiesta per la consegna. Hai ricevuto un'email con i dettagli della spedizione?", "ts": "01:23"}
 {"turn": "t7", "role": "caller", "text": "Va bene. Posso pagare alla consegna?", "ts": "01:36"}
-{"turn": "t8", "role": "agent", "text": "Di solito, accettiamo solo pagamenti anticipati per gli ordini online. Vuole che le faccia controllare le opzioni di pagamento?", "ts": "01:49"}
-{"turn": "t9", "role": "caller", "text": "E se non sono in casa quando arrivano?", "ts": "02:02"}
-{"turn": "t10", "role": "agent", "text": "Se non è in casa, il corriere cercherà di riconsegnare il pacco in un secondo momento. Ha visto opzioni per il ritiro in un luogo vicino?", "ts": "02:15"}
+{"turn": "t8", "role": "agent", "text": "Mi dispiace, il pagamento alla consegna non è disponibile per questo ordine. Hai utilizzato un metodo di pagamento online?", "ts": "01:49"}
+{"turn": "t9", "role": "caller", "text": "E se non sono in casa quando arriva?", "ts": "02:02"}
+{"turn": "t10", "role": "agent", "text": "Se non sei in casa, il corriere di solito lascia un avviso. Puoi quindi organizzarti per un secondo tentativo di consegna. Ti va bene?", "ts": "02:15"}
 {"turn": "t11", "role": "caller", "text": "Perfetto, la ringrazio molto.", "ts": "02:28"}
-{"turn": "t12", "role": "agent", "text": "È un piacere! Se ha bisogno di ulteriore aiuto, non esiti a chiedere.", "ts": "02:41"}
+{"turn": "t12", "role": "agent", "text": "Di niente! Se hai altre domande, non esitare a chiedere.", "ts": "02:41"}
 {"turn": "t13", "role": "caller", "text": "Ah, un'ultima cosa che mi ero quasi dimenticata.", "ts": "02:54"}
-{"turn": "t14", "role": "agent", "text": "Certo, mi dica pure!", "ts": "03:07"}
-{"turn": "t15", "role": "caller", "text": "Senti, scusa, cosa ti avevo detto che era l'ordine?", "ts": "03:20"}
-{"turn": "t16", "role": "agent", "text": "Non l'abbiamo ancora menzionato. Potrebbe dirmi di che ordine si tratta?", "ts": "03:33"}
+{"turn": "t14", "role": "agent", "text": "Certo, dimmi pure! Di cosa hai bisogno?", "ts": "03:07"}
+{"turn": "t15", "role": "caller", "text": "Senti, scusa: ma arriva in tempo? E dove lo lasciate?", "ts": "03:20"}
+{"turn": "t16", "role": "agent", "text": "Posso controllare la data di consegna per il tuo ordine. Mi puoi dare il numero dell'ordine?", "ts": "03:33"}

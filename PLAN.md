@@ -25,7 +25,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - Ogni componente UI → **shadcn** (CLI ufficiale `npx shadcn add …` = codice reale; MCP shadcn per discovery). Niente primitive scritte a mano, niente API inventate.
 - Se manca doc o componente → **stop**, lo segnalo. Non si improvvisa.
 - Solo contro i contratti `SPEC §7` e `spec/fixtures/`. Un task chiuso alla volta, sessione nuova per task, zero refactor non richiesti.
-- I numeri nelle fixtures (verdicts **2/10 vs 9/10**) sono **MOCK** per far girare la UI → mai presentati come misurati. Il numero vero arriva dal run delle **13:30**.
+- IL NUMERO REALE = **base 0/10, suggeritore 10/10** (run-1330, scenario orologio). Le fixtures `verdicts.json`/`transcript.jsonl`/`state.json` ora **rispecchiano lo scenario orologio** (Luca, laurea, prima del 20, Pina interno 3) — coerenti con l'audio nonna reale. ⚠️ i `recordings/*.jsonl` vanno rigenerati su questo copione (vedi Fase 4).
 - Niente `git init`, niente push: il primo push lo fa Giovanni **sabato 10:45**.
 
 ---
@@ -53,25 +53,27 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - `[fatto]` **Memoria HUD live**: `state.json` riga per riga ("append-only state ledger"), ogni fatto/impegno col suo **`[t{n}]`**, si scrive mentre la timeline scorre — **← state.json** *(Task 2)*
 - `[fatto]` **Cost counter divergente** (Task 3): base $3.94 vs suggeritore $0.52 (7.6×), `usd_cumulative` guidato dal replay clock, danger-tint base / violet suggeritore, etichetta MOCK — **← cost_event** · `spec/fixtures/cost.json` · **build verificato**
 - `[todo]` **Momento recall**: `emerald-500` + glow + toast `sonner` **SOLO** su `t41_suggeritore` (il verde non appare mai prima) — **← transcript/state**
-- `[todo]` **Verdict view**: `base 2/10 · suggeritore 9/10` da `verdicts.json`, **etichetta "MOCK — numero reale alle 13:30"**, drill-down per run con `citation` `[t{n}]` (`collapsible`) — **← verdict**
+- `[todo]` **Verdict view**: `base 0/10 · suggeritore 10/10` da `verdicts.json` (reale, scenario orologio, citation t16), drill-down per run con `citation` `[t{n}]` (`collapsible`) — **← verdict**
 - `[todo]` **Passata proiettore**: type ampia (≥`text-base`), spacing generoso, contrasti alti, prova su 16:9
 
 > 🛰️ **Team su origin/main (12:36)**: `harness: batch runner N=10` + `harness: requirements.txt` (Gabriele avanti) · `audio: registrazioni nonna` committate · Task 3 web **da pushare**.
 
-## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · ✅ 4/4
+## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · 4/5 (cost_event emit [todo])
 - `[fatto]` Agente vittima customer care sullo scheletro sample — layer funzionante end-to-end via testo (base dimentica, suggeritore ricorda)
 - `[fatto]` **Distiller** ogni 4 turni → `state.json` (`SPEC §2`, structured output, `gpt-4o-mini`) — **→ state.json** · live
 - `[fatto]` **Iniezione periodica** (`SPEC §3`, default sicuro) — funzionante
-- `[fatto]` **Emit** `transcript.jsonl` + `cost_event` (`SPEC §5,§7`) — **→ transcript turn · cost_event** · driver headless `batch_run.py` pushato e girato · `recordings/base_run{1..10}.jsonl` + `recordings/sug_run{1..10}.jsonl` prodotti · cost: `server/server/run/cost_event.jsonl`
+- `[fatto]` **Emit** `transcript.jsonl` (`SPEC §7`) — **→ transcript turn** · driver headless `batch_run.py` pushato e girato · `recordings/base_run{1..10}.jsonl` + `recordings/sug_run{1..10}.jsonl` prodotti
+- `[todo]` **Emit** `cost_event` (`SPEC §5`) — **→ cost_event** · ⚠️ NON ancora emesso da `server.py`/`batch_run.py`: `server/server/run/cost_event.jsonl` non esiste, `cost.json` resta MOCK
 
 ## Fase 3 — harness/ → checkpoint 13:30 · owner: **Gabriele** · ✅ 3/3
 - `[fatto]` **Judge binario** structured output: `{transcript, seeded_fact}` → verdict con `citation` (`SPEC §6`) — **→ verdict** · smoke test su fixture: FIXTURE OK
 - `[fatto]` **Batch runner N=10/lato** → `base X/10, suggeritore Y/10` (IL numero) — **→ verdict (aggregato)** · modalità `fixture` + `live` pronte
 - `[fatto]` **Cost meter check** (`SPEC §5`) — **← cost_event** · `check_cost()` in runner.py, stampa `base=$X suggeritore=$Y delta=$Z (Nx more expensive)` · fixture: base=$3.94 suggeritore=$0.52 (7.6x) · `.env` loader stdlib aggiunto, niente footgun
 
-## Fase 4 — Integrazione 13:30 (INSIEME, ordine `server → harness → web`) · 2/3
-- `[fatto]` Registrare il **fallimento VERO** dell'agente base → `recordings/base_run{1..10}.jsonl` (0/10 recall) — judge confermato
-- `[fatto]` Batch N=10 → **IL NUMERO: base 0/10, suggeritore 10/10** — `verdicts.json` aggiornato con dati reali — tag `run-1330`
+## Fase 4 — Integrazione 13:30 (INSIEME, ordine `server → harness → web`) · 3/4
+- `[fatto]` Registrare il **fallimento VERO** dell'agente base → `recordings/base_run{1..10}.jsonl` rigenerati su copione orologio (**0/10 reale**, citation t16) — judge confermato
+- `[fatto]` Batch N=10 → **`verdicts.json` rigenerato dal giudizio reale** sui 20 recordings (`harness/gen_verdicts.py`): **base 0/10, suggeritore 10/10**, question_turn t15, citation t16. *(prima passata reale = 5/10, limitata dall'iniezione → rinforzato il prompt di re-grounding in `injector.py` perché l'agente risponda DIRETTAMENTE dal ledger → 10/10)*
+- `[fatto]` Fixture **demo-replay** `transcript.jsonl`/`state.json` su scenario orologio (chiamata lunga t1→t41, recall t40, citation t41) + audio nonna — artefatto separato dal batch (t16), stesso scenario
 - `[todo]` Wire `web ↔ server` (poll/WS) **oppure** replay del JSON registrato
 
 ## Fase 5 — 14:00–16:30 (raffinamento, zero feature nuove dopo le 14:00) · 0/4
@@ -88,13 +90,17 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 ---
 
 ## Note di coupling (lette dallo scaffold, non assunte)
+- **Scenario unico = orologio** (Luca, laurea, prima del 20, Pina interno 3, ordine 4471). Tutta la catena converge: fixtures + audio nonna + harness (`SEEDED_FACT`) + driver (`CALLER_SCRIPT`) + recordings + `verdicts.json`. **Due artefatti dello stesso scenario**: (a) **batch reale** = `recordings/*.jsonl` + `verdicts.json` (chiamata scriptata 16 turni, recall t15→t16, il NUMERO 0/10 vs 10/10); (b) **demo-replay** = `transcript.jsonl` + `state.json` (chiamata lunga t1→t41, recall t40→t41, con audio nonna). Turn-id diversi per design: il judge cita il turno reale del batch (t16), il replay web mostra t41.
 - **`t41` sdoppiato**: `transcript.jsonl` ha `t41_base` e `t41_suggeritore` = stesso istante, due agenti. Il loader li mappa a sx/dx, display = `t41`. `verdicts.json.question_turn = t38`, `citation = t41`, `state.json.last_turn = 41` — coerenti.
 - **Verde scarso**: `emerald-500` appare **solo** al recall (`t41_suggeritore`). Tutto il resto è zinc/violet/amber/red. Scarsità = impatto sul proiettore.
 - **shadcn in questa sessione**: la sessione Claude corrente è partita **prima** che lo shadcn MCP fosse aggiunto → qui non è caricato. Per il build di `web/`: componenti via **CLI ufficiale** (`npx shadcn add` = codice reale) + **Context7** per le API; lo **shadcn MCP per discovery** è già configurato per Codex e per una sessione Claude nuova.
 - **Stato di partenza**: `web/ server/ harness/` sono vuoti (solo README). Il numero "Fatto 5/35" conta lo scaffold + spec + fixtures + MCP — tutto reale, niente codice di prodotto ancora scritto.
 
 ## Changelog
-- **2026-06-13 (13:30)** — 🎯 **IL NUMERO: base 0/10, suggeritore 10/10** — batch reale girato con `batch_run.py` (N=10/lato, testo scriptato, layer live); judge binario su tutti i 20 transcript; `verdicts.json` aggiornato con verdetti reali (citation=t16, tutti deterministici); tag `run-1330` pushato. Demo minima vincente: **tutti e 4 i pezzi in verde**. 38 voci, **25 fatte (66%)**.
+- **2026-06-13 (14:30)** — 🎯 **IL NUMERO REALE su orologio: base 0/10, suggeritore 10/10** — catena completamente riallineata e rigenerata. (1) Allineati `runner.py`/`judge.py` (`SEEDED_FACT`) + `batch_run.py` (`CALLER_SCRIPT`/markers/docstring) al copione orologio. (2) Rigenerati i 20 `recordings/*.jsonl` con `batch_run.py` (layer live, ledger pulito per run). (3) `verdicts.json` rigenerato dal giudizio reale via `harness/gen_verdicts.py`. **Prima passata = 0/10 vs 5/10**: il distiller catturava tutto (ledger perfetto) ma l'agente temporeggiava al recall → rinforzato il prompt d'iniezione in `injector.py` ("rispondi DIRETTAMENTE dal ledger, non chiedere 'vuoi che controlli?'") → re-run → **10/10 reale**. Smoke fixture: FIXTURE OK.
+- **2026-06-13 (14:10)** — 🔧 **Riallineamento scenario → orologio**: il rewrite delle 13:54 aveva spostato le fixtures sul copione orologio lasciando indietro la catena harness/batch (ancora scarpini) → `seeded_fact` divergente in 3 file, smoke test fixture rotto, citation incoerente coi recordings. Avviato il riallineamento (vedi 14:30).
+- **2026-06-13 (13:54)** — **Scenario riscritto su voce nonna reale** (orologio/Luca/laurea/20/Pina): `transcript.jsonl` (t1→t41, recall a t40, citation t41), `state.json` (5 fatti), `verdicts.json` (seeded_fact = scadenza+consegna, question_turn t38, citation t41). Supera l'entry 13:30 (che era scarpini, citation t16).
+- **2026-06-13 (13:30)** — 🎯 **IL NUMERO: base 0/10, suggeritore 10/10** — batch reale girato con `batch_run.py` (N=10/lato, testo scriptato, layer live); judge binario su tutti i 20 transcript; tag `run-1330` pushato. *(citation=t16, scenario scarpini — poi sostituito dal copione orologio alle 13:54, vedi sopra.)* Demo minima vincente: **tutti e 4 i pezzi in verde**. 38 voci, **25 fatte (66%)**.
 - **2026-06-13 (13:15)** — **server/ Fase 2 3/4**: Daniele conferma layer funzionante end-to-end via testo (base dimentica, suggeritore ricorda, state.json live). Manca solo emit + driver headless multi-run (in corso). Concordato: path `recordings/base_run{i}.jsonl` / `recordings/sug_run{i}.jsonl`, cost `server/server/run/cost_event.jsonl`, N=10 (fallback N=5), seeded_fact = scarpini 38 nipote giovedì (già in runner.py). 38 voci, **22 fatte (58%)**.
 - **2026-06-13 (13:10)** — **harness/ Fase 3 ✅ 3/3 CHIUSA**: cost meter check implementato (`check_cost()` in runner.py, `--cost` CLI flag, validazione campi SPEC §5 con warning non-fatal); `.env` loader stdlib aggiunto (no dipendenze nuove, non sovrascrive variabili già esportate). Smoke test completo: FIXTURE OK + `cost base=$3.94 suggeritore=$0.52 delta=$3.42 (7.6x)`. 38 voci, **19 fatte (50%)**. harness/ è pronto per l'integrazione 13:30 — aspetta solo i transcript da server/.
 - **2026-06-13 (13:00)** — **harness/ Fase 3 2/3**: judge.py + runner.py già committati e verificati — smoke test `FIXTURE OK` (base.remembers=false, suggeritore.remembers=true, citation=t41). Resta solo cost meter check (item 3). 38 voci, **18 fatte (47%)**.

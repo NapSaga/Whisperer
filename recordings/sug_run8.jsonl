@@ -1,16 +1,16 @@
-{"turn": "t1", "role": "caller", "text": "Buongiorno, chiamo per l'ordine 4471, è il regalo per mio nipote che gioca a calcio.", "ts": "00:18"}
-{"turn": "t2", "role": "agent", "text": "Buongiorno! Grazie per aver chiamato riguardo all’ordine 4471. Può dirmi quando ha effettuato l'ordine?", "ts": "00:31"}
-{"turn": "t3", "role": "caller", "text": "Sono gli scarpini da calcio, numero 38.", "ts": "00:44"}
-{"turn": "t4", "role": "agent", "text": "Perfetto! E quando ha effettuato l'ordine, per favore?", "ts": "00:57"}
-{"turn": "t5", "role": "caller", "text": "Mi avevate detto consegna giovedì, è corretto?", "ts": "01:10"}
-{"turn": "t6", "role": "agent", "text": "Capisco. Posso controllare lo stato della consegna. Mi può dire quando ha fatto l'ordine?", "ts": "01:23"}
+{"turn": "t1", "role": "caller", "text": "Buongiorno, chiamo per l'ordine 4471, è un orologio, il regalo per mio nipote Luca.", "ts": "00:18"}
+{"turn": "t2", "role": "agent", "text": "Buongiorno! Quindi stai chiedendo informazioni per l'ordine 4471, che è un orologio per tuo nipote Luca. Di cosa hai bisogno riguardo all'ordine?", "ts": "00:31"}
+{"turn": "t3", "role": "caller", "text": "Luca si laurea il venti, e l'orologio glielo regalo per la laurea: deve arrivare prima del venti.", "ts": "00:44"}
+{"turn": "t4", "role": "agent", "text": "Capisco, quindi hai bisogno che l'orologio arrivi prima del venti. Posso chiederti quando hai effettuato l'ordine?", "ts": "00:57"}
+{"turn": "t5", "role": "caller", "text": "Mi raccomando per la consegna: a casa mia il citofono è rotto, lasciatelo dalla vicina, la signora Pina, interno tre.", "ts": "01:10"}
+{"turn": "t6", "role": "agent", "text": "Ok, prenderò nota della consegna alla signora Pina, interno tre. Vuoi che controlli lo stato della consegna per te?", "ts": "01:23"}
 {"turn": "t7", "role": "caller", "text": "Va bene. Posso pagare alla consegna?", "ts": "01:36"}
-{"turn": "t8", "role": "agent", "text": "Posso controllare per te. Ma prima, mi dici se hai già pagato l'ordine?", "ts": "01:49"}
-{"turn": "t9", "role": "caller", "text": "E se non sono in casa quando arrivano?", "ts": "02:02"}
-{"turn": "t10", "role": "agent", "text": "Se non sei in casa, di solito lasciano un avviso o provano a consegnare di nuovo. Hai già ricevuto avvisi precedenti per la consegna?", "ts": "02:15"}
+{"turn": "t8", "role": "agent", "text": "Purtroppo non offriamo il pagamento alla consegna. Potresti pagare online al momento dell’ordine. Vuoi conoscere altre opzioni di pagamento?", "ts": "01:49"}
+{"turn": "t9", "role": "caller", "text": "E se non sono in casa quando arriva?", "ts": "02:02"}
+{"turn": "t10", "role": "agent", "text": "Se non sei in casa, il corriere potrebbe lasciare un avviso e riprovare il giorno dopo. In alternativa, puoi contattare il corriere per organizzare un altro appuntamento. Va bene così?", "ts": "02:15"}
 {"turn": "t11", "role": "caller", "text": "Perfetto, la ringrazio molto.", "ts": "02:28"}
-{"turn": "t12", "role": "agent", "text": "È un piacere. Se hai bisogno di ulteriore aiuto, non esitare a chiedere!", "ts": "02:41"}
+{"turn": "t12", "role": "agent", "text": "È un piacere! Se hai bisogno di ulteriore aiuto, sono qui. Buona giornata!", "ts": "02:41"}
 {"turn": "t13", "role": "caller", "text": "Ah, un'ultima cosa che mi ero quasi dimenticata.", "ts": "02:54"}
-{"turn": "t14", "role": "agent", "text": "Certo! Dimmi pure, sono qui per aiutarti.", "ts": "03:07"}
-{"turn": "t15", "role": "caller", "text": "Senti, scusa, cosa ti avevo detto che era l'ordine?", "ts": "03:20"}
-{"turn": "t16", "role": "agent", "text": "Hai detto che è un regalo per tuo nipote e sono scarpini da calcio, numero 38. Vuoi sapere qualcosa di specifico su di loro?", "ts": "03:33"}
+{"turn": "t14", "role": "agent", "text": "Certo, dimmi pure! Cosa hai bisogno di sapere?", "ts": "03:07"}
+{"turn": "t15", "role": "caller", "text": "Senti, scusa: ma arriva in tempo? E dove lo lasciate?", "ts": "03:20"}
+{"turn": "t16", "role": "agent", "text": "L'orologio dovrebbe arrivare prima del 20, dato che stiamo monitorando la spedizione. Lo lasceremo dalla signora Pina, interno tre, come hai richiesto.", "ts": "03:33"}

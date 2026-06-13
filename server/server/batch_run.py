@@ -16,14 +16,15 @@ Output (SPEC §7 shape ``{ turn, role:"caller"|"agent", text, ts }``):
     recordings/base_run{i}.jsonl   (base)
     recordings/sug_run{i}.jsonl    (suggeritore)
 
-The fixed script mirrors spec/fixtures/transcript.jsonl: order 4471, football
-boots size 38, a gift for the grandson, delivery Thursday — seeded in the first
-turns, then filler, then the recall question. The cadence is chosen so the recall
-lands on an injection turn (turn 8): the distiller earns the facts after turn 4,
-and turn-8 injection re-grounds the agent with them. The suggeritore side starts
-from a CLEAN runtime ledger (identity + objective only, no caller facts) at a
-per-run state path, so the distiller has to earn the boots itself and never reads
-the committed fixture seed. spec/fixtures/ is never touched.
+The fixed script mirrors spec/fixtures/transcript.jsonl: order 4471, a watch
+gifted to grandson Luca for his graduation, must arrive before the 20th, deliver
+to the neighbor sig.ra Pina interno 3 (caller's buzzer is broken) — seeded in the
+first turns, then filler, then the recall question. The cadence is chosen so the
+recall lands on an injection turn (turn 8): the distiller earns the facts after
+turn 4, and turn-8 injection re-grounds the agent with them. The suggeritore side
+starts from a CLEAN runtime ledger (identity + objective only, no caller facts) at
+a per-run state path, so the distiller has to earn the deadline/delivery itself
+and never reads the committed fixture seed. spec/fixtures/ is never touched.
 """
 
 import argparse
@@ -56,18 +57,18 @@ from server import Workflow  # noqa: E402  — the live class, reused verbatim
 # the turn-4 distiller can extract them), then ~4 filler turns, then the recall
 # question lands on caller turn 8 (an injection turn).
 CALLER_SCRIPT = [
-    "Buongiorno, chiamo per l'ordine 4471, è il regalo per mio nipote che gioca a calcio.",
-    "Sono gli scarpini da calcio, numero 38.",
-    "Mi avevate detto consegna giovedì, è corretto?",
+    "Buongiorno, chiamo per l'ordine 4471, è un orologio, il regalo per mio nipote Luca.",
+    "Luca si laurea il venti, e l'orologio glielo regalo per la laurea: deve arrivare prima del venti.",
+    "Mi raccomando per la consegna: a casa mia il citofono è rotto, lasciatelo dalla vicina, la signora Pina, interno tre.",
     "Va bene. Posso pagare alla consegna?",
-    "E se non sono in casa quando arrivano?",
+    "E se non sono in casa quando arriva?",
     "Perfetto, la ringrazio molto.",
     "Ah, un'ultima cosa che mi ero quasi dimenticata.",
-    "Senti, scusa, cosa ti avevo detto che era l'ordine?",
+    "Senti, scusa: ma arriva in tempo? E dove lo lasciate?",
 ]
 
 # Clean slate for the suggeritore side: identity + objective only, NO caller
-# facts. The distiller must earn the boots/38/grandson from the conversation.
+# facts. The distiller must earn the watch/deadline/Pina from the conversation.
 _CLEAN_LEDGER = StateLedger(
     identity="you are ShopDemo's phone support agent",
     objective="help the caller with their existing order",
@@ -77,7 +78,7 @@ _CLEAN_LEDGER = StateLedger(
 )
 
 # Heuristic recall markers — printed per run for the operator, never enforced.
-_RECALL_MARKERS = ("scarpin", "38", "calcio", "nipote")
+_RECALL_MARKERS = ("orologio", "vent", "20", "pina", "laurea")
 
 
 def _ts(turn_no: int) -> str:
