@@ -4,7 +4,7 @@ Before the agent answers, prepend a compact developer message built from the
 state ledger (identity + objective + facts + commitments). Periodic cadence:
 inject on the first turn and every N turns thereafter.
 
-Mode is selected by the ``SUGGESTORE_MODE`` env var (off = base agent, the
+Mode is selected by the ``SUGGERITORE_MODE`` env var (off = base agent, the
 unmodified sample). The injected item is tagged so a prior copy can be stripped
 each turn — the history carries at most one compact state message, never a
 growing log.
@@ -19,12 +19,12 @@ _INJECT_ROLE = "developer"
 
 
 def is_enabled() -> bool:
-    return os.getenv("SUGGESTORE_MODE", "off").strip().lower() in {"on", "1", "true", "yes"}
+    return os.getenv("SUGGERITORE_MODE", "off").strip().lower() in {"on", "1", "true", "yes"}
 
 
 def _every() -> int:
     try:
-        n = int(os.getenv("SUGGESTORE_INJECT_EVERY", "4"))
+        n = int(os.getenv("SUGGERITORE_INJECT_EVERY", "4"))
     except ValueError:
         n = 4
     return max(1, n)

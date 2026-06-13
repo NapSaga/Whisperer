@@ -1,3 +1,4 @@
+import os
 import time
 from collections.abc import AsyncIterator
 from logging import getLogger
@@ -10,7 +11,7 @@ from agents.voice import (
     VoicePipelineConfig,
     VoiceWorkflowBase,
 )
-from app import injector, state_store
+from app import injector, state_store, truncation
 from app.agent_config import starting_agent
 from app.utils import (
     WebsocketHelper,
@@ -68,6 +69,10 @@ class Workflow(VoiceWorkflowBase):
                     )
                 except Exception:
                     logger.exception("suggeritore: injection skipped")
+        else:
+            # Base mode: cap context so early-seeded facts fall out of the window.
+            cap = int(os.getenv("SUGGERITORE_BASE_CAP", "8"))
+            run_input = truncation.apply_context_cap(conversation_history, cap)
 
         output = Runner.run_streamed(
             latest_agent,

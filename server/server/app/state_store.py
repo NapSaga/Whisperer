@@ -39,7 +39,7 @@ _FIXTURE_DEFAULT = Path(__file__).resolve().parents[3] / "spec" / "fixtures" / "
 
 
 def state_path() -> Path:
-    override = os.getenv("SUGGESTORE_STATE_PATH")
+    override = os.getenv("SUGGERITORE_STATE_PATH")
     return Path(override) if override else _FIXTURE_DEFAULT
 
 
