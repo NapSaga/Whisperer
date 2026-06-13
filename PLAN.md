@@ -89,6 +89,29 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 
 ---
 
+## 🎤 Compiti finali → pitch (per persona) — agg. 14:20
+> Stato: demo `web/` **costruita** — audio nonna (pause tagliate, loud) + recall-green + verdetto **reale 0/10·10/10** + cost pressure-meter + transcript a finestra. Resta il run-up al pitch. Daniele sui test live. Giovanni: demo + pitch. Gabriele: misura → supporto pitch/Q&A.
+
+### 👤 Giovanni — demo + pitch (owner)
+- [ ] **Demo end-to-end** dopo `Cmd+Shift+R`: **"Vai al momento del recall"** = il cold-open (t38→t40 voce nonna FORTE → t41 il base annaspa). Verificare audio chiaro su cassa.
+- [ ] **Pitch 2:30 provato col timer ≥3 volte** — scaletta brief: hook audio → problema (drift OpenAI + costo) → perché ora → demo → come/sponsor (Agents SDK · structured outputs · ElevenLabs · Codex) → why-us StudierAI. *La demo È il pitch.*
+- [ ] **Pitch deck = backup leggero**: 3-4 slide solo per sicurezza (problema+fonti · come · why-us+numeri). Dossier fonti già sul telefono per il Q&A.
+- [ ] **Consegna form 17:30** (non alle 18:29).
+
+### 👤 Gabriele — la misura → supporto pitch/Q&A
+- [ ] **Q&A numeri pronti e difendibili**: 0/10 vs 10/10 (metodologia judge + citazione `[t41]`), 7.6× costo, drift documentato. Fa il "giudice cattivo" alle prove.
+- [ ] **Test proiettore + AUDIO in sala** appena possibile: la demo è audio-first, le casse sono parte della demo → controllare il volume della nonna sul proiettore reale.
+- [ ] **Cronometra** le prove del pitch di Giovanni.
+
+### 👤 Daniele — il motore
+- [ ] **Test live del server** (in corso): layer live per il backup se la rete del venue regge; altrimenti replay registrato (`recordings/`).
+- [ ] **VIDEO BACKUP della demo** (obbligatorio ≤16:30, sopravvive senza rete) — lo registra chi non è collo di bottiglia.
+
+### 🤝 Insieme — freeze 16:30
+- [ ] tag `freeze-1630` (da qui solo fix) · video backup pronto · pitch provato.
+
+---
+
 ## Note di coupling (lette dallo scaffold, non assunte)
 - **Scenario unico = orologio** (Luca, laurea, prima del 20, Pina interno 3, ordine 4471). Tutta la catena converge: fixtures + audio nonna + harness (`SEEDED_FACT`) + driver (`CALLER_SCRIPT`) + recordings + `verdicts.json`. **Due artefatti dello stesso scenario**: (a) **batch reale** = `recordings/*.jsonl` + `verdicts.json` (chiamata scriptata 16 turni, recall t15→t16, il NUMERO 0/10 vs 10/10); (b) **demo-replay** = `transcript.jsonl` + `state.json` (chiamata lunga t1→t41, recall t40→t41, con audio nonna). Turn-id diversi per design: il judge cita il turno reale del batch (t16), il replay web mostra t41.
 - **`t41` sdoppiato**: `transcript.jsonl` ha `t41_base` e `t41_suggeritore` = stesso istante, due agenti. Il loader li mappa a sx/dx, display = `t41`. Nel replay: domanda di recall a `t38`, ultima risposta agente a `t41`, `state.json.last_turn = 41` — coerenti. **Il verdetto NON usa questi turn-id**: `verdicts.json` (batch reale, in `spec/fixtures/` **e** copia web identica) ha `question_turn = t15`, `citation = t16`, che puntano ai `recordings/*.jsonl` (16 turni). La verdict view è un pannello a sé: mostra `[t16]` come testo, non naviga il transcript del replay → nessun conflitto col `t41` della timeline.
