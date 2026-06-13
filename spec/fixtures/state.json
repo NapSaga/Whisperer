@@ -1,0 +1,15 @@
+{
+  "identity": "you are ShopDemo's phone support agent",
+  "objective": "tell the caller the delivery date of her grandson's gift order",
+  "facts": [
+    { "id": "f1", "text": "the order is a gift for the caller's grandson", "turn": "t1" },
+    { "id": "f2", "text": "the grandson plays football", "turn": "t1" },
+    { "id": "f3", "text": "the item ordered is football boots, size 38", "turn": "t3" },
+    { "id": "f4", "text": "the order was placed last week", "turn": "t5" },
+    { "id": "f5", "text": "delivery is scheduled for Thursday", "turn": "t9" }
+  ],
+  "commitments": [
+    { "id": "c1", "text": "agent will confirm the warehouse dispatch date", "turn": "t9" }
+  ],
+  "last_turn": 41
+}

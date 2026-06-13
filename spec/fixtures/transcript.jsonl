@@ -1,0 +1,42 @@
+{ "turn": "t1", "role": "caller", "text": "Aò buongiorno, chiamo pe' 'na cosa che ho ordinato, er regalo pe' mi' nipote, quello che gioca a pallone.", "ts": "00:18" }
+{ "turn": "t2", "role": "agent", "text": "Certo signora, mi dica pure, l'aiuto subito. Di che ordine si tratta?", "ts": "00:31" }
+{ "turn": "t3", "role": "caller", "text": "So' 'ste scarpe da calcio, li scarpini, numero trentotto. Lo so perche' me l'ha detto su' madre.", "ts": "00:52" }
+{ "turn": "t4", "role": "agent", "text": "Perfetto, scarpini numero 38. Mi ricorda quando ha effettuato l'ordine?", "ts": "01:10" }
+{ "turn": "t5", "role": "caller", "text": "Eh, la settimana scorsa. Pero' senta, c'avevo pure 'na fitta ar ginocchio che nun te dico, dar dottore ce devo torna'.", "ts": "01:41" }
+{ "turn": "t6", "role": "agent", "text": "Mi dispiace per il ginocchio, signora. Torniamo all'ordine: scarpini 38, settimana scorsa. Controllo subito.", "ts": "01:58" }
+{ "turn": "t7", "role": "caller", "text": "E poi 'sto callo, co' 'sto callo nun cammino piu'. E fa 'n caldo, oggi, che la Pina de sotto ha gia' messo er condizionatore.", "ts": "02:20" }
+{ "turn": "t8", "role": "caller", "text": "La Pina, quella der secondo piano, c'ha pure lei 'n nipote ma quello studia, nun gioca a pallone come er mio.", "ts": "02:35" }
+{ "turn": "t9", "role": "agent", "text": "La consegna risulta giovedi'. Le confermo io la data di spedizione dal magazzino, signora, ci penso io.", "ts": "03:05" }
+{ "turn": "t10", "role": "caller", "text": "Mbe' grazie. Sa, fa 'n caldo... e mi' nipote sta tutto er giorno fori a gioca' a pallone, manco se ferma a magna'.", "ts": "03:28" }
+{ "turn": "t11", "role": "agent", "text": "Capisco signora. C'e' altro che posso verificare per lei?", "ts": "03:46" }
+{ "turn": "t12", "role": "caller", "text": "Mattia se chiama, er nipote. Joca ner campetto della parrocchia, co' don Aldo che fa l'allenatore, 'na brava persona.", "ts": "04:05" }
+{ "turn": "t13", "role": "agent", "text": "Che bello, signora. Resto qui se le serve altro sull'ordine.", "ts": "04:22" }
+{ "turn": "t14", "role": "caller", "text": "Pero' le scarpe vecchie s'eveno rotte, tutte sfasciate, la suola che annava via. Per quello j'e' o preso 'ste nove.", "ts": "04:48" }
+{ "turn": "t15", "role": "agent", "text": "Ha fatto bene. Mi dica pure.", "ts": "05:03" }
+{ "turn": "t16", "role": "caller", "text": "Ma siete sicuri der numero? Perche' lui cresce, 'sti regazzini crescono che nun te ne accorgi.", "ts": "05:25" }
+{ "turn": "t17", "role": "agent", "text": "Il numero ordinato e' il 38, signora, come da richiesta.", "ts": "05:40" }
+{ "turn": "t18", "role": "caller", "text": "Domenica je faccio l'abbacchio co' le patate, che je piace. E pure 'a nonna de prima je faceva sempre l'abbacchio.", "ts": "06:01" }
+{ "turn": "t19", "role": "agent", "text": "Immagino sara' buonissimo. Torniamo all'ordine quando vuole.", "ts": "06:18" }
+{ "turn": "t20", "role": "caller", "text": "C'ho pure 'na nipote femmina, Giulia, ma quella balla, nun je interessa er pallone, vo' le scarpette da danza.", "ts": "06:39" }
+{ "turn": "t21", "role": "agent", "text": "Certo signora.", "ts": "06:55" }
+{ "turn": "t22", "role": "caller", "text": "Ah, senta, ma 'o pagamento e' annato? Perche' co' 'sta carta nova nun ce capisco gnente, me l'ha fatta mi' fija.", "ts": "07:14" }
+{ "turn": "t23", "role": "agent", "text": "Il pagamento risulta andato a buon fine, signora, tutto regolare.", "ts": "07:30" }
+{ "turn": "t24", "role": "caller", "text": "Mbe' meno male. La Pina invece 'a settimana scorsa j'hanno fregato i sordi co' 'na telefonata, 'na truffa, poveraccia.", "ts": "07:52" }
+{ "turn": "t25", "role": "agent", "text": "Mi dispiace per la sua vicina. Noi siamo l'assistenza ufficiale, stia tranquilla.", "ts": "08:06" }
+{ "turn": "t26", "role": "caller", "text": "Eh lo so, lo so. Pero' fa caldo, ve l'ho detto? Trentotto gradi davano oggi, come er numero de scarpa, guarda te che combinazione.", "ts": "08:25" }
+{ "turn": "t27", "role": "agent", "text": "Una bella coincidenza, signora.", "ts": "08:40" }
+{ "turn": "t28", "role": "caller", "text": "Pero' me raccomando, ch'e' 'n regalo, deve arriva' che er compleanno e' vicino, se no figurate la faccia der regazzino.", "ts": "08:58" }
+{ "turn": "t29", "role": "agent", "text": "Stia tranquilla, signora, e' tutto tracciato.", "ts": "09:12" }
+{ "turn": "t30", "role": "caller", "text": "Quann'e' er compleanno?... Aspetta, e' 'a prossima settimana, sabato. No, venerdi'. Mboh, insomma presto.", "ts": "09:05" }
+{ "turn": "t31", "role": "agent", "text": "Capisco, signora.", "ts": "09:12" }
+{ "turn": "t32", "role": "caller", "text": "E mi' fija dice ch'e' troppo che je compro, ma so' 'a nonna, no? La nonna i regali li fa.", "ts": "09:20" }
+{ "turn": "t33", "role": "agent", "text": "Ha proprio ragione lei.", "ts": "09:26" }
+{ "turn": "t34", "role": "caller", "text": "Aspetta, ma che te stavo a di'?... Ah, ecco, sa che a 'sta eta' me se confonne tutto. Pero' 'na cosa te volevo chiede.", "ts": "09:33" }
+{ "turn": "t35", "role": "agent", "text": "Faccia con calma, signora, sono qui.", "ts": "09:39" }
+{ "turn": "t36", "role": "caller", "text": "La Pina diceva ch'e' mejo ordina' de mattina, che fa meno caldo. Ma che c'entra er caldo co' 'e scarpe, dico io.", "ts": "09:44" }
+{ "turn": "t37", "role": "agent", "text": "Mi dica pure, signora.", "ts": "09:50" }
+{ "turn": "t38", "role": "caller", "text": "Senta, scusi, ma stavamo a parla' der regalo. Allora 'ste cose quanno arrivano, me lo dite si o no?", "ts": "09:56" }
+{ "turn": "t39", "role": "agent", "text": "Certo signora, mi faccia controllare un attimo.", "ts": "10:02" }
+{ "turn": "t40", "role": "caller", "text": "Eh, er regalo pe' Mattia, dai, quello de cui parlavamo all'inizio!", "ts": "10:08" }
+{ "turn": "t41_base", "role": "agent", "text": "Mi scusi signora, di quale prodotto stiamo parlando? Mi da' il numero dell'ordine, per favore?", "ts": "10:14" }
+{ "turn": "t41_suggeritore", "role": "agent", "text": "Gli scarpini numero 38 per suo nipote arrivano giovedi', signora. Glielo confermo io.", "ts": "10:14" }
