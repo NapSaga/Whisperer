@@ -58,12 +58,12 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 
 > 🛰️ **Team su origin/main (12:36)**: `harness: batch runner N=10` + `harness: requirements.txt` (Gabriele avanti) · `audio: registrazioni nonna` committate · Task 3 web **da pushare**.
 
-## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · 4/5 (cost_event emit [todo])
+## Fase 2 — server/ → checkpoint 13:30 · owner: **Daniele** · 5/5 (cost_event emesso · ⚠️ divergenza da decidere, vedi Fase 5)
 - `[fatto]` Agente vittima customer care sullo scheletro sample — layer funzionante end-to-end via testo (base dimentica, suggeritore ricorda)
 - `[fatto]` **Distiller** ogni 4 turni → `state.json` (`SPEC §2`, structured output, `gpt-4o-mini`) — **→ state.json** · live
 - `[fatto]` **Iniezione periodica** (`SPEC §3`, default sicuro) — funzionante
 - `[fatto]` **Emit** `transcript.jsonl` (`SPEC §7`) — **→ transcript turn** · driver headless `batch_run.py` pushato e girato · `recordings/base_run{1..10}.jsonl` + `recordings/sug_run{1..10}.jsonl` prodotti
-- `[todo]` **Emit** `cost_event` (`SPEC §5`) — **→ cost_event** · ⚠️ NON ancora emesso da `server.py`/`batch_run.py`: `server/server/run/cost_event.jsonl` non esiste, `cost.json` resta MOCK
+- `[fatto]` **Emit** `cost_event` (`SPEC §5`) — **→ cost_event** · `cost_meter.py` v1: emesso da `server.py` (live) + `batch_run.py` (file per-run), reset per connessione, token reali da `raw_responses[].usage`. ⚠️ **MA la divergenza è INVERTITA** (base cappato = economico, suggeritore history piena = caro) → **NON wirare il contatore come misurato** finché non si decide il nodo in Fase 5
 
 ## Fase 3 — harness/ → checkpoint 13:30 · owner: **Gabriele** · ✅ 3/3
 - `[fatto]` **Judge binario** structured output: `{transcript, seeded_fact}` → verdict con `citation` (`SPEC §6`) — **→ verdict** · smoke test su fixture: FIXTURE OK
@@ -80,7 +80,7 @@ Ordine di taglio se in ritardo: **watchdog → cost counter → drill-down judge
 - `[todo]` **Watchdog** (`SPEC §4`) inietta solo il fatto violato — **→ drift/reinject** · *(1° tagliabile se instabile alle 16:30 → fallback iniezione periodica)*
 - `[todo]` Raffina prompt **distiller** (cosa estrae/scarta, stato compatto)
 - `[todo]` **Numeri finali validati** (reggono il Q&A)
-- `[todo]` Cost counter **live** collegato a schermo
+- `[todo]` **⚠️ NODO APERTO — divergenza costi invertita.** Il contatore reale mostra il **suggeritore più caro del base** (base cappato = economico; il suggeritore manda la history piena, manca il *"send compact state instead of resending history"* di `SPEC §3`). Da decidere insieme: **(a)** fix onesto = base cap a **TOKEN** (mima il 32k) + suggeritore invia **stato compatto invece della history** → divergenza reale nella direzione giusta, **ma** rigenerare batch+judge (il numero si ri-valida; rete di sicurezza = tag `run-1330`); **(b)** **tagliare** il contatore dalla demo, costo nel pitch come **dato di produzione citato** (Realtime $/min, StudierAI €4,50 vs €0,13). ⚠️ Non spacciare il `cost.json` MOCK come misurato. Il numero **0/10 vs 10/10 NON è toccato** da questo nodo.
 
 ## Fase 6 — Freeze 16:30 + pitch · 0/3
 - `[todo]` **Freeze** codice + hardening (tag `freeze-1630`) — da qui solo fix
