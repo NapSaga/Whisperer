@@ -51,7 +51,16 @@ const FRAME_MS = 100;
 const WINDOW = 6;
 // caller turns = real nonna recordings; agent turns (t6/t10/t39/t41) = ElevenLabs
 // "Aurora" Italian voice → botta e risposta on scadenza / consegna / test memoria.
-const AUDIO_TURNS = ["t1", "t5", "t6", "t7", "t9", "t10", "t38", "t39", "t40", "t41"];
+// CUT for a punchy demo: opening seeds 3 facts with voice (t1 watch · t5 deadline
+// · t9 delivery) + one agent reply (t6), then the finale (t38→t41). Drop t7/t10.
+// HEARD: the opening (t1) + the whole recall finale. Everything else is muted —
+// the team's voice-over runs over the middle.
+const AUDIO_TURNS = ["t1", "t38", "t39", "t40", "t41"];
+// MUTED but visually highlighted: the two seeded facts the recall depends on.
+const HIGHLIGHT_TURNS = ["t5", "t9"];
+// finale clips play at natural speed (the climax); the opening (t1) is sped up.
+const FINALE_TURNS = ["t38", "t39", "t40", "t41"];
+const SEED_RATE = 1.4;
 
 function parseTimestamp(ts: string) {
   const [minutes = "0", seconds = "0"] = ts.split(":");
@@ -300,6 +309,7 @@ function LaneColumn({
   lane,
   recallActive,
   speakingTurn,
+  highlightTurn,
   clipProgress,
 }: {
   title: string;
@@ -308,6 +318,7 @@ function LaneColumn({
   lane: "base" | "suggeritore";
   recallActive: boolean;
   speakingTurn: string | null;
+  highlightTurn: string | null;
   clipProgress: number;
 }) {
   const endRef = useRef<HTMLDivElement | null>(null);
@@ -369,6 +380,8 @@ function LaneColumn({
               const isSpeaking =
                 speakingTurn === turn.displayTurn &&
                 !(turn.displayTurn === "t41" && lane === "base");
+              const isHighlight = highlightTurn === turn.displayTurn;
+              const emphasized = isSpeaking || isHighlight;
 
               return (
                 <div
@@ -387,7 +400,7 @@ function LaneColumn({
                     <span>·</span>
                     <span>{turn.ts}</span>
                     <span className="opacity-60">[{turn.displayTurn}]</span>
-                    {isSpeaking ? (
+                    {emphasized ? (
                       <span className="size-1.5 animate-pulse rounded-full bg-[color:var(--voice-accent)]" />
                     ) : null}
                   </div>
@@ -398,7 +411,7 @@ function LaneColumn({
                       isCaller && "bg-secondary text-foreground",
                       !isCaller &&
                         "border border-black/10 bg-[color:var(--surface-soft)] text-foreground",
-                      isSpeaking &&
+                      emphasized &&
                         "border-[color:var(--voice-accent)]/45 text-[1.06rem] font-medium ring-1 ring-[color:var(--voice-accent)]/35 shadow-sm",
                       isFail &&
                         "border-[color:var(--fail)] bg-[color:var(--fail)]/12 text-foreground shadow-[0_0_24px_color-mix(in_oklch,var(--fail),transparent_82%)]",
@@ -430,6 +443,11 @@ function LaneColumn({
                         [t9] consegna
                       </span>
                     </div>
+                  ) : null}
+                  {isHighlight ? (
+                    <span className="flex items-center gap-1 font-mono text-[0.68rem] text-[color:var(--voice-accent)]">
+                      <CheckIcon className="size-3" /> salvato in memoria
+                    </span>
                   ) : null}
                 </div>
               );
@@ -712,18 +730,23 @@ export function TranscriptShell({
     return out;
   }, [baseTurns, recallStart]);
 
-  const audioTurns = useMemo(
+  // beats = audible turns + muted-highlight turns (t5/t9), sorted by time
+  const beatTurns = useMemo(
     () =>
-      AUDIO_TURNS.map((id) => [id, turnTimes.get(id)] as const)
+      [...AUDIO_TURNS, ...HIGHLIGHT_TURNS]
+        .map((id) => [id, turnTimes.get(id)] as const)
         .filter((pair): pair is [string, number] => typeof pair[1] === "number")
         .sort((a, b) => a[1] - b[1]),
     [turnTimes]
   );
+  const audioSet = useMemo(() => new Set(AUDIO_TURNS), []);
 
   const [currentSeconds, setCurrentSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [speakingTurn, setSpeakingTurn] = useState<string | null>(null);
+  // a muted-but-highlighted turn (t5/t9) — emphasized on screen, no audio
+  const [highlightTurn, setHighlightTurn] = useState<string | null>(null);
   // 0→1 progress of the clip currently being spoken, drives the karaoke reveal
   const [clipProgress, setClipProgress] = useState(0);
   const [showProof, setShowProof] = useState(false);
@@ -731,6 +754,18 @@ export function TranscriptShell({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const prevSecondsRef = useRef(0);
   const holdRef = useRef(false);
+  const currentSecondsRef = useRef(0);
+  // curated "≈9 minutes later — the memory held" beat that skips the small talk
+  const [interlude, setInterlude] = useState(false);
+  const interludeActiveRef = useRef(false);
+  const interludeDoneRef = useRef(false);
+
+  // opening ends right after the delivery fact (t9) — then the interlude skips
+  // the small talk straight to the recall.
+  const seedEndSeconds = useMemo(
+    () => secondsForTurn(baseTurns, "t9") ?? consegnaSeconds,
+    [baseTurns, consegnaSeconds]
+  );
 
   const recallActive = currentSeconds >= recallEnd;
   const speakerLabel = useMemo(() => {
@@ -765,23 +800,38 @@ export function TranscriptShell({
     [suggeritoreTurns, currentSeconds]
   );
 
-  // auto-advance — frozen while a clip speaks (holdRef)
+  useEffect(() => {
+    currentSecondsRef.current = currentSeconds;
+  }, [currentSeconds]);
+
+  // auto-advance — frozen while a clip speaks (holdRef) or during the interlude.
+  // Curated 3 acts: once the facts are seeded (past t10), skip the ~9 minutes of
+  // small talk with a brief "the memory held" interlude, then jump to the recall.
   useEffect(() => {
     if (!isPlaying) return;
     const id = window.setInterval(() => {
-      if (holdRef.current) return;
+      if (holdRef.current || interludeActiveRef.current) return;
+      const cs = currentSecondsRef.current;
+      if (!interludeDoneRef.current && cs >= seedEndSeconds && cs < recallStart) {
+        interludeDoneRef.current = true;
+        interludeActiveRef.current = true;
+        setInterlude(true);
+        window.setTimeout(() => {
+          interludeActiveRef.current = false;
+          setInterlude(false);
+          prevSecondsRef.current = recallStart - 0.5;
+          setCurrentSeconds(recallStart);
+        }, 2800);
+        return;
+      }
       setCurrentSeconds((seconds) => {
-        const rate =
-          seconds >= consegnaSeconds && seconds < recallStart
-            ? REPLAY_RATE * 2
-            : REPLAY_RATE;
-        const next = Math.min(duration, seconds + rate * (FRAME_MS / 1000));
+        const next = Math.min(duration, seconds + REPLAY_RATE * (FRAME_MS / 1000));
         if (next >= duration) window.setTimeout(() => setIsPlaying(false), 0);
         return next;
       });
     }, FRAME_MS);
     return () => window.clearInterval(id);
-  }, [duration, isPlaying, consegnaSeconds, recallStart]);
+  }, [duration, isPlaying, seedEndSeconds, recallStart]);
 
   // recall payoff toast
   useEffect(() => {
@@ -798,7 +848,8 @@ export function TranscriptShell({
     });
   }, [currentSeconds, recallEnd]);
 
-  // play the real nonna voice on forward crossings and HOLD until the clip ends
+  // on a forward crossing: an AUDIO turn plays + holds; a HIGHLIGHT turn (t5/t9)
+  // is emphasized for a beat with NO sound (the team's voice-over talks over it).
   useEffect(() => {
     const prev = prevSecondsRef.current;
     prevSecondsRef.current = currentSeconds;
@@ -806,10 +857,22 @@ export function TranscriptShell({
       holdRef.current = false;
       return;
     }
-    if (muted || currentSeconds <= prev) return;
-    const crossed = audioTurns.filter(([, sec]) => sec > prev && sec <= currentSeconds);
+    if (currentSeconds <= prev) return;
+    const crossed = beatTurns.filter(([, sec]) => sec > prev && sec <= currentSeconds);
     if (crossed.length === 0) return;
     const [turn] = crossed[crossed.length - 1];
+
+    if (!audioSet.has(turn)) {
+      // muted highlight (scadenza / consegna): emphasize ~1.6s, no audio
+      holdRef.current = true;
+      setHighlightTurn(turn);
+      window.setTimeout(() => {
+        holdRef.current = false;
+        setHighlightTurn(null);
+      }, 1600);
+      return;
+    }
+    if (muted) return; // global mute → audio turn makes no sound, clock continues
     const el = audioRef.current;
     if (!el) return;
     const release = () => {
@@ -821,11 +884,13 @@ export function TranscriptShell({
     el.src = `/audio/${turn}.mp3`;
     el.currentTime = 0;
     el.volume = 1;
+    el.preservesPitch = true;
+    el.playbackRate = FINALE_TURNS.includes(turn) ? 1 : SEED_RATE;
     holdRef.current = true;
     setClipProgress(0);
     setSpeakingTurn(turn);
     void el.play().catch(release);
-  }, [currentSeconds, muted, audioTurns]);
+  }, [currentSeconds, muted, beatTurns, audioSet]);
 
   // karaoke clock — reveal the spoken line in sync with the real audio position.
   // Driven by the audio element's currentTime so it freezes exactly on pause and
@@ -855,17 +920,23 @@ export function TranscriptShell({
       el.currentTime = 0;
     }
     holdRef.current = false;
+    interludeActiveRef.current = false;
     setSpeakingTurn(null);
+    setHighlightTurn(null);
     setClipProgress(0);
+    setInterlude(false);
   }, []);
 
   const handleSeek = (value: number) => {
     stopClip();
-    setCurrentSeconds(Math.min(duration, Math.max(0, value)));
+    const v = Math.min(duration, Math.max(0, value));
+    interludeDoneRef.current = v >= seedEndSeconds; // re-arm only if scrubbed before the seed end
+    setCurrentSeconds(v);
   };
 
   const handleRestart = () => {
     stopClip();
+    interludeDoneRef.current = false; // replay the curated interlude
     // jump to just before the first spoken line so the voice + first bubble land
     // in ~0.1s instead of after a long silent lead-in.
     prevSecondsRef.current = firstTs - 0.2;
@@ -875,6 +946,7 @@ export function TranscriptShell({
 
   const handleJumpToRecall = () => {
     stopClip();
+    interludeDoneRef.current = true; // jumping straight to the finale, skip the interlude
     // land just before t38 so the jump always counts as a forward crossing of
     // the recall question (replayable across rehearsals) and ONLY t38 fires.
     prevSecondsRef.current = recallStart - 0.5;
@@ -947,13 +1019,13 @@ export function TranscriptShell({
         speaking={speakingTurn != null && isPlaying}
         speakerLabel={speakerLabel}
         phase={
-          currentSeconds >= recallEnd
-            ? "recall ✓"
-            : currentSeconds >= recallStart
-              ? "recall"
-              : currentSeconds >= consegnaSeconds
-                ? "avanti veloce 2×"
-                : "ascolto"
+          interlude
+            ? "la memoria regge"
+            : currentSeconds >= recallEnd
+              ? "recall ✓"
+              : currentSeconds >= recallStart
+                ? "recall"
+                : "i fatti"
         }
         percent={duration ? Math.round((currentSeconds / duration) * 100) : 0}
         markers={markers}
@@ -973,6 +1045,7 @@ export function TranscriptShell({
           lane="base"
           recallActive={recallActive}
           speakingTurn={speakingTurn}
+          highlightTurn={highlightTurn}
           clipProgress={clipProgress}
         />
         <LaneColumn
@@ -982,6 +1055,7 @@ export function TranscriptShell({
           lane="suggeritore"
           recallActive={recallActive}
           speakingTurn={speakingTurn}
+          highlightTurn={highlightTurn}
           clipProgress={clipProgress}
         />
         <MemoryRail
@@ -997,6 +1071,27 @@ export function TranscriptShell({
         recallActive={recallActive}
         onOpenProof={() => setShowProof(true)}
       />
+
+      {interlude ? (
+        <div className="animate-in fade-in fixed inset-0 z-40 grid place-items-center bg-[color:var(--background)]/75 p-6 backdrop-blur-sm duration-300">
+          <div className="animate-in zoom-in-95 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-black/10 bg-[color:var(--card)] px-10 py-8 text-center shadow-2xl duration-500">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground">
+              la chiamata continua
+            </span>
+            <p className="text-3xl font-semibold tracking-tight text-foreground">≈ 9 minuti dopo</p>
+            <p className="text-base leading-6 text-muted-foreground">
+              La nonna parla del tempo, della festa, della figlia. Il base si riempie di
+              contesto e perde il filo.
+            </p>
+            <p className="text-base leading-6 text-foreground">
+              <span className="font-semibold text-[color:var(--recall)]">
+                Il Suggeritore ha tenuto tutto:
+              </span>{" "}
+              orologio · laurea · prima del 20 · Pina interno 3.
+            </p>
+          </div>
+        </div>
+      ) : null}
 
       {showProof ? (
         <ProofOverlay verdicts={verdicts} onClose={() => setShowProof(false)} />
