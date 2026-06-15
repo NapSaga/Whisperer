@@ -531,7 +531,7 @@ function MemoryRail({
               prova del recall · t41
             </p>
             <p className="mt-0.5 text-[0.78rem] leading-5 text-foreground">
-              Suggeritore cita scadenza e consegna dalla memoria.
+              Whisperer cita scadenza e consegna dalla memoria.
             </p>
           </div>
         ) : null}
@@ -987,7 +987,7 @@ export function TranscriptShell({
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3">
         <div className="flex items-baseline gap-3">
           <span className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
-            Il Suggeritore
+            Whisperer
           </span>
           <span className="font-mono text-[0.7rem] text-muted-foreground">HackRome · 13 giu 2026</span>
         </div>
@@ -1006,7 +1006,7 @@ export function TranscriptShell({
         </h1>
         <p className="text-sm text-muted-foreground">
           {recallActive
-            ? "A 10:14 il base richiede tutto da capo. Il Suggeritore conferma — con la prova."
+            ? "A 10:14 il base richiede tutto da capo. Whisperer conferma — con la prova."
             : "Stesso prompt, stessa voce. L'unica differenza è il layer di memoria."}
         </p>
       </header>
@@ -1049,7 +1049,7 @@ export function TranscriptShell({
           clipProgress={clipProgress}
         />
         <LaneColumn
-          title="Suggeritore"
+          title="Whisperer"
           subtitle="stesso prompt e voce · memoria attiva"
           turns={suggeritoreWindow}
           lane="suggeritore"

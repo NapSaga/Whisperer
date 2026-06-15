@@ -1,4 +1,4 @@
-# SPEC — Il Suggeritore (the memory layer)
+# SPEC — Whisperer (the memory layer)
 
 The agent under test runs twice on the **same** prompt and voice: `base` (no layer) and
 `suggeritore` (layer on). Only memory differs. Target: at minute 10 the base forgets a

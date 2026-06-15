@@ -70,22 +70,25 @@ class Workflow(VoiceWorkflowBase):
             input_text
         )
 
-        # Suggeritore re-grounding (SPEC §3, periodic). Base mode is a no-op:
-        # run_input stays the unmodified conversation_history.
+        # Whisperer re-grounding (SPEC §3, session-rotation): each turn sends a
+        # compact input rehydrated from the ledger instead of the full history.
+        # Base mode re-grounds nothing and caps context so early facts fall away.
         self._turn += 1
         self._msg_no += 1
         caller_turn = {"turn": f"t{self._msg_no}", "role": "caller", "text": input_text}
 
         run_input = conversation_history
         if injector.is_enabled():
-            injector.strip(conversation_history)  # drop any stale injection carried over
-            if injector.should_inject(self._turn):
-                try:
-                    run_input = injector.with_injection(
-                        conversation_history, state_store.current()
-                    )
-                except Exception:
-                    logger.exception("suggeritore: injection skipped")
+            injector.strip(conversation_history)  # drop any stale ledger item in history
+            # SPEC §3 session-rotation: every turn is a fresh input rehydrated
+            # from the ledger (compact state + the question), not the resent
+            # history — this is the cost win and what keeps recall robust.
+            try:
+                run_input = injector.compact_input(
+                    conversation_history, state_store.current()
+                )
+            except Exception:
+                logger.exception("suggeritore: compact input skipped")
         else:
             # Base mode: cap context so early-seeded facts fall out of the window.
             cap = int(os.getenv("SUGGERITORE_BASE_CAP", "8"))

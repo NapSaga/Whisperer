@@ -1,0 +1,14 @@
+{"agent": "base", "turn": "t1", "tokens_in": 249, "tokens_out": 34, "usd_cumulative": 0.0101}
+{"agent": "base", "turn": "t3", "tokens_in": 319, "tokens_out": 28, "usd_cumulative": 0.0221}
+{"agent": "base", "turn": "t5", "tokens_in": 389, "tokens_out": 43, "usd_cumulative": 0.0373}
+{"agent": "base", "turn": "t7", "tokens_in": 449, "tokens_out": 30, "usd_cumulative": 0.0536}
+{"agent": "base", "turn": "t9", "tokens_in": 494, "tokens_out": 50, "usd_cumulative": 0.0726}
+{"agent": "base", "turn": "t11", "tokens_in": 563, "tokens_out": 28, "usd_cumulative": 0.0924}
+{"agent": "base", "turn": "t13", "tokens_in": 615, "tokens_out": 39, "usd_cumulative": 0.1146}
+{"agent": "base", "turn": "t15", "tokens_in": 672, "tokens_out": 34, "usd_cumulative": 0.1383}
+{"agent": "base", "turn": "t17", "tokens_in": 729, "tokens_out": 33, "usd_cumulative": 0.1637}
+{"agent": "base", "turn": "t19", "tokens_in": 782, "tokens_out": 28, "usd_cumulative": 0.1906}
+{"agent": "base", "turn": "t21", "tokens_in": 829, "tokens_out": 37, "usd_cumulative": 0.2195}
+{"agent": "base", "turn": "t23", "tokens_in": 884, "tokens_out": 27, "usd_cumulative": 0.2495}
+{"agent": "base", "turn": "t25", "tokens_in": 931, "tokens_out": 16, "usd_cumulative": 0.2803}
+{"agent": "base", "turn": "t27", "tokens_in": 970, "tokens_out": 49, "usd_cumulative": 0.3145}

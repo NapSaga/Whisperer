@@ -105,7 +105,7 @@ export function VerdictView({ verdicts }: { verdicts: VerdictsFixture }) {
       <div className="grid gap-5 sm:grid-cols-2">
         <ScorePanel label="Agente base" score={verdicts.score.base} tone="fail" />
         <ScorePanel
-          label="Suggeritore"
+          label="Whisperer"
           score={verdicts.score.suggeritore}
           tone="recall"
         />

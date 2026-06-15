@@ -1,4 +1,4 @@
-# Il Suggeritore — Design System
+# Whisperer — Design System
 
 > Tabellone delle prove, **light premium editorial**. Definito, non vibe-code.
 > Single screen, light-mode, projector-first (16:9). Tokens in `src/app/globals.css`.
