@@ -124,7 +124,7 @@ function PressureMeter({
   return (
     <div className="flex items-center gap-4 rounded-lg border border-black/10 bg-[color:var(--card)] px-4 py-1.5 shadow-sm">
       <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted-foreground">
-        costo · stima
+        costo · misurato
       </span>
       <div className="flex items-baseline gap-1.5">
         <span className="text-[0.66rem] uppercase tracking-wide text-muted-foreground">base</span>
@@ -134,7 +134,7 @@ function PressureMeter({
       </div>
       <Separator orientation="vertical" className="h-5" />
       <div className="flex items-baseline gap-1.5">
-        <span className="text-[0.66rem] uppercase tracking-wide text-muted-foreground">sugg.</span>
+        <span className="text-[0.66rem] uppercase tracking-wide text-muted-foreground">whisp.</span>
         <span className="font-mono text-base font-semibold tabular-nums text-[color:var(--voice-accent)]">
           {formatUsd(sugValue)}
         </span>
@@ -1085,7 +1085,7 @@ export function TranscriptShell({
             </p>
             <p className="text-base leading-6 text-foreground">
               <span className="font-semibold text-[color:var(--recall)]">
-                Il Suggeritore ha tenuto tutto:
+                Whisperer ha tenuto tutto:
               </span>{" "}
               orologio · laurea · prima del 20 · Pina interno 3.
             </p>
