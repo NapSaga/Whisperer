@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://whisperer.vercel.app"),
+  metadataBase: new URL("https://whisperer-xi.vercel.app"),
   title: "Whisperer — memory layer for voice agents",
   description:
     "Drop-in memory layer for AI voice agents. Measured recall: 0/10 → 10/10. Built at HackRome.",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: "Whisperer — memory layer for voice agents",
     description:
       "Drop-in memory layer for AI voice agents. Measured recall: 0/10 → 10/10. Built at HackRome.",
-    url: "https://whisperer.vercel.app",
+    url: "https://whisperer-xi.vercel.app",
     siteName: "Whisperer",
     images: [
       {
