@@ -1,12 +1,12 @@
 {
   "seeded_fact": "the watch must arrive before the 20th for grandson Luca's graduation, delivered to sig.ra Pina interno 3",
-  "question_turn": "t15",
+  "question_turn": "t38",
   "runs": {
     "base": [
       {
         "run": 1,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent did not recall the specific details of the order, asking for the order date again instead."
@@ -14,7 +14,7 @@
       {
         "run": 2,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent asks for the order date again instead of recalling the specified delivery details."
@@ -22,7 +22,7 @@
       {
         "run": 3,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent did not mention the watch or delivery details, only asked for the order number."
@@ -30,7 +30,7 @@
       {
         "run": 4,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent did not recall the specific item or recipient details, simply asking for the order number instead."
@@ -38,7 +38,7 @@
       {
         "run": 5,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent asked for the order number instead of confirming the delivery details related to the watch for Luca."
@@ -46,7 +46,7 @@
       {
         "run": 6,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent did not confirm details about the watch or its recipient, but instead asked the caller to repeat the order information."
@@ -54,7 +54,7 @@
       {
         "run": 7,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent did not mention the specific order details about the watch or the recipient, only requesting the order number."
@@ -62,7 +62,7 @@
       {
         "run": 8,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent does not recall specific details about the order but asks for confirmation instead."
@@ -70,7 +70,7 @@
       {
         "run": 9,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent did not mention the watch, the specific recipient, or the delivery deadline, only asked for the order number."
@@ -78,7 +78,7 @@
       {
         "run": 10,
         "remembers": false,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent asked the caller to provide the order number instead of confirming the delivery details, indicating a lack of recall for the specific order information."
@@ -88,7 +88,7 @@
       {
         "run": 1,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent confirmed the delivery date and correctly referenced the item and recipient, showing it recalled the seeded fact."
@@ -96,7 +96,7 @@
       {
         "run": 2,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent accurately mentioned the watch, the delivery to sig.ra Pina, and confirmed the order would arrive before the 20th."
@@ -104,7 +104,7 @@
       {
         "run": 3,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent correctly recalled the order details, including the item, recipient, and delivery requirement."
@@ -112,7 +112,7 @@
       {
         "run": 4,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent accurately recalled the delivery date and recipient's address."
@@ -120,7 +120,7 @@
       {
         "run": 5,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent accurately recalled the item, recipient, and delivery date."
@@ -128,7 +128,7 @@
       {
         "run": 6,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent accurately reflected the details of the order and the delivery instructions."
@@ -136,7 +136,7 @@
       {
         "run": 7,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent correctly confirmed the delivery date and recipient based on the details previously provided."
@@ -144,7 +144,7 @@
       {
         "run": 8,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent correctly stated that the watch should arrive before the 20th and confirmed the delivery details to sig.ra Pina, reflecting the seeded fact."
@@ -152,7 +152,7 @@
       {
         "run": 9,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent accurately confirmed the delivery date and recipient as specified in the seeded fact."
@@ -160,7 +160,7 @@
       {
         "run": 10,
         "remembers": true,
-        "citation": "t16",
+        "citation": "t41",
         "identity_held": true,
         "objective_correct": true,
         "reason": "The agent accurately referenced the watch, the graduation deadline, and the delivery person."

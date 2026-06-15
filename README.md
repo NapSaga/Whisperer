@@ -32,7 +32,7 @@ Same agent, same prompt, same call. A binary judge asks *"does it recall the min
 | Side | Recall (N=10) | How |
 |---|---|---|
 | **base** (no layer) | **0 / 10** | item-capped window → the minute-1 fact falls out by recall time |
-| **suggeritore** (Whisperer on) | **10 / 10** | answers from the compact ledger; every verdict carries a `[t16]` citation |
+| **suggeritore** (Whisperer on) | **10 / 10** | answers from the compact ledger; every verdict carries a `[t41]` citation (the recall turn shown in the replay; `server/evidence/` documents the real batch) |
 
 Plus: a split-screen demo, a live HUD that **writes the ledger to screen by itself**, and the recall moment — the base flounders, Whisperer answers exactly, with proof.
 
