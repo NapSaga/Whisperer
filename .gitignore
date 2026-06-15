@@ -18,3 +18,7 @@ out/
 
 # os
 .DS_Store
+
+# heavy / raw media — kept local, not in git
+*.mov
+*.mp4
