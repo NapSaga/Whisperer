@@ -20,7 +20,7 @@ Il core è completo e misurato:
 | Watchdog rilevamento drift (SPEC §4) | ✗ progettato, non implementato | — |
 | Generalizzazione scenari | ✗ solo scenario "nonna" | `batch_run.py` hardcoded |
 | Misurazione chiamate lunghe | ✗ serve validare il 7.6× proiettato | — |
-| Trascrizione vocale live (Whisper) | ✗ non implementato | — |
+| Trascrizione vocale live (Whisper) | ◐ presente nell'engine (`VoicePipeline` STT→LLM→TTS), assente nella HUD demo (replay di audio pre-registrato) | `server/server/server.py` |
 | Integrazione StudierAI | ✗ cliente zero nominale | — |
 
 **Il numero misurato:** recall 0/10 → 10/10 · costo 1.3× misurato su 28 turn (7.6× proiettato su una chiamata da 10-20 min).
@@ -178,6 +178,6 @@ uv run python batch_run.py --mode base --n 10
 # Scorecard
 python harness/runner.py --mode live \
   --base recordings/base_run*.jsonl \
-  --suggeritore recordings/sug_run*.jsonl \
+  --sug recordings/sug_run*.jsonl \
   --cost-dir recordings/
 ```

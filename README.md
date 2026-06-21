@@ -98,7 +98,7 @@ python harness/runner.py --mode fixture
 # score N real recordings per side, and aggregate per-run cost
 python harness/runner.py --mode live \
   --base recordings/base_run*.jsonl \
-  --suggeritore recordings/sug_run*.jsonl \
+  --sug recordings/sug_run*.jsonl \
   --cost-dir recordings/
 ```
 
