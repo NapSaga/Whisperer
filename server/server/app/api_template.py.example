@@ -1,0 +1,36 @@
+"""Template for a real per-client API connector (roadmap #5).
+
+Copy this to ``api_<client>.py`` (e.g. ``api_studierai.py``), implement the two
+functions against the client's real systems, then point the agent at it:
+
+    WHISPERER_API_CONNECTOR=api_studierai
+
+Nothing else changes — ``agent_config.py`` loads the connector by name through
+``connectors.load_connector`` and the agent's tools call into it unchanged. The
+module only has to implement the ``ApiConnector`` interface (see connectors.py).
+"""
+
+
+def get_past_orders() -> list[dict]:
+    """Return the caller's past orders from the client's real order system.
+
+    Each order is a dict; keep at least these keys so the agent can reason about
+    them: order_date, order_number, order_description, order_status.
+    """
+    # Example (replace with a real DB query / API call):
+    #
+    #   import httpx
+    #   resp = httpx.get(f"{ORDERS_API}/orders", headers=_auth())
+    #   resp.raise_for_status()
+    #   return resp.json()["orders"]
+    raise NotImplementedError("wire this connector to the client's order system")
+
+
+def submit_refund_request(order_number: str) -> str:
+    """Submit a refund for ``order_number`` and return a status string."""
+    # Example (replace with a real refund-service call):
+    #
+    #   import httpx
+    #   resp = httpx.post(f"{REFUNDS_API}/refunds", json={"order": order_number}, headers=_auth())
+    #   return "success" if resp.is_success else f"failed: {resp.status_code}"
+    raise NotImplementedError("wire this connector to the client's refund system")

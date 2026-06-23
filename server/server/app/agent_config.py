@@ -2,7 +2,11 @@ import json
 
 from agents import Agent, function_tool
 
-import app.mock_api as mock_api
+from whisperer.connectors import load_connector
+
+# The per-client connector behind the agent's tools. Swap it without touching the
+# agent by setting WHISPERER_API_CONNECTOR (default: the api_shopdemo fixtures).
+client_api = load_connector()
 
 STYLE_INSTRUCTIONS = "Use a conversational tone and write in a chat style without formal formatting or lists and do not use any emojis."
 
@@ -24,13 +28,13 @@ SUPPORT_INSTRUCTIONS = (
 
 @function_tool
 def get_past_orders():
-    return json.dumps(mock_api.get_past_orders())
+    return json.dumps(client_api.get_past_orders())
 
 
 @function_tool
 def submit_refund_request(order_number: str):
     """Confirm with the user first"""
-    return mock_api.submit_refund_request(order_number)
+    return client_api.submit_refund_request(order_number)
 
 
 customer_support_agent = Agent(
