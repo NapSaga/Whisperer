@@ -17,7 +17,7 @@ import re
 
 from agents import Agent, Runner
 
-from app.state_store import Commitment, Fact, StateLedger
+from .state_store import Commitment, Fact, StateLedger
 
 DISTILLER_INSTRUCTIONS = """\
 You are a memory distiller for a phone-support call. You receive the current state \

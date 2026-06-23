@@ -47,10 +47,10 @@ caller speaks  →  distiller writes the ledger (every 4 turns)  →  injector s
 Whisperer is a memory layer that sits next to the voice agent. Three real pieces, all in the code:
 
 1. **The distiller** — `gpt-4o-mini`, structured output. Every 4 turns it reads the live transcript and writes a typed, append-only **state ledger**: identity · objective · facts · commitments. Every entry cites the transcript turn that proves it. A deterministic `_reconcile` step drops any fact that doesn't point to a real caller turn → **no hallucinated memory**. *This is the IP.*
-   → `server/server/app/state_store.py` · `spec/SPEC.md §1–2`
+   → `sdk/whisperer/state_store.py` · `spec/SPEC.md §1–2`
 
 2. **Compact re-grounding** — `compact_input`, the real session-rotation of `SPEC §3`. Each turn, instead of resending the whole conversation, Whisperer sends **`[compact ledger + current question]`**. The agent answers from the distilled state — light while the base re-pays its growing window. *This is the product, and it's measured.*
-   → `server/server/app/injector.py`
+   → `sdk/whisperer/injector.py`
 
 3. **The judge + harness** — a binary judge reads a recording and returns `remembers: yes/no` with the turn citation. In batch (N=10/side) it produces the number. It runs against the **real workflow**, so the number isn't gamed at the measurement layer.
    → `harness/judge.py` · `harness/runner.py`
@@ -61,7 +61,7 @@ We under-promise by a hair, on purpose. State these proactively; keep them ready
 
 - **Cost — the important one.** The on-screen counter shows **real, measured** numbers from `server/evidence/fullcontext-qa` (28-turn batch, N=10): base **$0.30** vs Whisperer **$0.23**, **1.30×** — the base re-pays its growing context every turn while Whisperer sends a compact ledger and stays flat. That's the *direction*, measured, labeled **"misurato"**. The dramatic *magnitude* (e.g. 7.6×, or our StudierAI production €4.50 vs €0.13) is a **projection** for a full 10–20 min call — stated verbally, never passed off as the measured on-screen number. On a short 28-turn demo forgetting and cost-magnitude are coupled, so the live gap is a modest 1.3×; on a real call it compounds as the base keeps climbing and Whisperer stays flat. The mock `cost.json` is gone.
 - **Why the base forgets.** The base is capped to reproduce the **real 32k hard-cap** managed platforms ship (Retell) and the blind truncation OpenAI documents. The number measures recall *under that real condition* — not an invented handicap.
-- **Watchdog (if asked).** Designed, not shipped today (`SPEC §4`). The current build uses periodic re-grounding + compact state — the safe default. The watchdog is the next module.
+- **Watchdog (if asked).** Now implemented (`SPEC §4`), **opt-in** via `SUGGERITORE_WATCHDOG=on` (`sdk/whisperer/watchdog.py`). The shipped default stays periodic re-grounding + compact state — the safe default the measured number was produced under. With the flag on, after each reply a cheap check asks whether it contradicts a known fact and, on drift, re-injects that single fact and lets the agent answer again.
 - **Distiller cost (if asked).** Yes, the layer runs a cheap text model; its overhead is small next to the audio context the base re-pays every turn.
 
 > **Backup evidence** for Q&A lives in `server/evidence/fullcontext-qa/`: a full-context base experiment showing **5/10 even with uncapped context** (context rot), and a **1.30× real, measured** cost divergence in the right direction — *"we measured the direction; we project the magnitude."*
@@ -70,7 +70,8 @@ We under-promise by a hair, on purpose. State these proactively; keep them ready
 
 | Path | Owner | What lives here |
 |---|---|---|
-| `server/` | Daniele | FastAPI voice agent (from `openai-voice-agent-sdk-sample`) + the layer: distiller, injector, cost meter |
+| `sdk/` | shared | `whisperer-sdk` — the layer extracted as an installable package: distiller, injector, watchdog, cost meter, connectors |
+| `server/` | Daniele | FastAPI voice agent (from `openai-voice-agent-sdk-sample`) that consumes `whisperer-sdk` + demo agent/connectors |
 | `harness/` | Gabriele | Binary judge + batch runner (N=10/side) → the number · token/cost meter |
 | `web/` | Giovanni | Next.js dashboard: split-screen base vs suggeritore + live memory HUD + cost counter |
 | `spec/` | shared | `SPEC.md` (design + JSON contracts) · `PROMPTS.md` (Codex kickoffs) · `fixtures/` (mock data) |
@@ -113,7 +114,7 @@ uv run python batch_run.py --mode suggeritore --n 10
 uv run python batch_run.py --mode base        --n 10
 ```
 
-The layer is toggled by env vars (read by `server/server/app/`): `SUGGERITORE_MODE` (on/off), `SUGGERITORE_STATE_PATH`, `SUGGERITORE_COST_PATH`, `SUGGERITORE_INJECT_EVERY`, `SUGGERITORE_DISTILL_EVERY`, `SUGGERITORE_BASE_CAP`.
+The layer is toggled by env vars (read by the SDK in `sdk/whisperer/`): `SUGGERITORE_MODE` (on/off), `SUGGERITORE_STATE_PATH`, `SUGGERITORE_COST_PATH`, `SUGGERITORE_INJECT_EVERY`, `SUGGERITORE_DISTILL_EVERY`, `SUGGERITORE_BASE_CAP`, `SUGGERITORE_WATCHDOG` (SPEC §4 drift guard, opt-in). The agent's tools call a per-client connector selected by `WHISPERER_API_CONNECTOR` (default `api_shopdemo`) — swap in a real connector without touching the agent (see `server/server/app/api_template.py.example`).
 
 > **Naming:** `suggeritore` is the internal identifier for the layer-on side (the project's original name). The product is **Whisperer**.
 

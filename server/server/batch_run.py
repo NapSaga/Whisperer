@@ -46,9 +46,9 @@ from dotenv import load_dotenv  # noqa: E402
 load_dotenv(dotenv_path=str(_REPO_ROOT / ".env"), override=True)
 load_dotenv(dotenv_path=str(_HERE.parent / ".env"), override=True)
 
-from app import state_store  # noqa: E402
+from whisperer import state_store  # noqa: E402
 from app.agent_config import starting_agent  # noqa: E402
-from app.state_store import StateLedger  # noqa: E402
+from whisperer.state_store import StateLedger  # noqa: E402
 from app.utils import is_new_output_item  # noqa: E402
 from server import Workflow  # noqa: E402  — the live class, reused verbatim
 

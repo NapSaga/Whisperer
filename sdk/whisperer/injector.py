@@ -12,7 +12,7 @@ growing log.
 
 import os
 
-from app.state_store import StateLedger
+from .state_store import StateLedger
 
 INJECTION_PREFIX = "Memory ledger (Whisperer)"
 _INJECT_ROLE = "developer"

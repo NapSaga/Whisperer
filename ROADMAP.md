@@ -17,7 +17,7 @@ Il core è completo e misurato:
 | Judge binario (SPEC §6) | ✓ | `harness/judge.py` |
 | Batch runner N=10 (SPEC §6) | ✓ | `server/server/batch_run.py`, `harness/runner.py` |
 | Dashboard web | ✓ live su Vercel | `web/` |
-| Watchdog rilevamento drift (SPEC §4) | ✗ progettato, non implementato | — |
+| Watchdog rilevamento drift (SPEC §4) | ◐ implementato, opt-in via `SUGGERITORE_WATCHDOG` | `server/server/app/watchdog.py` |
 | Generalizzazione scenari | ✗ solo scenario "nonna" | `batch_run.py` hardcoded |
 | Misurazione chiamate lunghe | ✗ serve validare il 7.6× proiettato | — |
 | Trascrizione vocale live (Whisper) | ◐ presente nell'engine (`VoicePipeline` STT→LLM→TTS), assente nella HUD demo (replay di audio pre-registrato) | `server/server/server.py` |
@@ -29,11 +29,13 @@ Il core è completo e misurato:
 
 ## Priorità
 
-### 1. Watchdog — SPEC §4 (alta priorità tecnica)
+### 1. Watchdog — SPEC §4 (✓ implementato, opt-in)
 
-Il pezzo architetturale mancante. Dopo ogni risposta dell'agente, controlla se la risposta contraddice un fatto nel ledger → re-inietta quel fatto specifico.
+Il pezzo architetturale mancante, ora implementato. Dopo ogni risposta dell'agente, un check leggero (`gpt-4o-mini`, structured output) controlla se la risposta contraddice un fatto nel ledger → re-inietta quel fatto specifico e fa ri-rispondere l'agente.
 
-**Dove:** `server/server/app/watchdog.py` (nuovo) + hook in `server/server/server.py` (`Workflow.run`).
+**Dove:** `server/server/app/watchdog.py` + hook in `server/server/server.py` (`Workflow.run`).
+
+**Attivazione:** `SUGGERITORE_WATCHDOG=on` (default off). Spento, il build resta sul re-grounding periodico — il default sicuro sotto cui è stato misurato il numero. Acceso, attiva il comportamento re-answer fedele alla SPEC §4.
 
 **Impatto:** chiude l'unico gap dichiarato nella SPEC; rafforza la garanzia "nessun drift".
 
@@ -55,13 +57,13 @@ Script del chiamante da 30+ turn per validare il 7.6× proiettato. Il harness è
 
 Integrare il layer nel loro stack e misurare su chiamate reali. Da coordinare con Daniele (engine).
 
-### 5. Connettori API reali (pre-deploy obbligatorio)
+### 5. Connettori API reali (✓ struttura pronta, pre-deploy)
 
-`server/server/app/mock_api.py` contiene dati hardcodati e funzioni finte. Prima di qualsiasi deploy in produzione va sostituito con connettori reali verso i sistemi dell'utente finale (database ordini, sistema rimborsi, CRM, ecc.).
+I dati hardcodati vivono ora in `server/server/app/api_shopdemo.py` (ex `mock_api.py`), il connettore demo di riferimento. Prima di un deploy in produzione si aggiunge un modulo per cliente verso i sistemi reali (database ordini, sistema rimborsi, CRM, ecc.).
 
-**Dove:** `server/server/app/mock_api.py` → sostituire con un modulo per cliente (es. `api_shopdemo.py`) che implementa la stessa interfaccia (`get_past_orders()`, `submit_refund_request()`). Il resto del codice non cambia.
+**Come:** copiare `server/server/app/api_template.py.example` in `api_<cliente>.py`, implementare `get_past_orders()` e `submit_refund_request()` verso i sistemi reali, poi selezionarlo con `WHISPERER_API_CONNECTOR=api_<cliente>` (default `api_shopdemo`). Il loader è `server/server/app/connectors.py` (Protocol `ApiConnector` + `load_connector`); `agent_config.py` lo carica per nome. Il resto del codice non cambia.
 
-**Impatto:** è il punto di integrazione con qualsiasi stack esistente. La struttura è già pensata per questo — `agent_config.py` importa `mock_api` per nome, basta sostituire il modulo.
+**Impatto:** è il punto di integrazione con qualsiasi stack esistente. Lo swap è plug-in (nuovo file + env var, nessuna modifica all'agente).
 
 ### 6. SDK packaging (dopo 1-3)
 
@@ -101,16 +103,21 @@ Il punteggio (`X/10 recall`, costo medio) diventa la scorecard di quella integra
 > sono file vivi e referenziati. Vedi sotto. **Non eliminare nulla senza prima validare
 > i riferimenti** (Makefile, README, import del build).
 
-### File core (da estrarre come SDK)
+### File core (✓ estratti come SDK `whisperer-sdk` in `sdk/whisperer/`)
+
+Il server li consuma come path dependency editable (`server/server/pyproject.toml` →
+`[tool.uv.sources]`). Pacchetto installabile anche standalone (`pip install -e sdk`).
 
 | File | Ruolo |
 |---|---|
-| `server/server/app/state_store.py` | Ledger persistente — cuore del layer |
-| `server/server/app/distiller.py` | Estrae fatti dalla conversazione |
-| `server/server/app/injector.py` | Inietta il ledger nel prompt |
-| `server/server/app/cost_meter.py` | Traccia il costo per turno |
-| `server/server/app/truncation.py` | Gestisce il cap della context window |
-| `server/server/app/__init__.py` | Marcatore strutturale del pacchetto |
+| `sdk/whisperer/state_store.py` | Ledger persistente — cuore del layer |
+| `sdk/whisperer/distiller.py` | Estrae fatti dalla conversazione |
+| `sdk/whisperer/injector.py` | Inietta il ledger nel prompt |
+| `sdk/whisperer/cost_meter.py` | Traccia il costo per turno |
+| `sdk/whisperer/truncation.py` | Gestisce il cap della context window |
+| `sdk/whisperer/watchdog.py` | Drift guard SPEC §4 (opt-in) |
+| `sdk/whisperer/connectors.py` | Contratto `ApiConnector` + loader per-cliente |
+| `sdk/whisperer/__init__.py` | API pubblica del pacchetto (i due hook + i building block) |
 
 ### File demo / infrastruttura (utili ma non core SDK)
 
@@ -119,7 +126,7 @@ Il punteggio (`X/10 recall`, costo medio) diventa la scorecard di quella integra
 | `server/server/server.py` | Server WebSocket demo | Sarà sostituito dallo stack del cliente |
 | `server/server/app/utils.py` | Gestione WebSocket/audio | Infrastruttura demo, non core |
 | `server/server/app/agent_config.py` | Definizione agente demo | Sarà sostituito dall'agente del cliente |
-| `server/server/app/mock_api.py` | Database finto | Da sostituire con API reali (vedi punto 5) |
+| `server/server/app/api_shopdemo.py` | Connettore demo (ex `mock_api.py`) | Riferimento per i connettori reali (vedi punto 5) |
 | `server/frontend/` | **Client live** del voice agent (push-to-talk, WebSocket) | Vedi sotto — **non eliminare** |
 | `server/server/batch_run.py` | Driver batch per il harness | Keeper — alimenta i benchmark |
 | `spec/SPEC.md`, `spec/PROMPTS.md` | Documentazione tecnica | Keeper — base per la doc dell'SDK |

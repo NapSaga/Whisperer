@@ -11,4 +11,10 @@ dependencies = [
     "openai-agents[voice]>=0.0.6",
     "python-dotenv>=1.0.1",
     "uvicorn>=0.34.0",
+    "whisperer-sdk",
 ]
+
+# The memory layer lives in the standalone SDK package; the server consumes it as
+# an editable path dependency so edits in sdk/ are picked up without reinstalling.
+[tool.uv.sources]
+whisperer-sdk = { path = "../../sdk", editable = true }
