@@ -12,8 +12,8 @@ from agents.voice import (
     VoicePipelineConfig,
     VoiceWorkflowBase,
 )
-from app import cost_meter, distiller, injector, state_store, truncation
-from app.cost_meter import CostMeter
+from whisperer import cost_meter, distiller, injector, state_store, truncation, watchdog
+from whisperer.cost_meter import CostMeter
 from app.agent_config import starting_agent
 from app.utils import (
     WebsocketHelper,
@@ -109,12 +109,40 @@ class Workflow(VoiceWorkflowBase):
 
         await self.connection.text_output_complete(output, is_done=True)
 
+        # Watchdog (SPEC §4, opt-in): after the reply, a cheap check asks whether
+        # it contradicts a known fact. On drift, re-inject that ONE fact and let
+        # the agent answer again — the faithful §4 edge. Defensive: a watchdog
+        # hiccup must never break the turn (same posture as the cost block). Only
+        # in suggeritore mode (the ledger exists) and when the flag is on.
+        responses = [output]
+        if injector.is_enabled() and watchdog.is_enabled():
+            try:
+                state = state_store.current()
+                if state.facts:
+                    verdict = await watchdog.check(state, input_text, agent_text)
+                    if verdict.drift:
+                        corrective = injector.compact_input(conversation_history, state)
+                        corrective.insert(-1, watchdog.correction_item(verdict))
+                        retry = Runner.run_streamed(latest_agent, corrective)
+                        agent_text = ""
+                        async for event in retry.stream_events():
+                            await self.connection.handle_new_item(event)
+                            if is_text_output(event):
+                                agent_text += event.data.delta  # type: ignore
+                                yield event.data.delta  # type: ignore
+                        await self.connection.text_output_complete(retry, is_done=True)
+                        responses.append(retry)
+            except Exception:
+                logger.exception("suggeritore: watchdog skipped")
+
         # Cost event (SPEC §5). Streamed usage is only final after the stream
         # drains, so sum it here. Defensive: a usage hiccup must never break the
-        # turn — same posture as the injection/distill blocks.
+        # turn — same posture as the injection/distill blocks. A watchdog
+        # re-answer adds its own pass to the same turn's cost.
         try:
-            tokens_in = sum(r.usage.input_tokens for r in output.raw_responses)
-            tokens_out = sum(r.usage.output_tokens for r in output.raw_responses)
+            raw = [r for resp in responses for r in resp.raw_responses]
+            tokens_in = sum(r.usage.input_tokens for r in raw)
+            tokens_out = sum(r.usage.output_tokens for r in raw)
             agent = "suggeritore" if injector.is_enabled() else "base"
             self._cost.add(tokens_in, tokens_out)
             self._cost.emit(agent, caller_turn["turn"])
