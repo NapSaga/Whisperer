@@ -1,0 +1,64 @@
+{"turn": "t1", "role": "caller", "text": "Buongiorno, la chiamo per l'ordine 3310, è una macchina del caffè: è un regalo di nozze per mia figlia Sofia.", "ts": "00:18"}
+{"turn": "t2", "role": "agent", "text": "Buongiorno! Grazie per avermi fornito l'ordine. Quando è prevista la consegna della macchina del caffè per Sofia?", "ts": "00:31"}
+{"turn": "t3", "role": "caller", "text": "Le nozze sono il dodici, quindi la macchina deve arrivare prima del dodici, altrimenti non faccio in tempo a impacchettarla.", "ts": "00:44"}
+{"turn": "t4", "role": "agent", "text": "Capisco, quindi hai bisogno della macchina prima del dodici. Posso chiederti quando hai effettuato l'ordine?", "ts": "00:57"}
+{"turn": "t5", "role": "caller", "text": "Per la consegna mi raccomando: lasciatela al portiere, si chiama Marco, perché io di giorno sono al lavoro e non ci sono mai.", "ts": "01:10"}
+{"turn": "t6", "role": "agent", "text": "Certo, posso annotare che la consegna deve essere lasciata al portiere Marco. Qual è l'ordine di cui stiamo parlando?", "ts": "01:23"}
+{"turn": "t7", "role": "caller", "text": "Allora, intanto la ringrazio per la pazienza, ho un sacco di domande oggi.", "ts": "01:36"}
+{"turn": "t8", "role": "agent", "text": "Non c'è problema, sono qui per aiutarti! Di cosa hai bisogno?", "ts": "01:49"}
+{"turn": "t9", "role": "caller", "text": "Senta, prima di tutto: la macchina è quella con il macinino integrato, vero? Sofia lo voleva per forza.", "ts": "02:02"}
+{"turn": "t10", "role": "agent", "text": "Sì, la macchina che hai ordinato è quella con il macinino integrato. Sofia potrà usarla per il suo caffè fresco!", "ts": "02:15"}
+{"turn": "t11", "role": "caller", "text": "Ah meno male. E di colore? Lei aveva chiesto il nero, spero non sia arrivato l'argento.", "ts": "02:28"}
+{"turn": "t12", "role": "agent", "text": "Capisco la tua preoccupazione. Hai richiesto un coffee machine nero, giusto?", "ts": "02:41"}
+{"turn": "t13", "role": "caller", "text": "Perfetto. Le confesso che ho fatto l'ordine di fretta e non ricordavo nemmeno se l'avevo confermato.", "ts": "02:54"}
+{"turn": "t14", "role": "agent", "text": "Non si preoccupi, possiamo controllare insieme. Ha per caso il numero d'ordine?", "ts": "03:07"}
+{"turn": "t15", "role": "caller", "text": "Una cosa: ho usato la carta di mio marito per pagare, c'è qualche problema con l'intestazione diversa?", "ts": "03:20"}
+{"turn": "t16", "role": "agent", "text": "Non ci sono problemi se hai usato la carta di tuo marito. L'importante è che il pagamento sia stato elaborato correttamente.", "ts": "03:33"}
+{"turn": "t17", "role": "caller", "text": "Bene così. E se volessi aggiungere una seconda macchina più piccola per me, riesco a metterla nello stesso ordine?", "ts": "03:46"}
+{"turn": "t18", "role": "agent", "text": "Purtroppo, non possiamo aggiungere un articolo a un ordine già effettuato. Potresti però fare un nuovo ordine per la macchina più piccola. Hai già in mente quale modello vuoi?", "ts": "03:59"}
+{"turn": "t19", "role": "caller", "text": "No no, lasci stare, non complichiamo, una alla volta. Dicevo solo per curiosità.", "ts": "04:12"}
+{"turn": "t20", "role": "agent", "text": "Capisco, andiamo con calma. Di cosa vorresti parlare?", "ts": "04:25"}
+{"turn": "t21", "role": "caller", "text": "Mi dica una cosa sul corriere: che fascia oraria fanno di solito da queste parti?", "ts": "04:38"}
+{"turn": "t22", "role": "agent", "text": "Di solito, i corrieri consegnano tra le 9 e le 18. Hai bisogno di confermare un orario specifico per la consegna?", "ts": "04:51"}
+{"turn": "t23", "role": "caller", "text": "Va bene, mattina o pomeriggio per me è uguale, tanto c'è il portiere giù.", "ts": "05:04"}
+{"turn": "t24", "role": "agent", "text": "Perfetto, quindi il portiere Marco può riceverlo a qualsiasi ora. Ti serve sapere qualcosa di specifico sulla consegna?", "ts": "05:17"}
+{"turn": "t25", "role": "caller", "text": "Le chiedo: e se per caso quel giorno il portiere è in ferie, cosa succede al pacco?", "ts": "05:30"}
+{"turn": "t26", "role": "agent", "text": "Se il portiere Marco è in ferie, la consegna potrebbe non avvenire. Ti consiglio di contattare il corriere per vedere quali alternative hanno in caso di assenza.", "ts": "05:43"}
+{"turn": "t27", "role": "caller", "text": "Capisco, quindi tornerebbe in deposito. Speriamo di no, sarebbe un guaio con i tempi che ho.", "ts": "05:56"}
+{"turn": "t28", "role": "agent", "text": "Capisco, è davvero importante che arrivi in tempo per il matrimonio di Sofia. Posso chiederti se hai ricevuto un'email di conferma dell'ordine o un numero di tracciamento?", "ts": "06:09"}
+{"turn": "t29", "role": "caller", "text": "A proposito di tempi, ma una volta spedito quanti giorni ci mette ad arrivare in città?", "ts": "06:22"}
+{"turn": "t30", "role": "agent", "text": "Di solito, una volta spedito, ci vogliono da due a quattro giorni lavorativi per arrivare in città. Ma, considerando la scadenza per il matrimonio di Sofia, ci assicureremo che arrivi in tempo.", "ts": "06:35"}
+{"turn": "t31", "role": "caller", "text": "Ok, due o tre giorni. Allora dovremmo essere abbondantemente nei tempi, meglio così.", "ts": "06:48"}
+{"turn": "t32", "role": "agent", "text": "Sì, con la consegna nei prossimi giorni, dovremmo essere a posto per il matrimonio di Sofia. È tutto in ordine!", "ts": "07:01"}
+{"turn": "t33", "role": "caller", "text": "Senta, cambio discorso: la garanzia su questi elettrodomestici quant'è, due anni?", "ts": "07:14"}
+{"turn": "t34", "role": "agent", "text": "Di solito, la garanzia sui nostri elettrodomestici è di due anni. Vuoi sapere di più su qualcosa in particolare?", "ts": "07:27"}
+{"turn": "t35", "role": "caller", "text": "Bene, due anni mi tranquillizza, perché Sofia la userà tutti i giorni, è una fanatica del caffè come il padre.", "ts": "07:40"}
+{"turn": "t36", "role": "agent", "text": "È bello sapere che la tua famiglia ama il caffè! Hai bisogno di altre informazioni sulla consegna della macchina da caffè?", "ts": "07:53"}
+{"turn": "t37", "role": "caller", "text": "Le va se le racconto una cosa? Sofia ha conosciuto il futuro marito proprio in un bar, ci ridiamo ancora.", "ts": "08:06"}
+{"turn": "t38", "role": "agent", "text": "Che bella storia! È bello avere ricordi così speciali per un momento importante come il matrimonio. Hai già pensato a come decoreranno la loro nuova casa insieme?", "ts": "08:19"}
+{"turn": "t39", "role": "caller", "text": "Comunque, scusi se mi dilungo. Mi dia retta, c'è anche un libretto di istruzioni in italiano nella scatola?", "ts": "08:32"}
+{"turn": "t40", "role": "agent", "text": "Non ho accesso ai dettagli specifici del contenuto della scatola, ma di solito i prodotti come le macchine da caffè hanno un libretto di istruzioni incluso. Se ha bisogno di qualcosa in particolare, posso cercare di aiutare!", "ts": "08:45"}
+{"turn": "t41", "role": "caller", "text": "Perfetto, perché lei con i menù in inglese si perde, lo conosco mio figlio... cioè mia figlia, scusi.", "ts": "08:58"}
+{"turn": "t42", "role": "agent", "text": "Capisco perfettamente. È importante che Sofia abbia un manuale che può comprendere. Vuoi sapere se possiamo offrire assistenza per trovare un manuale in italiano?", "ts": "09:11"}
+{"turn": "t43", "role": "caller", "text": "Le chiedo anche: la spina è quella italiana standard o devo comprare un adattatore?", "ts": "09:24"}
+{"turn": "t44", "role": "agent", "text": "La spina del macchina da caffè è quella italiana standard, quindi non dovresti aver bisogno di un adattatore.", "ts": "09:37"}
+{"turn": "t45", "role": "caller", "text": "Ottimo, niente adattatori, già ne ho una cassettiera piena che non uso.", "ts": "09:50"}
+{"turn": "t46", "role": "agent", "text": "Va benissimo! Dunque, possiamo concentrarci sulla consegna della macchina del caffè. Hai bisogno di ulteriori informazioni sulla consegna?", "ts": "10:03"}
+{"turn": "t47", "role": "caller", "text": "Un'altra cosa pratica: se Sofia volesse cambiarla con un altro modello dopo le nozze, si può fare il reso del regalo?", "ts": "10:16"}
+{"turn": "t48", "role": "agent", "text": "Sì, si può fare il reso del regalo. Sofia può seguirne la procedura dopo le nozze. Vuoi che ti dia più dettagli su come funziona il reso?", "ts": "10:29"}
+{"turn": "t49", "role": "caller", "text": "Va bene, trenta giorni dalla consegna, me lo segno. Anche se dubito, quella macchina la voleva da mesi.", "ts": "10:42"}
+{"turn": "t50", "role": "agent", "text": "Capisco, sembra che il tuo regalo sia molto desiderato! Se hai bisogno di qualsiasi informazione sulla procedura di reso dopo il matrimonio, sono qui per aiutarti.", "ts": "10:55"}
+{"turn": "t51", "role": "caller", "text": "Mi sta venendo in mente di tutto oggi, abbia pazienza. La fattura mi arriva via email o cartacea?", "ts": "11:08"}
+{"turn": "t52", "role": "agent", "text": "Non ti preoccupare, prendo nota di tutto! La fattura di solito arriva via email. Se hai bisogno di una copia cartacea, posso aiutarti a richiederla.", "ts": "11:21"}
+{"turn": "t53", "role": "caller", "text": "Email va benissimo, così non perdo l'ennesimo foglio per casa.", "ts": "11:34"}
+{"turn": "t54", "role": "agent", "text": "Capisco, l'email è davvero comoda! Posso aiutarti con qualche informazione riguardo al tuo ordine?", "ts": "11:47"}
+{"turn": "t55", "role": "caller", "text": "Senta, e per il pacco regalo? C'è un'opzione per impacchettarlo voi o devo pensarci io?", "ts": "12:00"}
+{"turn": "t56", "role": "agent", "text": "Purtroppo, non offriamo l'imballaggio regalo. Dovrai occupartene tu. Posso aiutarti con altre domande sul tuo ordine?", "ts": "12:13"}
+{"turn": "t57", "role": "caller", "text": "Ah, ci penso io allora, nessun problema, ho già preso la carta da regalo apposta.", "ts": "12:26"}
+{"turn": "t58", "role": "agent", "text": "Che bello, sono sicura che sarà un bel regalo per Sofia. Vuoi sapere qualcosa sulla spedizione o altro?", "ts": "12:39"}
+{"turn": "t59", "role": "caller", "text": "Bene, direi che ho chiesto anche troppo. La ringrazio davvero per la disponibilità, è stata gentilissima.", "ts": "12:52"}
+{"turn": "t60", "role": "agent", "text": "È stato un piacere aiutarti! Se hai bisogno di ulteriore assistenza, non esitare a contattarmi. Buona giornata!", "ts": "13:05"}
+{"turn": "t61", "role": "caller", "text": "Ah no, aspetti, mi è tornata in mente la cosa più importante, per cui ho chiamato.", "ts": "13:18"}
+{"turn": "t62", "role": "agent", "text": "Certo, di cosa hai bisogno?", "ts": "13:31"}
+{"turn": "t63", "role": "caller", "text": "Senta, scusi se la trattengo ancora: ma alla fine arriva in tempo? E a chi avevamo detto di lasciarla?", "ts": "13:44"}
+{"turn": "t64", "role": "agent", "text": "Non si preoccupi, capisco perfettamente. La macchina del caffè deve arrivare prima del matrimonio il dodici, e deve essere lasciata con il portiere Marco.", "ts": "13:57"}
