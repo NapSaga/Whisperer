@@ -262,7 +262,26 @@ def run_fixture(cost_path: Path = COST_FIXTURE) -> int:
     return rc
 
 
+def _transcripts_only(files: list[str]) -> list[str]:
+    """Drop per-run cost files from a side's file list.
+
+    batch_run.py writes ``{prefix}{i}_cost.jsonl`` next to each transcript, so a
+    shell glob like ``recordings/<id>_base_run*.jsonl`` also matches the cost
+    files. Those are cost_event logs, not transcripts — judging them as recall
+    inflates the denominator. Filter them out defensively so the documented glob
+    just works.
+    """
+    kept = [f for f in files if not f.endswith("_cost.jsonl")]
+    dropped = len(files) - len(kept)
+    if dropped:
+        print(f"(skipped {dropped} *_cost.jsonl file(s) — not transcripts)")
+    return kept
+
+
 def run_live(base_files: list[str], sug_files: list[str], seeded_fact: str) -> int:
+    base_files = _transcripts_only(base_files)
+    sug_files = _transcripts_only(sug_files)
+
     def score_side(label: str, files: list[str]) -> int:
         remembered = 0
         for i, raw in enumerate(files, start=1):

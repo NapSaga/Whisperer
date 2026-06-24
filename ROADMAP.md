@@ -52,7 +52,10 @@ Scenario `long-call` (32 turn del chiamante) per validare la direzione del 7.6×
 
 **Dove:** `spec/fixtures/scenarios/long-call.jsonl` + opzione `--turns` in `batch_run.py`.
 
-**Da fare:** generare le batch e annotare il rapporto di costo osservato (serve un `.env` con `OPENAI_API_KEY`).
+**Misurato (2026-06-24, N=5, lente audio-priced):**
+- **Recall a 64 turn:** base capped **0/5** (dimentica) → suggeritore **5/5**.
+- **Costo, base full-context** (uncapped, `SUGGERITORE_BASE_CAP=0`) vs suggeritore: **$1.36 vs $0.65 → 2.1×**. Il rapporto **cresce con la durata** (1.3× a 28 turn nell'evidence, 2.1× a 64 turn), nella direzione della proiezione 7.6× su una chiamata da 10–20 min.
+- **Nota onesta:** forgetting e costo sono accoppiati. Col base **capped** (default che produce lo 0/10) il base resta economico e non esplode; il numero di costo si misura sul base **full-context**, che però ricorda ~4/5 (context rot a 64 turn). Whisperer ricorda 5/5 *e* sta piatto.
 
 ### 4. Connettori API reali (✓ struttura pronta, pre-deploy)
 
