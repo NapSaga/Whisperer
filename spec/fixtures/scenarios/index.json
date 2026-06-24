@@ -1,0 +1,41 @@
+{
+  "_doc": "Scenario manifest for the harness. Each scenario externalizes the caller script (one turn per line in the referenced .jsonl), the seeded_fact the judge scores recall against, the clean-ledger identity/objective the suggeritore side starts from, and optional console-only recall_markers. The last line of every script is treated as the recall turn. See ROADMAP.md items #2/#3.",
+  "scenarios": [
+    {
+      "id": "nonna",
+      "name": "Watch delivery (grandmother)",
+      "script": "nonna.jsonl",
+      "seeded_fact": "the watch must arrive before the 20th for grandson Luca's graduation, delivered to sig.ra Pina interno 3",
+      "identity": "you are ShopDemo's phone support agent",
+      "objective": "help the caller with their existing order",
+      "recall_markers": ["orologio", "vent", "20", "pina", "laurea"]
+    },
+    {
+      "id": "reso",
+      "name": "Refund with deadline (broken blender)",
+      "script": "reso.jsonl",
+      "seeded_fact": "the caller wants to return order 8829 (a blender that arrived broken) and needs the refund processed before the 30th because they are moving abroad",
+      "identity": "you are ShopDemo's phone support agent",
+      "objective": "help the caller with their existing order",
+      "recall_markers": ["8829", "frullator", "trenta", "30", "rimbors"]
+    },
+    {
+      "id": "cambio-consegna",
+      "name": "Delivery address change (home to office)",
+      "script": "cambio-consegna.jsonl",
+      "seeded_fact": "the caller changed delivery of order 5567 from home to their office at via Marconi 12, and it must arrive on a weekday because no one is at the office on weekends",
+      "identity": "you are ShopDemo's phone support agent",
+      "objective": "help the caller with their existing order",
+      "recall_markers": ["5567", "marconi", "ufficio", "feriale", "weekend"]
+    },
+    {
+      "id": "long-call",
+      "name": "Long call (coffee machine wedding gift)",
+      "script": "long-call.jsonl",
+      "seeded_fact": "the coffee machine (order 3310) is a wedding gift for the caller's daughter Sofia, must arrive before the 12th, delivered to the concierge Marco",
+      "identity": "you are ShopDemo's phone support agent",
+      "objective": "help the caller with their existing order",
+      "recall_markers": ["3310", "caff", "sofia", "dodici", "12", "marco", "portier"]
+    }
+  ]
+}

@@ -53,14 +53,29 @@ except ImportError:
 HERE = Path(__file__).resolve().parent
 FIXTURES = HERE.parent / "spec" / "fixtures"
 COST_FIXTURE = FIXTURES / "cost.json"
+SCENARIOS_DIR = FIXTURES / "scenarios"
 
 # Fields every cost_event must carry (SPEC §5).
 COST_FIELDS = ("agent", "turn", "tokens_in", "tokens_out", "usd_cumulative")
 
+# Default seeded fact = the bundled "nonna" fixture (used by --mode fixture and
+# as the fallback when no --scenario/--seeded-fact is given).
 SEEDED_FACT = (
     "the watch must arrive before the 20th for grandson Luca's graduation, "
     "delivered to sig.ra Pina interno 3"
 )
+
+
+def load_seeded_fact(scenario_id: str) -> str:
+    """Look up a scenario's seeded_fact in spec/fixtures/scenarios/index.json."""
+    manifest = json.loads((SCENARIOS_DIR / "index.json").read_text(encoding="utf-8"))
+    entry = next(
+        (s for s in manifest["scenarios"] if s["id"] == scenario_id), None
+    )
+    if entry is None:
+        known = ", ".join(s["id"] for s in manifest["scenarios"])
+        sys.exit(f"unknown scenario {scenario_id!r}; known: {known}")
+    return entry["seeded_fact"]
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -161,19 +176,20 @@ def _last_cumulative(path: Path) -> float | None:
     return None
 
 
-def check_cost_dir(cost_dir: Path) -> None:
+def check_cost_dir(cost_dir: Path, prefix: str = "") -> None:
     """Aggregate the per-run cost files batch_run.py writes (SPEC §5).
 
     batch_run.py emits one JSONL per run per side next to each transcript:
-    ``base_run{i}_cost.jsonl`` and ``sug_run{i}_cost.jsonl``. Each file's last
-    event carries that run's final ``usd_cumulative``. We average each side over
-    its runs and print the divergence, naming whichever side is more expensive
-    (it is NOT always the base — see the cost nodo in PLAN.md). A missing file or
-    field warns but never crashes.
+    ``{prefix}base_run{i}_cost.jsonl`` and ``{prefix}sug_run{i}_cost.jsonl``
+    (the prefix is the scenario id, e.g. ``reso_``). Each file's last event
+    carries that run's final ``usd_cumulative``. We average each side over its
+    runs and print the divergence, naming whichever side is more expensive (it is
+    NOT always the base — see the cost nodo in PLAN.md). A missing file or field
+    warns but never crashes.
     """
     sides = {
-        "base": sorted(cost_dir.glob("base_run*_cost.jsonl")),
-        "suggeritore": sorted(cost_dir.glob("sug_run*_cost.jsonl")),
+        "base": sorted(cost_dir.glob(f"{prefix}base_run*_cost.jsonl")),
+        "suggeritore": sorted(cost_dir.glob(f"{prefix}sug_run*_cost.jsonl")),
     }
     means: dict[str, float | None] = {}
     for label, files in sides.items():
@@ -246,11 +262,11 @@ def run_fixture(cost_path: Path = COST_FIXTURE) -> int:
     return rc
 
 
-def run_live(base_files: list[str], sug_files: list[str]) -> int:
+def run_live(base_files: list[str], sug_files: list[str], seeded_fact: str) -> int:
     def score_side(label: str, files: list[str]) -> int:
         remembered = 0
         for i, raw in enumerate(files, start=1):
-            verdict = judge(load_jsonl(Path(raw)), SEEDED_FACT)
+            verdict = judge(load_jsonl(Path(raw)), seeded_fact)
             if verdict.remembers:
                 remembered += 1
             print(
@@ -302,22 +318,45 @@ def main() -> int:
         "--cost-dir",
         default=None,
         help="directory of per-run cost files from batch_run.py "
-        "(base_run*_cost.jsonl / sug_run*_cost.jsonl); prints the mean base vs "
-        "suggeritore cost across runs. Works in either mode.",
+        "({scenario}_base_run*_cost.jsonl / {scenario}_sug_run*_cost.jsonl); "
+        "prints the mean base vs suggeritore cost across runs. Works in either "
+        "mode. Pass --scenario to glob a specific scenario's files.",
+    )
+    parser.add_argument(
+        "--scenario",
+        default=None,
+        help="live mode: scenario id from spec/fixtures/scenarios/index.json — "
+        "loads its seeded_fact and scopes --cost-dir to that scenario's files.",
+    )
+    parser.add_argument(
+        "--seeded-fact",
+        default=None,
+        help="live mode: override the recall fact the judge scores against "
+        "(takes precedence over --scenario).",
     )
     args = parser.parse_args()
+
+    # Resolve the fact the judge scores recall against: explicit --seeded-fact
+    # wins, else the --scenario manifest, else the bundled nonna default.
+    if args.seeded_fact:
+        seeded_fact = args.seeded_fact
+    elif args.scenario:
+        seeded_fact = load_seeded_fact(args.scenario)
+    else:
+        seeded_fact = SEEDED_FACT
 
     if args.mode == "fixture":
         rc = run_fixture(Path(args.cost) if args.cost else COST_FIXTURE)
     else:
         if not args.base or not args.sug:
             parser.error("--mode live requires both --base and --sug with at least one file each")
-        rc = run_live(args.base, args.sug)
+        rc = run_live(args.base, args.sug, seeded_fact)
         if args.cost:
             check_cost(Path(args.cost))
 
     if args.cost_dir:
-        check_cost_dir(Path(args.cost_dir))
+        prefix = f"{args.scenario}_" if args.scenario else ""
+        check_cost_dir(Path(args.cost_dir), prefix)
     return rc
 
 
