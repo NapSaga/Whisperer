@@ -70,3 +70,41 @@ export type TranscriptLane = "base" | "suggeritore";
 export type DisplayTurn = TranscriptTurn & {
   displayTurn: string;
 };
+
+/* Long-call evidence (ROADMAP #3) — measured on a 64-turn call, N=5.
+   Derived from recordings/long-call_* + recordings/uncapped/ via per-turn
+   aggregation of the SPEC §5 cost events. The curve is what makes the thesis
+   visible: full-context base cost climbs, Whisperer stays flat. */
+export type LongCallConfig = {
+  recall: string;
+  cost: number;
+  note: string;
+};
+
+export type LongCallScalingPoint = {
+  turns: string;
+  ratio: number;
+  kind: "misurato" | "proiettato";
+  note: string;
+};
+
+export type LongCallCurvePoint = {
+  turn: number;
+  baseFull: number;
+  sug: number;
+  baseCapped: number;
+};
+
+export type LongCallFixture = {
+  callTurns: number;
+  runs: number;
+  pricingNote: string;
+  headline: {
+    baseCapped: LongCallConfig;
+    baseFull: LongCallConfig;
+    suggeritore: LongCallConfig;
+    ratio: number;
+  };
+  scaling: LongCallScalingPoint[];
+  curve: LongCallCurvePoint[];
+};

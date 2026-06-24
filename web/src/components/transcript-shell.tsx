@@ -7,6 +7,7 @@ import {
   PlayIcon,
   RotateCcwIcon,
   SkipForwardIcon,
+  TrendingUpIcon,
   Volume2Icon,
   VolumeXIcon,
   XIcon,
@@ -16,11 +17,13 @@ import type {
   CostEvent,
   CostFixture,
   DisplayTurn,
+  LongCallFixture,
   StateLedger,
   StateLedgerEntry,
   VerdictsFixture,
 } from "@/lib/contracts";
 import { VerdictView } from "@/components/verdict-view";
+import { LongCallView } from "@/components/long-call-view";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
@@ -41,6 +44,7 @@ import { cn } from "@/lib/utils";
 type TranscriptShellProps = {
   baseTurns: DisplayTurn[];
   cost: CostFixture;
+  longCall: LongCallFixture;
   suggeritoreTurns: DisplayTurn[];
   state: StateLedger;
   verdicts: VerdictsFixture;
@@ -687,11 +691,52 @@ function ProofOverlay({
   );
 }
 
+function LongCallOverlay({
+  longCall,
+  onClose,
+}: {
+  longCall: LongCallFixture;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="animate-in fade-in fixed inset-0 z-50 grid place-items-center bg-black/75 p-6 backdrop-blur-sm duration-200"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        className="relative max-h-[88vh] w-full max-w-4xl overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute right-3 top-3 z-10 size-9"
+          onClick={onClose}
+          aria-label="Chiudi la chiamata lunga"
+        >
+          <XIcon />
+        </Button>
+        <LongCallView longCall={longCall} />
+      </div>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------------ shell */
 
 export function TranscriptShell({
   baseTurns,
   cost,
+  longCall,
   suggeritoreTurns,
   state,
   verdicts,
@@ -750,6 +795,7 @@ export function TranscriptShell({
   // 0→1 progress of the clip currently being spoken, drives the karaoke reveal
   const [clipProgress, setClipProgress] = useState(0);
   const [showProof, setShowProof] = useState(false);
+  const [showLongCall, setShowLongCall] = useState(false);
   const recallToastFiredRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const prevSecondsRef = useRef(0);
@@ -991,12 +1037,28 @@ export function TranscriptShell({
           </span>
           <span className="font-mono text-[0.7rem] text-muted-foreground">HackRome · 13 giu 2026</span>
         </div>
-        <PressureMeter
-          cost={cost}
-          currentSeconds={currentSeconds}
-          turnTimes={turnTimes}
-          recallActive={recallActive}
-        />
+        <div className="flex items-center gap-2.5">
+          <PressureMeter
+            cost={cost}
+            currentSeconds={currentSeconds}
+            turnTimes={turnTimes}
+            recallActive={recallActive}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-auto shrink-0 flex-col items-start gap-0 px-3 py-1 leading-tight"
+            onClick={() => setShowLongCall(true)}
+          >
+            <span className="flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-wider text-muted-foreground">
+              <TrendingUpIcon className="size-3" /> chiamata lunga
+            </span>
+            <span className="font-mono text-sm font-semibold tabular-nums text-foreground">
+              {longCall.callTurns} turn ·{" "}
+              <span className="text-[color:var(--fail)]">{longCall.headline.ratio}×</span>
+            </span>
+          </Button>
+        </div>
       </div>
 
       {/* operative title */}
@@ -1095,6 +1157,10 @@ export function TranscriptShell({
 
       {showProof ? (
         <ProofOverlay verdicts={verdicts} onClose={() => setShowProof(false)} />
+      ) : null}
+
+      {showLongCall ? (
+        <LongCallOverlay longCall={longCall} onClose={() => setShowLongCall(false)} />
       ) : null}
     </main>
   );

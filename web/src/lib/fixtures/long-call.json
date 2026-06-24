@@ -1,0 +1,238 @@
+{
+  "_generated": "derivato da recordings/ (long-call N=5, 64 turn) via aggregazione per-turno delle 5 run · SPEC §5",
+  "callTurns": 64,
+  "runs": 5,
+  "pricingNote": "lente audio-priced (OpenAI Realtime); verdetto recall = misurato, N=5/lato",
+  "headline": {
+    "baseCapped": {
+      "recall": "0/5",
+      "cost": 0.5366,
+      "note": "economico ma dimentica (cap)"
+    },
+    "baseFull": {
+      "recall": "4/5",
+      "cost": 1.3606,
+      "note": "ricorda ma ripaga tutto il contesto (context rot)"
+    },
+    "suggeritore": {
+      "recall": "5/5",
+      "cost": 0.6452,
+      "note": "ricorda e resta piatto"
+    },
+    "ratio": 2.1
+  },
+  "scaling": [
+    {
+      "turns": "28",
+      "ratio": 1.3,
+      "kind": "misurato",
+      "note": "evidence fullcontext-qa"
+    },
+    {
+      "turns": "64",
+      "ratio": 2.1,
+      "kind": "misurato",
+      "note": "questa chiamata lunga"
+    },
+    {
+      "turns": "10–20 min",
+      "ratio": 7.6,
+      "kind": "proiettato",
+      "note": "chiamata reale piena"
+    }
+  ],
+  "curve": [
+    {
+      "turn": 2,
+      "baseFull": 0.0101,
+      "sug": 0.0145,
+      "baseCapped": 0.0101
+    },
+    {
+      "turn": 4,
+      "baseFull": 0.022,
+      "sug": 0.0284,
+      "baseCapped": 0.0221
+    },
+    {
+      "turn": 6,
+      "baseFull": 0.0364,
+      "sug": 0.0425,
+      "baseCapped": 0.0367
+    },
+    {
+      "turn": 8,
+      "baseFull": 0.0521,
+      "sug": 0.0555,
+      "baseCapped": 0.0528
+    },
+    {
+      "turn": 10,
+      "baseFull": 0.07,
+      "sug": 0.0729,
+      "baseCapped": 0.0697
+    },
+    {
+      "turn": 12,
+      "baseFull": 0.09,
+      "sug": 0.09,
+      "baseCapped": 0.0862
+    },
+    {
+      "turn": 14,
+      "baseFull": 0.1124,
+      "sug": 0.1076,
+      "baseCapped": 0.1028
+    },
+    {
+      "turn": 16,
+      "baseFull": 0.1367,
+      "sug": 0.1255,
+      "baseCapped": 0.1198
+    },
+    {
+      "turn": 18,
+      "baseFull": 0.1636,
+      "sug": 0.1445,
+      "baseCapped": 0.1371
+    },
+    {
+      "turn": 20,
+      "baseFull": 0.1919,
+      "sug": 0.1618,
+      "baseCapped": 0.154
+    },
+    {
+      "turn": 22,
+      "baseFull": 0.2233,
+      "sug": 0.1807,
+      "baseCapped": 0.1721
+    },
+    {
+      "turn": 24,
+      "baseFull": 0.2558,
+      "sug": 0.1988,
+      "baseCapped": 0.1894
+    },
+    {
+      "turn": 26,
+      "baseFull": 0.2913,
+      "sug": 0.2197,
+      "baseCapped": 0.2074
+    },
+    {
+      "turn": 28,
+      "baseFull": 0.3287,
+      "sug": 0.2398,
+      "baseCapped": 0.2249
+    },
+    {
+      "turn": 30,
+      "baseFull": 0.3681,
+      "sug": 0.2607,
+      "baseCapped": 0.2433
+    },
+    {
+      "turn": 32,
+      "baseFull": 0.4097,
+      "sug": 0.2807,
+      "baseCapped": 0.2605
+    },
+    {
+      "turn": 34,
+      "baseFull": 0.4532,
+      "sug": 0.3018,
+      "baseCapped": 0.2783
+    },
+    {
+      "turn": 36,
+      "baseFull": 0.4988,
+      "sug": 0.3232,
+      "baseCapped": 0.2957
+    },
+    {
+      "turn": 38,
+      "baseFull": 0.5466,
+      "sug": 0.3443,
+      "baseCapped": 0.3131
+    },
+    {
+      "turn": 40,
+      "baseFull": 0.597,
+      "sug": 0.3669,
+      "baseCapped": 0.3313
+    },
+    {
+      "turn": 42,
+      "baseFull": 0.6494,
+      "sug": 0.3896,
+      "baseCapped": 0.3494
+    },
+    {
+      "turn": 44,
+      "baseFull": 0.7039,
+      "sug": 0.4113,
+      "baseCapped": 0.3672
+    },
+    {
+      "turn": 46,
+      "baseFull": 0.7599,
+      "sug": 0.4331,
+      "baseCapped": 0.3844
+    },
+    {
+      "turn": 48,
+      "baseFull": 0.8186,
+      "sug": 0.4557,
+      "baseCapped": 0.4017
+    },
+    {
+      "turn": 50,
+      "baseFull": 0.8792,
+      "sug": 0.4792,
+      "baseCapped": 0.4183
+    },
+    {
+      "turn": 52,
+      "baseFull": 0.9422,
+      "sug": 0.5021,
+      "baseCapped": 0.4355
+    },
+    {
+      "turn": 54,
+      "baseFull": 1.0065,
+      "sug": 0.5247,
+      "baseCapped": 0.4523
+    },
+    {
+      "turn": 56,
+      "baseFull": 1.0738,
+      "sug": 0.5483,
+      "baseCapped": 0.4695
+    },
+    {
+      "turn": 58,
+      "baseFull": 1.1426,
+      "sug": 0.5727,
+      "baseCapped": 0.4863
+    },
+    {
+      "turn": 60,
+      "baseFull": 1.2134,
+      "sug": 0.5972,
+      "baseCapped": 0.5035
+    },
+    {
+      "turn": 62,
+      "baseFull": 1.2853,
+      "sug": 0.6204,
+      "baseCapped": 0.5196
+    },
+    {
+      "turn": 64,
+      "baseFull": 1.3606,
+      "sug": 0.6452,
+      "baseCapped": 0.5366
+    }
+  ]
+}

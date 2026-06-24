@@ -5,6 +5,7 @@ import { join } from "node:path";
 import type {
   CostFixture,
   DisplayTurn,
+  LongCallFixture,
   StateLedger,
   TranscriptLane,
   TranscriptRole,
@@ -59,6 +60,10 @@ export function getVerdicts(): VerdictsFixture {
 
 export function getCostFixture(): CostFixture {
   return parseJsonFile<CostFixture>("cost.json");
+}
+
+export function getLongCall(): LongCallFixture {
+  return parseJsonFile<LongCallFixture>("long-call.json");
 }
 
 export function getTranscriptLane(
