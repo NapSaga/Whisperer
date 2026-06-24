@@ -118,6 +118,11 @@ uv run python batch_run.py --mode base        --n 10 --scenario nonna
 uv run python batch_run.py --mode base --scenario long-call --turns 20
 ```
 
+> **Recordings are reproducible.** The commands above (re)generate `recordings/<scenario>_*.jsonl`
+> on demand, so per-scenario batches are not all committed. The repo keeps only the **long-call
+> evidence** (`recordings/long-call_*` capped + `recordings/uncapped/` full-context — the cost
+> proof for #3); regenerate any other scenario with `--scenario <id>` whenever you need it.
+
 The layer is toggled by env vars (read by the SDK in `sdk/whisperer/`): `SUGGERITORE_MODE` (on/off), `SUGGERITORE_STATE_PATH`, `SUGGERITORE_COST_PATH`, `SUGGERITORE_INJECT_EVERY`, `SUGGERITORE_DISTILL_EVERY`, `SUGGERITORE_BASE_CAP`, `SUGGERITORE_WATCHDOG` (SPEC §4 drift guard, opt-in). The agent's tools call a per-client connector selected by `WHISPERER_API_CONNECTOR` (default `api_shopdemo`) — swap in a real connector without touching the agent (see `server/server/app/api_template.py.example`).
 
 > **Naming:** `suggeritore` is the internal identifier for the layer-on side (the project's original name). The product is **Whisperer**.

@@ -82,11 +82,11 @@ Whisperer è un memory layer — il suo valore è potersi agganciare a qualsiasi
 **Come:** per ogni piattaforma, agganciare `distill()` e `compact_input()` nel punto in cui il testo trascritto entra nel prompt, poi runnare il harness esistente:
 
 ```bash
-uv run python batch_run.py --mode base --n 10
-uv run python batch_run.py --mode suggeritore --n 10
-python harness/runner.py --mode live \
-  --base recordings/base_run*.jsonl \
-  --sug  recordings/sug_run*.jsonl \
+uv run python batch_run.py --mode base        --n 10 --scenario nonna
+uv run python batch_run.py --mode suggeritore  --n 10 --scenario nonna
+python harness/runner.py --mode live --scenario nonna \
+  --base recordings/nonna_base_run*.jsonl \
+  --sug  recordings/nonna_sug_run*.jsonl \
   --cost-dir recordings/
 ```
 
