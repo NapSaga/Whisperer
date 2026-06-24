@@ -17,7 +17,7 @@ and re-grounds the agent every turn — so it never loses the thread, and the au
   <img alt="recall" src="https://img.shields.io/badge/recall-0%2F10_→_10%2F10-111111">
 </p>
 
-<p align="center"><sub>Built at HackRome · 13 Jun 2026 — <a href="https://www.linkedin.com/in/giovanni-di-fonzo-111692297/">Giovanni Di Fonzo</a> (product) · <a href="https://www.linkedin.com/in/daniele-giovanardi/">Daniele Giovanardi</a> (engine) · <a href="https://www.linkedin.com/in/gabriele-loreti-b4a537155/">Gabriele Loreti</a> (measurement)</sub></p>
+<p align="center"><sub>Built at HackRome · 13 Jun 2026 — <a href="https://www.linkedin.com/in/giovanni-di-fonzo-111692297/">Giovanni Di Fonzo</a> · <a href="https://www.linkedin.com/in/daniele-giovanardi/">Daniele Giovanardi</a> · <a href="https://www.linkedin.com/in/gabriele-loreti-b4a537155/">Gabriele Loreti</a></sub></p>
 
 <p align="center"><b><a href="https://www.facebook.com/share/v/1BBnwLGhvK/">Watch the demo →</a></b> &nbsp;·&nbsp; <a href="https://devpost.com/software/whisperers">Devpost</a> &nbsp;·&nbsp; <a href="https://luma.com/n14m3k83">HackRome</a></p>
 
@@ -25,7 +25,7 @@ and re-grounds the agent every turn — so it never loses the thread, and the au
 
 > **Long voice calls drift and get expensive.** OpenAI itself notes that *"instruction adherence can drift"* as context grows, and that *"turns later in the session will be more expensive."* Managed platforms ship hard limits to cope — Retell caps context around 32k, OpenAI documents blind truncation — so by minute 10 the agent has quietly **forgotten what the caller said at minute 1**.
 
-Today the fix is artisanal: every team rewrites its own context handling. **Whisperer packages it** as an add-on you bolt onto any voice stack (OpenAI Realtime, ElevenLabs Agents, Vapi, Retell). We are customer zero — StudierAI goes to production with it.
+Today the fix is artisanal: every team rewrites its own context handling. **Whisperer packages it** as an add-on you bolt onto any voice stack (OpenAI Realtime, ElevenLabs Agents, Vapi, Retell).
 
 ## The number — measured, not claimed
 
@@ -59,24 +59,24 @@ Whisperer is a memory layer that sits next to the voice agent. Three real pieces
 
 We under-promise by a hair, on purpose. State these proactively; keep them ready in Q&A.
 
-- **Cost — the important one.** The on-screen counter shows **real, measured** numbers from `server/evidence/fullcontext-qa` (28-turn batch, N=10): base **$0.30** vs Whisperer **$0.23**, **1.30×** — the base re-pays its growing context every turn while Whisperer sends a compact ledger and stays flat. That's the *direction*, measured, labeled **"misurato"**. The dramatic *magnitude* (e.g. 7.6×, or our StudierAI production €4.50 vs €0.13) is a **projection** for a full 10–20 min call — stated verbally, never passed off as the measured on-screen number. On a short 28-turn demo forgetting and cost-magnitude are coupled, so the live gap is a modest 1.3×; on a real call it compounds as the base keeps climbing and Whisperer stays flat. The mock `cost.json` is gone.
+- **Cost — the important one.** The on-screen counter shows **real, measured** numbers from `server/evidence/fullcontext-qa` (28-turn batch, N=10): base **$0.30** vs Whisperer **$0.23**, **1.30×** — the base re-pays its growing context every turn while Whisperer sends a compact ledger and stays flat. That's the *direction*, measured, labeled **"misurato"**. The dramatic *magnitude* (e.g. 7.6×) is a **projection** for a full 10–20 min call — stated verbally, never passed off as the measured on-screen number. On a short 28-turn demo forgetting and cost-magnitude are coupled, so the live gap is a modest 1.3×; on a real call it compounds as the base keeps climbing and Whisperer stays flat. The mock `cost.json` is gone.
 - **Why the base forgets.** The base is capped to reproduce the **real 32k hard-cap** managed platforms ship (Retell) and the blind truncation OpenAI documents. The number measures recall *under that real condition* — not an invented handicap.
 - **Watchdog (if asked).** Now implemented (`SPEC §4`), **opt-in** via `SUGGERITORE_WATCHDOG=on` (`sdk/whisperer/watchdog.py`). The shipped default stays periodic re-grounding + compact state — the safe default the measured number was produced under. With the flag on, after each reply a cheap check asks whether it contradicts a known fact and, on drift, re-injects that single fact and lets the agent answer again.
 - **Distiller cost (if asked).** Yes, the layer runs a cheap text model; its overhead is small next to the audio context the base re-pays every turn.
 
 > **Backup evidence** for Q&A lives in `server/evidence/fullcontext-qa/`: a full-context base experiment showing **5/10 even with uncapped context** (context rot), and a **1.30× real, measured** cost divergence in the right direction — *"we measured the direction; we project the magnitude."*
 
-## Repo layout — three owners, parallel work
+## Repo layout
 
-| Path | Owner | What lives here |
-|---|---|---|
-| `sdk/` | shared | `whisperer-sdk` — the layer extracted as an installable package: distiller, injector, watchdog, cost meter, connectors |
-| `server/` | Daniele | FastAPI voice agent (from `openai-voice-agent-sdk-sample`) that consumes `whisperer-sdk` + demo agent/connectors |
-| `harness/` | Gabriele | Binary judge + batch runner (N=10/side) → the number · token/cost meter |
-| `web/` | Giovanni | Next.js dashboard: split-screen base vs suggeritore + live memory HUD + cost counter |
-| `spec/` | shared | `SPEC.md` (design + JSON contracts) · `PROMPTS.md` (Codex kickoffs) · `fixtures/` (mock data) |
+| Path | What lives here |
+|---|---|
+| `sdk/` | `whisperer-sdk` — the layer extracted as an installable package: distiller, injector, watchdog, cost meter, connectors |
+| `server/` | FastAPI voice agent (from `openai-voice-agent-sdk-sample`) that consumes `whisperer-sdk` + demo agent/connectors |
+| `harness/` | Binary judge + batch runner (N=10/side) → the number · token/cost meter |
+| `web/` | Next.js dashboard: split-screen base vs suggeritore + live memory HUD + cost counter |
+| `spec/` | `SPEC.md` (design + JSON contracts) · `PROMPTS.md` (Codex kickoffs) · `fixtures/` (mock data + scenarios) |
 
-The three folders couple **only** through the JSON contracts in `spec/SPEC.md §7`. Each side builds against `spec/fixtures/`, never against each other — which is what lets `web/` run with **no backend** (mock-first).
+The folders couple **only** through the JSON contracts in `spec/SPEC.md §7`. Each builds against `spec/fixtures/`, never against the others — which is what lets `web/` run with **no backend** (mock-first).
 
 ## Run it
 
@@ -97,9 +97,9 @@ npm run dev          # http://localhost:3000 — split-screen, live HUD, cost me
 python harness/runner.py --mode fixture
 
 # score N real recordings per side, and aggregate per-run cost
-python harness/runner.py --mode live \
-  --base recordings/base_run*.jsonl \
-  --sug recordings/sug_run*.jsonl \
+python harness/runner.py --mode live --scenario nonna \
+  --base recordings/nonna_base_run*.jsonl \
+  --sug recordings/nonna_sug_run*.jsonl \
   --cost-dir recordings/
 ```
 
@@ -109,9 +109,13 @@ python harness/runner.py --mode live \
 cd server && make sync                        # npm install + uv sync
 cd server/server && uv run python server.py   # FastAPI + /ws on :8000
 
-# generate a fresh batch of recordings (N=10 per side)
-uv run python batch_run.py --mode suggeritore --n 10
-uv run python batch_run.py --mode base        --n 10
+# generate a fresh batch of recordings (N=10 per side; --scenario default: nonna)
+uv run python batch_run.py --mode suggeritore --n 10 --scenario nonna
+uv run python batch_run.py --mode base        --n 10 --scenario nonna
+
+# other scenarios live in spec/fixtures/scenarios/ (reso, cambio-consegna, long-call);
+# long-call sweeps call length: add --turns N to cap to the first N caller turns
+uv run python batch_run.py --mode base --scenario long-call --turns 20
 ```
 
 The layer is toggled by env vars (read by the SDK in `sdk/whisperer/`): `SUGGERITORE_MODE` (on/off), `SUGGERITORE_STATE_PATH`, `SUGGERITORE_COST_PATH`, `SUGGERITORE_INJECT_EVERY`, `SUGGERITORE_DISTILL_EVERY`, `SUGGERITORE_BASE_CAP`, `SUGGERITORE_WATCHDOG` (SPEC §4 drift guard, opt-in). The agent's tools call a per-client connector selected by `WHISPERER_API_CONNECTOR` (default `api_shopdemo`) — swap in a real connector without touching the agent (see `server/server/app/api_template.py.example`).
@@ -153,8 +157,8 @@ Discipline that kept it honest: library APIs via Context7, UI via the shadcn CLI
 
 ## Team
 
-| | Role | |
-|---|---|---|
-| **Giovanni Di Fonzo** | Product · pitch · dashboard | [LinkedIn](https://www.linkedin.com/in/giovanni-di-fonzo-111692297/) |
-| **Daniele Giovanardi** | Engine · server + memory layer | [LinkedIn](https://www.linkedin.com/in/daniele-giovanardi/) |
-| **Gabriele Loreti** | Measurement · judge + harness | [LinkedIn](https://www.linkedin.com/in/gabriele-loreti-b4a537155/) |
+| | |
+|---|---|
+| **Giovanni Di Fonzo** | [LinkedIn](https://www.linkedin.com/in/giovanni-di-fonzo-111692297/) |
+| **Daniele Giovanardi** | [LinkedIn](https://www.linkedin.com/in/daniele-giovanardi/) |
+| **Gabriele Loreti** | [LinkedIn](https://www.linkedin.com/in/gabriele-loreti-b4a537155/) |

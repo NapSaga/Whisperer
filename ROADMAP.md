@@ -1,6 +1,6 @@
 # Whisperer — Roadmap post-HackRome
 
-_Responsabile branch: Gabriele Loreti · aggiornato: 2026-06-21_
+_Branch: feat/gabriele-dev · aggiornato: 2026-06-24_
 
 ---
 
@@ -18,10 +18,9 @@ Il core è completo e misurato:
 | Batch runner N=10 (SPEC §6) | ✓ | `server/server/batch_run.py`, `harness/runner.py` |
 | Dashboard web | ✓ live su Vercel | `web/` |
 | Watchdog rilevamento drift (SPEC §4) | ◐ implementato, opt-in via `SUGGERITORE_WATCHDOG` | `server/server/app/watchdog.py` |
-| Generalizzazione scenari | ✗ solo scenario "nonna" | `batch_run.py` hardcoded |
-| Misurazione chiamate lunghe | ✗ serve validare il 7.6× proiettato | — |
+| Generalizzazione scenari | ✓ parametrici via `--scenario` | `batch_run.py`, `spec/fixtures/scenarios/` |
+| Misurazione chiamate lunghe | ✓ scenario `long-call` + `--turns` | `spec/fixtures/scenarios/long-call.jsonl` |
 | Trascrizione vocale live (Whisper) | ◐ presente nell'engine (`VoicePipeline` STT→LLM→TTS), assente nella HUD demo (replay di audio pre-registrato) | `server/server/server.py` |
-| Integrazione StudierAI | ✗ cliente zero nominale | — |
 
 **Il numero misurato:** recall 0/10 → 10/10 · costo 1.3× misurato su 28 turn (7.6× proiettato su una chiamata da 10-20 min).
 
@@ -39,25 +38,23 @@ Il pezzo architetturale mancante, ora implementato. Dopo ogni risposta dell'agen
 
 **Impatto:** chiude l'unico gap dichiarato nella SPEC; rafforza la garanzia "nessun drift".
 
-### 2. Generalizzazione scenario (alta priorità per credibilità)
+### 2. Generalizzazione scenario (✓ fatto)
 
-`batch_run.py` ha uno script fisso di 8 turn sulla nonna. Renderlo parametrico (script del chiamante da file JSONL) per testare altri scenari (prenotazioni, triage medico, ticket di supporto).
+`batch_run.py` non è più hardcodato sulla nonna. Script del chiamante, seeded_fact, identity/objective e recall_markers vivono in `spec/fixtures/scenarios/` (manifest `index.json` + un file-script `.jsonl` per scenario, un turn per riga; l'ultima riga è la domanda di recall). Si seleziona con `--scenario <id>` (default `nonna`); `harness/runner.py` carica la seeded_fact corrispondente con `--scenario`. Le registrazioni sono prefissate per scenario (`recordings/<id>_base_run*.jsonl`). Scenari attuali: `nonna`, `reso`, `cambio-consegna`, `long-call`.
 
-**Dove:** `server/server/batch_run.py` + nuovi fixture in `spec/fixtures/`.
+**Dove:** `server/server/batch_run.py`, `harness/runner.py`, `spec/fixtures/scenarios/`.
 
-**Impatto:** N=10 su un solo scenario è fragile; N=10 su 3 scenari è convincente.
+**Impatto:** N=10 su un solo scenario è fragile; N=10 su più scenari è convincente.
 
-### 3. Misurazione chiamate lunghe
+### 3. Misurazione chiamate lunghe (✓ fatto)
 
-Script del chiamante da 30+ turn per validare il 7.6× proiettato. Il harness è già pronto — serve solo uno script più lungo e più sessioni.
+Scenario `long-call` (32 turn del chiamante) per validare la direzione del 7.6× proiettato. `--turns N` in `batch_run.py` cappa la chiamata ai primi N turn (la riga di recall è sempre preservata in coda), così si fa lo sweep della lunghezza da un unico script.
 
-**Dove:** nuovo `spec/fixtures/long_call_script.jsonl` + aggiunta dell'opzione `--turns` in `batch_run.py`.
+**Dove:** `spec/fixtures/scenarios/long-call.jsonl` + opzione `--turns` in `batch_run.py`.
 
-### 4. Integrazione StudierAI
+**Da fare:** generare le batch e annotare il rapporto di costo osservato (serve un `.env` con `OPENAI_API_KEY`).
 
-Integrare il layer nel loro stack e misurare su chiamate reali. Da coordinare con Daniele (engine).
-
-### 5. Connettori API reali (✓ struttura pronta, pre-deploy)
+### 4. Connettori API reali (✓ struttura pronta, pre-deploy)
 
 I dati hardcodati vivono ora in `server/server/app/api_shopdemo.py` (ex `mock_api.py`), il connettore demo di riferimento. Prima di un deploy in produzione si aggiunge un modulo per cliente verso i sistemi reali (database ordini, sistema rimborsi, CRM, ecc.).
 
@@ -65,11 +62,11 @@ I dati hardcodati vivono ora in `server/server/app/api_shopdemo.py` (ex `mock_ap
 
 **Impatto:** è il punto di integrazione con qualsiasi stack esistente. Lo swap è plug-in (nuovo file + env var, nessuna modifica all'agente).
 
-### 6. SDK packaging (dopo 1-3)
+### 5. SDK packaging (✓ fatto)
 
 Estrarre `server/server/app/` come pacchetto pip `whisperer-sdk` con builder di configurazione e hook per qualunque voice stack.
 
-### 7. Test di integrazione con piattaforme vocali AI terze (dopo 6)
+### 6. Test di integrazione con piattaforme vocali AI terze (dopo 5)
 
 Whisperer è un memory layer — il suo valore è potersi agganciare a qualsiasi voice AI stack già esistente. Va validato su piattaforme reali oltre alla demo standalone.
 
@@ -98,10 +95,10 @@ Il punteggio (`X/10 recall`, costo medio) diventa la scorecard di quella integra
 
 ## Mappa della repo — cosa è cosa
 
-> ⚠️ **Nota (2026-06-21):** una prima versione di questa sezione proponeva di eliminare
-> `server/frontend/` e `PITCH.html`. La verifica ha smentito quelle ipotesi: entrambi
-> sono file vivi e referenziati. Vedi sotto. **Non eliminare nulla senza prima validare
-> i riferimenti** (Makefile, README, import del build).
+> ⚠️ **Nota:** prima di eliminare qualcosa, **validare sempre i riferimenti** (Makefile,
+> README, import del build, link del web). Es. `server/frontend/` sembrava cruft ma è il
+> client vocale live (vedi sotto). I file pitch (`PITCH.html`, `web/public/pitch.html`) sono
+> stati invece **eliminati (2026-06-24)**: materiale da hackathon, non più necessario.
 
 ### File core (✓ estratti come SDK `whisperer-sdk` in `sdk/whisperer/`)
 
@@ -130,7 +127,7 @@ Il server li consuma come path dependency editable (`server/server/pyproject.tom
 | `server/frontend/` | **Client live** del voice agent (push-to-talk, WebSocket) | Vedi sotto — **non eliminare** |
 | `server/server/batch_run.py` | Driver batch per il harness | Keeper — alimenta i benchmark |
 | `spec/SPEC.md`, `spec/PROMPTS.md` | Documentazione tecnica | Keeper — base per la doc dell'SDK |
-| `spec/fixtures/` | Dati statici per HUD e harness | Keeper |
+| `spec/fixtures/` | Dati statici per HUD e harness (incl. `scenarios/`: manifest + script per scenario) | Keeper |
 | `recordings/` | 20 trascrizioni batch reali | Keeper — evidenza dei benchmark |
 | `web/` | HUD/dashboard demo su Vercel | Keeper per le demo |
 
@@ -139,10 +136,9 @@ Il server li consuma come path dependency editable (`server/server/pyproject.tom
 | File/Cartella | Cosa è davvero | Perché NON eliminarlo |
 |---|---|---|
 | `server/frontend/` | Il **client interattivo** del voice agent (AudioChat, push-to-talk) che si connette a `server.py` via WebSocket | Referenziato da `server/Makefile` (`make sync`/`make serve`), `server/README.md` e dal `README.md` principale. **Non** è rimpiazzato da `web/`: `web/` è la dashboard statica su fixture, `server/frontend/` è il client vocale live |
-| `PITCH.html` (root) | Lo **script della pitch** da recitare (teleprompter: "cosa dici", prep Q&A, checklist) | **Non** è un duplicato di `web/public/pitch.html`, che è invece lo slide deck interattivo con audio. Sono il copione e lo spettacolo: file diversi (`diff` confermato) |
-| `server/evidence/fullcontext-qa/` | **Evidenza di backup** citata nel `README.md`: esperimento full-context (5/10 con context rot) + costo 1.30× misurato | È load-bearing per la pitch e per le honesty notes. Non è un duplicato di `recordings/` |
+| `server/evidence/fullcontext-qa/` | **Evidenza di backup** citata nel `README.md`: esperimento full-context (5/10 con context rot) + costo 1.30× misurato | È load-bearing per le honesty notes. Non è un duplicato di `recordings/` |
 | `audio nonna/` | Registrazioni sorgente della nonna + `audio_consenso.ogg` (**consenso registrato**) | Valore legale (consenso). Le tracce usate dalla HUD sono in `web/public/audio/`, ma la sorgente + il consenso vivono qui |
-| `web/src/lib/fixtures/` | Copia dei fixture interna a `web/` | Probabilmente necessaria per il build Next.js (mock-first, nessun import fuori da `web/`). Il `README.md` dice esplicitamente che `web/` gira senza backend |
+| `web/src/lib/fixtures/` | Copia dei fixture interna a `web/` (vedi `web/src/lib/fixtures/README.md`) | Necessaria per il build Next.js (mock-first, nessun import fuori da `web/`); sorgente canonica `spec/fixtures/`. Il `README.md` dice esplicitamente che `web/` gira senza backend |
 
 ### Cruft minore — gestito
 
@@ -150,15 +146,15 @@ Il server li consuma come path dependency editable (`server/server/pyproject.tom
 |---|---|---|
 | `assets/` | Cartella con solo un `README.md` placeholder per un `demo.gif` mai aggiunto | ✅ **Eliminata** (2026-06-21) — il gif non è mai stato creato e il `README.md` principale non lo referenziava |
 
-### 8. Igiene repo (da fare prima della PR su main, con verifica)
+### 7. Igiene repo (da fare prima della PR su main, con verifica)
 
 Prima di mergiare `feat/gabriele-dev` su `main` — **niente eliminazioni alla cieca**:
 
-1. **Documentare**, non eliminare: aggiungere un breve commento/README che spieghi la differenza tra `web/` (dashboard statica) e `server/frontend/` (client live), così chi clona non li confonde — è proprio l'errore in cui siamo cascati noi.
-2. **Chiarire** `PITCH.html` vs `web/public/pitch.html`: rinominare per evitare ambiguità (es. `PITCH-SCRIPT.html` per il copione) o aggiungere una riga di intestazione in ciascuno.
-3. **Documentare** il ruolo di `server/evidence/` nel suo `README.md` (è già presente — verificare che spieghi che è l'esperimento full-context, distinto da `recordings/`).
-4. **Decidere** la sorte di `audio nonna/`: se non serve più per i test, spostarla fuori da git (ma **conservare `audio_consenso.ogg`** in un posto sicuro per il valore legale).
-5. **Chiarire** la duplicazione `web/src/lib/fixtures/` vs `spec/fixtures/`: confermare che la copia serve al build Next.js e aggiungere un commento, oppure unificare con un symlink/script di sync.
+1. ~~**Documentare** `web/` (dashboard statica) vs `server/frontend/` (client live)~~ — ✅ fatto: `server/frontend/README.md` chiarisce la differenza (più riga nella "Repo layout" del `README.md`).
+2. ~~**Chiarire** `PITCH.html` vs `web/public/pitch.html`~~ — ✅ risolto eliminandoli (2026-06-24): erano materiale da hackathon, non più necessario. Nessun codice li referenziava.
+3. ~~**Documentare** `server/evidence/`~~ — ✅ verificato: `server/evidence/fullcontext-qa/README.md` spiega l'esperimento full-context, distinto dal numero shipped e da `recordings/`.
+4. ~~**Decidere** la sorte di `audio nonna/`~~ — ✅ mantenuta in repo con `audio nonna/README.md` che marca `audio_consenso.ogg` come consenso legale da conservare. (Non spostata fuori da git senza ok esplicito.)
+5. ~~**Chiarire** `web/src/lib/fixtures/` vs `spec/fixtures/`~~ — ✅ fatto: `web/src/lib/fixtures/README.md` conferma che è la copia build-time per Next.js (sorgente canonica: `spec/fixtures/`). Niente symlink su Windows.
 6. ~~**Verificare** `assets/`~~ — ✅ fatto: era un placeholder, eliminata.
 
 ---
@@ -174,17 +170,20 @@ Prima di mergiare `feat/gabriele-dev` su `main` — **niente eliminazioni alla c
 ## Come testare le modifiche
 
 ```bash
-# Valida il judge sul fixture
+# Valida il judge sul fixture (scenario nonna, invariato)
 python harness/runner.py --mode fixture
 
-# Genera una nuova batch (il server deve essere nel PATH di uv)
-cd server
-uv run python batch_run.py --mode suggeritore --n 10
-uv run python batch_run.py --mode base --n 10
+# Genera una nuova batch per uno scenario (default: nonna)
+cd server/server
+uv run python batch_run.py --mode suggeritore --n 10 --scenario reso
+uv run python batch_run.py --mode base        --n 10 --scenario reso
 
-# Scorecard
-python harness/runner.py --mode live \
-  --base recordings/base_run*.jsonl \
-  --sug recordings/sug_run*.jsonl \
+# Chiamata lunga: sweep della durata con --turns
+uv run python batch_run.py --mode base --scenario long-call --turns 20
+
+# Scorecard (passa --scenario per la seeded_fact e per scopare i file costo giusti)
+python harness/runner.py --mode live --scenario reso \
+  --base recordings/reso_base_run*.jsonl \
+  --sug  recordings/reso_sug_run*.jsonl \
   --cost-dir recordings/
 ```
