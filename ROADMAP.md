@@ -4,6 +4,17 @@ _Su `main` (workflow main-only) · aggiornato: 2026-06-26_
 
 ---
 
+## ▶ Riprendi da qui (sessione 2026-06-26 → continua domani)
+
+Fermato a fine giornata. **Prossima azione, in ordine:**
+
+1. **Smoke-test del server live** con `SUGGERITORE_MODE=on` (+ watchdog già on): verificare che il path `VoicePipeline` STT→LLM→TTS parta, che il distiller scriva il ledger e che il recall regga su una chiamata vera. È il de-risking *prima* di toccare la UI — il path live non è mai stato provato col layer acceso (i numeri vengono dal batch harness, non dal server).
+2. Poi **punto 7** (demo live: interfaccia + real-time) sul connettore demo `api_shopdemo`.
+
+**Note da non perdere:** `SUGGERITORE_MODE` default = `off` (va acceso a mano per la demo) · watchdog ora default-on = latenza extra in tempo reale, da valutare se renderlo non-bloccante · budget ~50€/~5€ a call → debug su chiamate corte, credito solo per la validazione finale. **Non** servono #4 né #6 prima del #7.
+
+---
+
 ## Stato attuale
 
 Il core è completo e misurato:
