@@ -13,9 +13,12 @@ Same Agents-SDK pattern as the distiller: ``Agent(output_type=DriftVerdict)`` +
 sure ``fact_id`` actually points at a real fact in the ledger before we trust the
 drift — no invented contradictions can leak in (mirrors ``distiller._reconcile``).
 
-Gated by ``SUGGERITORE_WATCHDOG`` (default off). The measured number and the
-README honesty note ("periodic re-grounding is the safe default") stay true with
-the flag off; turning it on activates the §4 re-answer edge.
+Gated by ``SUGGERITORE_WATCHDOG`` (default **on** — the §4 re-answer edge is the
+shipped product behaviour). The published **cost** number was measured with the
+watchdog off (periodic re-grounding only); reproduce that baseline by setting
+``SUGGERITORE_WATCHDOG=off``. Recall in the measured scenarios is unchanged either
+way (the layer already hits full recall); the watchdog hardens the contradiction
+edge that periodic re-grounding doesn't cover.
 """
 
 import os
@@ -63,7 +66,7 @@ CORRECTION_PREFIX = "Correction (Whisperer watchdog)"
 
 
 def is_enabled() -> bool:
-    return os.getenv("SUGGERITORE_WATCHDOG", "off").strip().lower() in {"on", "1", "true", "yes"}
+    return os.getenv("SUGGERITORE_WATCHDOG", "on").strip().lower() in {"on", "1", "true", "yes"}
 
 
 def _build_prompt(state: StateLedger, last_user_turn: str, agent_response: str) -> str:

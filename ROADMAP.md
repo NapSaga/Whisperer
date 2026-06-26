@@ -1,6 +1,6 @@
 # Whisperer — Roadmap post-HackRome
 
-_Branch: feat/gabriele-dev · aggiornato: 2026-06-24_
+_Su `main` (workflow main-only) · aggiornato: 2026-06-26_
 
 ---
 
@@ -10,17 +10,17 @@ Il core è completo e misurato:
 
 | Componente | Stato | File |
 |---|---|---|
-| Distiller (SPEC §2) | ✓ | `server/server/app/distiller.py` |
-| Injector + compact_input (SPEC §3) | ✓ | `server/server/app/injector.py` |
-| State store / ledger (SPEC §1) | ✓ | `server/server/app/state_store.py` |
-| Cost meter (SPEC §5) | ✓ | `server/server/app/cost_meter.py` |
+| Distiller (SPEC §2) | ✓ | `sdk/whisperer/distiller.py` |
+| Injector + compact_input (SPEC §3) | ✓ | `sdk/whisperer/injector.py` |
+| State store / ledger (SPEC §1) | ✓ | `sdk/whisperer/state_store.py` |
+| Cost meter (SPEC §5) | ✓ | `sdk/whisperer/cost_meter.py` |
 | Judge binario (SPEC §6) | ✓ | `harness/judge.py` |
 | Batch runner N=10 (SPEC §6) | ✓ | `server/server/batch_run.py`, `harness/runner.py` |
 | Dashboard web | ✓ live su Vercel | `web/` |
-| Watchdog rilevamento drift (SPEC §4) | ◐ implementato, opt-in via `SUGGERITORE_WATCHDOG` | `server/server/app/watchdog.py` |
+| Watchdog rilevamento drift (SPEC §4) | ✓ default on via `SUGGERITORE_WATCHDOG` | `sdk/whisperer/watchdog.py` |
 | Generalizzazione scenari | ✓ parametrici via `--scenario` | `batch_run.py`, `spec/fixtures/scenarios/` |
 | Misurazione chiamate lunghe | ✓ scenario `long-call` + `--turns` | `spec/fixtures/scenarios/long-call.jsonl` |
-| Trascrizione vocale live (Whisper) | ◐ presente nell'engine (`VoicePipeline` STT→LLM→TTS), assente nella HUD demo (replay di audio pre-registrato) | `server/server/server.py` |
+| Trascrizione vocale live (Whisper) | ◐ presente nell'engine (`VoicePipeline` STT→LLM→TTS), assente nella HUD demo (replay di audio pre-registrato) → vedi punto 7 | `server/server/server.py` |
 
 **Il numero misurato:** recall 0/10 → 10/10 · costo 1.3× misurato su 28 turn (7.6× proiettato su una chiamata da 10-20 min).
 
@@ -28,13 +28,15 @@ Il core è completo e misurato:
 
 ## Priorità
 
-### 1. Watchdog — SPEC §4 (✓ implementato, opt-in)
+### 1. Watchdog — SPEC §4 (✓ implementato, default on)
 
-Il pezzo architetturale mancante, ora implementato. Dopo ogni risposta dell'agente, un check leggero (`gpt-4o-mini`, structured output) controlla se la risposta contraddice un fatto nel ledger → re-inietta quel fatto specifico e fa ri-rispondere l'agente.
+Il pezzo architetturale mancante, ora implementato e **attivo di default**. Dopo ogni risposta dell'agente, un check leggero (`gpt-4o-mini`, structured output) controlla se la risposta contraddice un fatto nel ledger → re-inietta quel fatto specifico e fa ri-rispondere l'agente.
 
-**Dove:** `server/server/app/watchdog.py` + hook in `server/server/server.py` (`Workflow.run`).
+**Dove:** `sdk/whisperer/watchdog.py` + hook in `server/server/server.py` (`Workflow.run`).
 
-**Attivazione:** `SUGGERITORE_WATCHDOG=on` (default off). Spento, il build resta sul re-grounding periodico — il default sicuro sotto cui è stato misurato il numero. Acceso, attiva il comportamento re-answer fedele alla SPEC §4.
+**Attivazione:** `SUGGERITORE_WATCHDOG=on` (**default on**). È il comportamento re-answer fedele alla SPEC §4 ed è ora il default di prodotto. Il recall negli scenari misurati è identico con flag on/off (il layer fa già recall pieno); il watchdog blinda il caso di contraddizione che il re-grounding periodico non copre.
+
+**Nota onesta:** il **numero di costo pubblicato** è stato misurato con il watchdog **spento** (re-grounding only). Per riprodurre quel baseline: `SUGGERITORE_WATCHDOG=off`. Acceso, aggiunge una chiamata `gpt-4o-mini` per turno (costo leggermente più alto, latenza extra — da tenere d'occhio sulla demo live, punto 7).
 
 **Impatto:** chiude l'unico gap dichiarato nella SPEC; rafforza la garanzia "nessun drift".
 
@@ -61,7 +63,7 @@ Scenario `long-call` (32 turn del chiamante) per validare la direzione del 7.6×
 
 I dati hardcodati vivono ora in `server/server/app/api_shopdemo.py` (ex `mock_api.py`), il connettore demo di riferimento. Prima di un deploy in produzione si aggiunge un modulo per cliente verso i sistemi reali (database ordini, sistema rimborsi, CRM, ecc.).
 
-**Come:** copiare `server/server/app/api_template.py.example` in `api_<cliente>.py`, implementare `get_past_orders()` e `submit_refund_request()` verso i sistemi reali, poi selezionarlo con `WHISPERER_API_CONNECTOR=api_<cliente>` (default `api_shopdemo`). Il loader è `server/server/app/connectors.py` (Protocol `ApiConnector` + `load_connector`); `agent_config.py` lo carica per nome. Il resto del codice non cambia.
+**Come:** copiare `server/server/app/api_template.py.example` in `api_<cliente>.py`, implementare `get_past_orders()` e `submit_refund_request()` verso i sistemi reali, poi selezionarlo con `WHISPERER_API_CONNECTOR=api_<cliente>` (default `api_shopdemo`). Il loader è `sdk/whisperer/connectors.py` (Protocol `ApiConnector` + `load_connector`); `agent_config.py` lo carica per nome. Il resto del codice non cambia.
 
 **Impatto:** è il punto di integrazione con qualsiasi stack esistente. Lo swap è plug-in (nuovo file + env var, nessuna modifica all'agente).
 
@@ -94,6 +96,21 @@ Il punteggio (`X/10 recall`, costo medio) diventa la scorecard di quella integra
 
 **Impatto:** trasforma Whisperer da demo standalone a layer certificato su N piattaforme — ogni integrazione riuscita ha un numero che la prova. Dà anche al harness una vita continuativa oltre l'hackathon: ogni nuova piattaforma è una nuova riga di scorecard, non un one-shot.
 
+### 7. Demo live real-time — interfaccia + implementazione real-time (da fare)
+
+Task dal team (audio, 2026-06-26): **prendere in mano la configurazione della demo live** e costruire un'**interfaccia** con **implementazione real-time** — un vero *demo product*, non il replay di audio pre-registrato dell'attuale HUD. Tenerla **semplice**, non sovra-ingegnerizzata ("una complessa è troppo, facciamone una semplice").
+
+**Workstream:**
+- **Front:** interfaccia + prova di implementazione real-time.
+- **Back:** codice di collegamento + connettori API.
+- **Poi:** **test lunghi** (~15 min, ~5€ a chiamata) per verificare il recall del contatto, usando i ~50€ di credito disponibili.
+
+**Obiettivo:** dimostrare su una **prova reale** (use case voice/commerce) che il problema concreto — drift / perdita del filo su chiamate lunghe — è risolto, in real-time e su modello reale.
+
+**Dove:** collegare `server/frontend/` (client vocale live già esistente, push-to-talk via WebSocket) all'engine `VoicePipeline` (STT→LLM→TTS) di `server/server/server.py`. È esattamente il pezzo segnato ◐ in "Stato attuale": trascrizione vocale live presente nell'engine ma assente nella HUD demo.
+
+> ⚠️ Audio parzialmente illeggibile: nucleo (interfaccia + real-time + chi lo prende in mano) chiaro; dettagli su credito/durata test ricostruiti, da confermare col team.
+
 ---
 
 ## Mappa della repo — cosa è cosa
@@ -115,7 +132,7 @@ Il server li consuma come path dependency editable (`server/server/pyproject.tom
 | `sdk/whisperer/injector.py` | Inietta il ledger nel prompt |
 | `sdk/whisperer/cost_meter.py` | Traccia il costo per turno |
 | `sdk/whisperer/truncation.py` | Gestisce il cap della context window |
-| `sdk/whisperer/watchdog.py` | Drift guard SPEC §4 (opt-in) |
+| `sdk/whisperer/watchdog.py` | Drift guard SPEC §4 (default on) |
 | `sdk/whisperer/connectors.py` | Contratto `ApiConnector` + loader per-cliente |
 | `sdk/whisperer/__init__.py` | API pubblica del pacchetto (i due hook + i building block) |
 
@@ -126,7 +143,7 @@ Il server li consuma come path dependency editable (`server/server/pyproject.tom
 | `server/server/server.py` | Server WebSocket demo | Sarà sostituito dallo stack del cliente |
 | `server/server/app/utils.py` | Gestione WebSocket/audio | Infrastruttura demo, non core |
 | `server/server/app/agent_config.py` | Definizione agente demo | Sarà sostituito dall'agente del cliente |
-| `server/server/app/api_shopdemo.py` | Connettore demo (ex `mock_api.py`) | Riferimento per i connettori reali (vedi punto 5) |
+| `server/server/app/api_shopdemo.py` | Connettore demo (ex `mock_api.py`) | Riferimento per i connettori reali (vedi punto 4) |
 | `server/frontend/` | **Client live** del voice agent (push-to-talk, WebSocket) | Vedi sotto — **non eliminare** |
 | `server/server/batch_run.py` | Driver batch per il harness | Keeper — alimenta i benchmark |
 | `spec/SPEC.md`, `spec/PROMPTS.md` | Documentazione tecnica | Keeper — base per la doc dell'SDK |
@@ -149,9 +166,9 @@ Il server li consuma come path dependency editable (`server/server/pyproject.tom
 |---|---|---|
 | `assets/` | Cartella con solo un `README.md` placeholder per un `demo.gif` mai aggiunto | ✅ **Eliminata** (2026-06-21) — il gif non è mai stato creato e il `README.md` principale non lo referenziava |
 
-### 7. Igiene repo (da fare prima della PR su main, con verifica)
+### Igiene repo (✓ fatta — completata prima del merge su `main`)
 
-Prima di mergiare `feat/gabriele-dev` su `main` — **niente eliminazioni alla cieca**:
+Svolta con verifica, **niente eliminazioni alla cieca**:
 
 1. ~~**Documentare** `web/` (dashboard statica) vs `server/frontend/` (client live)~~ — ✅ fatto: `server/frontend/README.md` chiarisce la differenza (più riga nella "Repo layout" del `README.md`).
 2. ~~**Chiarire** `PITCH.html` vs `web/public/pitch.html`~~ — ✅ risolto eliminandoli (2026-06-24): erano materiale da hackathon, non più necessario. Nessun codice li referenziava.
@@ -164,9 +181,8 @@ Prima di mergiare `feat/gabriele-dev` su `main` — **niente eliminazioni alla c
 
 ## Strategia di branch
 
-- Questo branch: `feat/gabriele-dev` — lavoro personale pre-coordinamento
-- `main` è condiviso + deployato su Vercel — non toccare direttamente
-- Quando pronto: PR verso `main` e allineamento con Giovanni e Daniele
+- **Workflow main-only (dal 2026-06-26):** si lavora e si pusha direttamente su `main`. Il branch `feat/gabriele-dev` è stato fuso e silurato.
+- `main` è condiviso + deployato su Vercel: **ogni push fa partire un deploy in produzione** — committa con criterio.
 
 ---
 
