@@ -1,55 +1,55 @@
 # Whisperer — Design System
 
-> Tabellone delle prove, **light premium editorial**. Definito, non vibe-code.
+> Evidence board, **light premium editorial**. Deliberate, not vibe-coded.
 > Single screen, light-mode, projector-first (16:9). Tokens in `src/app/globals.css`.
 
-## Principio
-Una sola schermata, zero scroll di pagina. La storia è una scena:
-**stessa chiamata → uno dimentica, uno ricorda → il numero esplode al recall.**
-Ogni affermazione porta la sua citazione `[tN]` = ricevute, non vibes.
+## Principle
+A single screen, zero page scroll. The story is one scene:
+**same call → one forgets, one remembers → the number explodes at recall.**
+Every claim carries its `[tN]` citation = receipts, not vibes.
 
-## Colore (light, semantica non decorazione)
-| Token | Uso | Valore (oklch ≈ hex) |
+## Color (light, semantic not decorative)
+| Token | Use | Value (oklch ≈ hex) |
 |---|---|---|
-| `--background` | off-white morbido + radiale | `0.984 0.002 250` ≈ #FAFBFC |
-| `--card` / `--surface-strong` | pannelli bianchi (shadow-sm) | `1 0 0` = #FFFFFF |
-| `--surface-soft` | mini-pannelli interni, grigio chiaro | `0.965 0.003 250` ≈ #F2F3F5 |
-| `--foreground` | testo near-black | `0.21 0.012 264` ≈ #1A1B1E |
-| `--muted-foreground` | testo secondario (≥4.5:1 su bianco) | `0.5 0.02 262` ≈ #6B7180 |
+| `--background` | soft off-white + radial | `0.984 0.002 250` ≈ #FAFBFC |
+| `--card` / `--surface-strong` | white panels (shadow-sm) | `1 0 0` = #FFFFFF |
+| `--surface-soft` | inner mini-panels, light gray | `0.965 0.003 250` ≈ #F2F3F5 |
+| `--foreground` | near-black text | `0.21 0.012 264` ≈ #1A1B1E |
+| `--muted-foreground` | secondary text (≥4.5:1 on white) | `0.5 0.02 262` ≈ #6B7180 |
 | `--border` / hairline | `border-black/10` | `0.9 0.004 255` ≈ #E4E5E8 |
-| `--fail` (base) | rosso — chi dimentica = il problema | `0.585 0.22 27` ≈ #DC2626 |
-| `--recall` (sugg.) | emerald — la soluzione, SCARSO | `0.6 0.135 162` ≈ #059669 |
-| `--voice-accent` | indigo profondo — memoria / voce nonna | `0.48 0.13 264` ≈ #3F46A8 |
+| `--fail` (base) | red — the one who forgets = the problem | `0.585 0.22 27` ≈ #DC2626 |
+| `--recall` (sugg.) | emerald — the solution, SCARCE | `0.6 0.135 162` ≈ #059669 |
+| `--voice-accent` | deep indigo — memory / grandmother's voice | `0.48 0.13 264` ≈ #3F46A8 |
 | `--running` | amber — live | `0.62 0.16 58` ≈ #C2700A |
 
-**Regola dello scarso**: l'emerald compare SOLO al recall (t41) e sulle due prove
-citate (`f3`, `f5`). Base resta neutro fino al recall, poi rosso → niente spoiler.
+**Scarcity rule**: emerald appears ONLY at recall (t41) and on the two cited
+proofs (`f3`, `f5`). Base stays neutral until recall, then red → no spoilers.
 
-## Tipografia
-- **Geist Sans** — tutta la UI. **Geist Mono** — solo dati: timestamp, `[tN]`, `$`, score (`tabular-nums`).
-- Scala lean: titolo `text-2xl/3xl`, lane header `text-base`, bolle `0.88rem`, dati `0.6–0.72rem`, numero verdetto `text-3xl`.
+## Typography
+- **Geist Sans** — all the UI. **Geist Mono** — data only: timestamps, `[tN]`, `$`, score (`tabular-nums`).
+- Lean scale: title `text-2xl/3xl`, lane header `text-base`, bubbles `0.88rem`, data `0.6–0.72rem`, verdict number `text-3xl`.
 
-## Pattern (premium light)
-- **Card bianche su off-white**, **shadow-sm** per l'elevazione (non glow), bordo hairline `border-black/10`, radius sobrio.
-- **Bolla agente** = bianca con bordo; **bolla Nonna** = grigio chiaro (`--secondary`), a destra.
-- **Glow colorato** solo come prova: alone soft emerald sulla card vincente al recall (ombra direzionale, non halo da neon).
-- **`[tN]` citation chip** = motivo ricorrente (la prova). Scrim modale scuro (`bg-black/75`) per l'overlay prove.
+## Patterns (premium light)
+- **White cards on off-white**, **shadow-sm** for elevation (not glow), hairline border `border-black/10`, sober radius.
+- **Agent bubble** = white with border; **Grandmother bubble** = light gray (`--secondary`), right-aligned.
+- **Colored glow** only as proof: soft emerald halo on the winning card at recall (directional shadow, not a neon halo).
+- **`[tN]` citation chip** = recurring motif (the proof). Dark modal scrim (`bg-black/75`) for the proof overlay.
 
-## Layout (una schermata `h-dvh`, no scroll pagina)
+## Layout (a single `h-dvh` screen, no page scroll)
 ```
-top strip    brand + costo (stima)                      shrink-0
-titolo       "Uno dimentica, uno ricorda."              shrink-0
-replay bar   Vai al recall · Dall'inizio · ⏯ · 🔊       shrink-0
-STAGE        base | suggeritore | memoria viva          flex-1, scroll interno
-verdetto     teaser → ESPLODE al recall (0/10 vs 10/10) shrink-0
+top strip    brand + cost (estimate)                    shrink-0
+title        "One forgets, one remembers."              shrink-0
+replay bar   Jump to recall · From the start · ⏯ · 🔊   shrink-0
+STAGE        base | suggeritore | live memory           flex-1, inner scroll
+verdict      teaser → EXPLODES at recall (0/10 vs 10/10) shrink-0
 ```
-Solo i corpi dei pannelli scrollano internamente. Prove (20 run) in **overlay**, mai sotto la piega.
+Only the panel bodies scroll internally. Proofs (20 runs) in an **overlay**, never below the fold.
 
-## Voce / movimento
-- **Karaoke live caption**: il testo della Nonna appare parola-per-parola guidato dal `currentTime` reale dell'audio, **senza anteprima** delle parole future (solo il detto + cursore). Si congela in pausa, riprende dalla stessa parola.
-- **Avanzamento**: % grande + fase (`ascolto` / `avanti veloce 2×` / `recall`). Da consegna (t9) a test-memoria (t38) il replay va a **2×**.
-- Clip audio: clock congelato + "Nonna sta parlando…" → freeze intenzionale.
-- `prefers-reduced-motion`: stati finali restano, si ferma solo il moto.
+## Voice / motion
+- **Karaoke live caption**: the Grandmother's text appears word-by-word driven by the audio's real `currentTime`, **without previewing** future words (only what's said + cursor). It freezes on pause, resumes from the same word.
+- **Progress**: large % + phase (`listening` / `fast-forward 2×` / `recall`). From delivery (t9) to memory-test (t38) the replay runs at **2×**.
+- Audio clip: frozen clock + "Grandmother is speaking…" → intentional freeze.
+- `prefers-reduced-motion`: final states remain, only the motion stops.
 
-## Verità (anti-bluff)
-- Costo = **stima** (pricing OpenAI Realtime). Verdetto = **misurato**, run-1330, N=10/lato.
+## Truth (anti-bluff)
+- Cost = **estimate** (OpenAI Realtime pricing). Verdict = **measured**, run-1330, N=10/side.

@@ -99,9 +99,9 @@ function CostCurve({ longCall }: { longCall: LongCallFixture }) {
       viewBox={`0 0 ${VB_W} ${VB_H}`}
       className="h-auto w-full"
       role="img"
-      aria-label={`Costo cumulato su ${maxTurn} turni: base full-context sale a ${usd(
+      aria-label={`Cumulative cost over ${maxTurn} turns: base full-context climbs to ${usd(
         headline.baseFull.cost
-      )}, Whisperer resta a ${usd(headline.suggeritore.cost)} — ${headline.ratio}×.`}
+      )}, Whisperer stays at ${usd(headline.suggeritore.cost)} — ${headline.ratio}×.`}
     >
       {/* y gridlines + $ labels */}
       {yGrid.map((v) => (
@@ -148,7 +148,7 @@ function CostCurve({ longCall }: { longCall: LongCallFixture }) {
         fontSize={9}
         letterSpacing={1.5}
       >
-        turni della chiamata →
+        call turns →
       </text>
 
       {/* areas */}
@@ -225,19 +225,19 @@ export function LongCallView({ longCall }: { longCall: LongCallFixture }) {
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-2xl font-semibold leading-tight">
-            La chiamata lunga — il costo esplode, la memoria no.
+            The long call — cost explodes, memory doesn't.
           </h2>
           <Badge
             variant="outline"
             className="h-7 shrink-0 rounded-lg border-[color:var(--recall)]/60 px-3 font-mono text-xs text-[color:var(--recall)]"
           >
-            {callTurns} turn · N={runs} · misurato
+            {callTurns} turns · N={runs} · measured
           </Badge>
         </div>
         <p className="max-w-3xl text-base text-muted-foreground">
-          La demo mostra una chiamata corta. Su una lunga (64 turn) il base con tutto il
-          contesto continua a ripagare la conversazione che cresce; Whisperer ripaga solo
-          il ledger. Stesso prompt, stessa voce — diverge solo il layer di memoria.
+          The demo shows a short call. On a long one (64 turns) the full-context base keeps
+          re-paying the growing conversation; Whisperer re-pays only the ledger. Same prompt,
+          same voice — only the memory layer diverges.
         </p>
       </div>
 
@@ -270,7 +270,7 @@ export function LongCallView({ longCall }: { longCall: LongCallFixture }) {
       <div className="rounded-xl border border-black/10 bg-[color:var(--surface-soft)]/60 p-4">
         <div className="mb-1 flex flex-wrap items-center justify-between gap-x-5 gap-y-1">
           <span className="font-mono text-[0.66rem] uppercase tracking-wider text-muted-foreground">
-            costo cumulato · per turno · media N={runs}
+            cumulative cost · per turn · mean N={runs}
           </span>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.7rem] text-muted-foreground">
             <span className="flex items-center gap-1.5">
@@ -280,7 +280,7 @@ export function LongCallView({ longCall }: { longCall: LongCallFixture }) {
               <LegendDot color="var(--voice-accent)" /> Whisperer
             </span>
             <span className="flex items-center gap-1.5">
-              <LegendDot color="var(--muted-foreground)" dashed /> base cap (dimentica)
+              <LegendDot color="var(--muted-foreground)" dashed /> base cap (forgets)
             </span>
           </div>
         </div>
@@ -290,7 +290,7 @@ export function LongCallView({ longCall }: { longCall: LongCallFixture }) {
       {/* scaling — the ratio grows with length */}
       <div className="flex flex-col gap-2">
         <span className="font-mono text-[0.66rem] uppercase tracking-wider text-muted-foreground">
-          il divario cresce con la durata
+          the gap grows with length
         </span>
         <div className="flex flex-wrap items-stretch gap-2">
           {scaling.map((point, i) => (
@@ -334,14 +334,14 @@ export function LongCallView({ longCall }: { longCall: LongCallFixture }) {
       <div className="flex items-start gap-2 rounded-lg border border-black/10 bg-[color:var(--surface-soft)] px-4 py-3">
         <MinusIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
         <p className="text-[0.82rem] leading-5 text-muted-foreground">
-          <span className="font-medium text-foreground">Nota onesta:</span> dimenticare e
-          costare sono accoppiati. Il base <span className="font-medium">cappato</span> è
-          economico ma perde il fatto del minuto uno ({headline.baseCapped.recall}). Il base{" "}
-          <span className="font-medium">full-context</span> ricorda quasi tutto (
-          {headline.baseFull.recall}, con context rot) ma costa{" "}
-          <span className="font-medium text-[color:var(--fail)]">{headline.ratio}×</span> il
-          suggeritore. Whisperer ricorda {headline.suggeritore.recall}{" "}
-          <span className="font-medium text-[color:var(--recall)]">e</span> resta piatto.
+          <span className="font-medium text-foreground">Honest note:</span> forgetting and
+          cost are coupled. The <span className="font-medium">capped</span> base is
+          cheap but loses the minute-one fact ({headline.baseCapped.recall}). The{" "}
+          <span className="font-medium">full-context</span> base remembers almost everything (
+          {headline.baseFull.recall}, with context rot) but costs{" "}
+          <span className="font-medium text-[color:var(--fail)]">{headline.ratio}×</span> the
+          suggeritore. Whisperer remembers {headline.suggeritore.recall}{" "}
+          <span className="font-medium text-[color:var(--recall)]">and</span> stays flat.
           <span className="ml-1 font-mono text-[0.72rem]">· {pricingNote}</span>
         </p>
       </div>

@@ -57,26 +57,26 @@ export function LedgerPanel({ ledger }: LedgerPanelProps) {
     <aside className="hidden md:flex w-80 shrink-0 flex-col gap-5 overflow-y-auto border-l border-neutral-200 bg-neutral-50 p-5">
       <div className="flex flex-col gap-1">
         <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
-          Memoria live
+          Live memory
         </span>
         <p className="text-xs text-neutral-400">
-          Ciò che l&apos;agente sta ricordando di questa chiamata.
+          What the agent is remembering from this call.
         </p>
       </div>
 
       {!ledger ? (
-        <p className="text-sm text-neutral-400">In ascolto…</p>
+        <p className="text-sm text-neutral-400">Listening…</p>
       ) : (
         <>
           <Section
             title="Facts"
             entries={ledger.facts}
-            empty="Nessun fatto ancora."
+            empty="No facts yet."
           />
           <Section
             title="Commitments"
             entries={ledger.commitments}
-            empty="Nessun impegno ancora."
+            empty="No commitments yet."
           />
         </>
       )}

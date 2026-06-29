@@ -30,7 +30,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
 /*
- * DESIGN SYSTEM — "tabellone delle prove", light premium editorial (defined, not vibe).
+ * DESIGN SYSTEM — "evidence board", light premium editorial (defined, not vibe).
  *  bg            soft off-white radial (globals.css), white cards + subtle shadow
  *  surface       --card (white) / --surface-soft (light gray) ; hairline border-black/10
  *  fail (base)   red    — the agent that forgets = the problem
@@ -54,7 +54,7 @@ const REPLAY_RATE = 12;
 const FRAME_MS = 100;
 const WINDOW = 6;
 // caller turns = real nonna recordings; agent turns (t6/t10/t39/t41) = ElevenLabs
-// "Aurora" Italian voice → botta e risposta on scadenza / consegna / test memoria.
+// "Aurora" Italian voice → call-and-response on deadline / delivery / memory test.
 // CUT for a punchy demo: opening seeds 3 facts with voice (t1 watch · t5 deadline
 // · t9 delivery) + one agent reply (t6), then the finale (t38→t41). Drop t7/t10.
 // HEARD: the opening (t1) + the whole recall finale. Everything else is muted —
@@ -128,7 +128,7 @@ function PressureMeter({
   return (
     <div className="flex items-center gap-4 rounded-lg border border-black/10 bg-[color:var(--card)] px-4 py-1.5 shadow-sm">
       <span className="font-mono text-[0.62rem] uppercase tracking-wider text-muted-foreground">
-        costo · misurato
+        cost · measured
       </span>
       <div className="flex items-baseline gap-1.5">
         <span className="text-[0.66rem] uppercase tracking-wide text-muted-foreground">base</span>
@@ -198,18 +198,18 @@ function ReplayBar({
           className="h-9 bg-[color:var(--recall)] px-4 font-semibold text-white hover:bg-[color:var(--recall)]/90"
         >
           <SkipForwardIcon data-icon="inline-start" />
-          Vai al recall
+          Jump to recall
         </Button>
         <Button variant="outline" size="sm" className="h-9" onClick={onRestart}>
           <RotateCcwIcon data-icon="inline-start" />
-          Dall&apos;inizio
+          From the start
         </Button>
         <Button
           variant="ghost"
           size="icon"
           className="size-9"
           onClick={onPlayPause}
-          aria-label={isPlaying ? "Pausa" : "Riprendi"}
+          aria-label={isPlaying ? "Pause" : "Resume"}
         >
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
         </Button>
@@ -218,7 +218,7 @@ function ReplayBar({
           size="icon"
           className="size-9"
           onClick={onToggleMute}
-          aria-label={muted ? "Riattiva la voce" : "Disattiva la voce"}
+          aria-label={muted ? "Unmute" : "Mute"}
         >
           {muted ? <VolumeXIcon /> : <Volume2Icon />}
         </Button>
@@ -227,7 +227,7 @@ function ReplayBar({
           {speaking ? (
             <span className="flex items-center gap-1.5 font-mono text-sm text-[color:var(--voice-accent)]">
               <span className="size-2 animate-pulse rounded-full bg-[color:var(--voice-accent)]" />
-              {speakerLabel} sta parlando…
+              {speakerLabel} is speaking…
             </span>
           ) : (
             <span className="rounded-md bg-[color:var(--surface-soft)] px-2.5 py-1 font-mono text-[0.7rem] font-medium uppercase tracking-wide text-muted-foreground">
@@ -250,7 +250,7 @@ function ReplayBar({
           max={duration}
           step={1}
           onValueChange={(value) => onSeek(Array.isArray(value) ? value[0] ?? 0 : value)}
-          aria-label="Timeline della chiamata"
+          aria-label="Call timeline"
         />
         {markers.map((marker) => {
           const left = duration ? (marker.seconds / duration) * 100 : 0;
@@ -334,11 +334,11 @@ function LaneColumn({
   const isSug = lane === "suggeritore";
   const stateLabel = recallActive
     ? isSug
-      ? "RICORDA"
-      : "DIMENTICA"
+      ? "REMEMBERS"
+      : "FORGETS"
     : isSug
-      ? "memoria attiva"
-      : "nessuna memoria";
+      ? "memory on"
+      : "no memory";
 
   return (
     <section
@@ -370,7 +370,7 @@ function LaneColumn({
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         {turns.length === 0 ? (
           <div className="flex h-full min-h-32 items-center justify-center text-center text-sm text-muted-foreground">
-            Premi play per avviare la chiamata.
+            Press play to start the call.
           </div>
         ) : (
           <div className="flex flex-col gap-2.5">
@@ -399,7 +399,7 @@ function LaneColumn({
                     )}
                   >
                     <span className={cn(isCaller && "text-[color:var(--voice-accent)]")}>
-                      {isCaller ? "Nonna" : "Agente"}
+                      {isCaller ? "Grandmother" : "Agent"}
                     </span>
                     <span>·</span>
                     <span>{turn.ts}</span>
@@ -432,25 +432,25 @@ function LaneColumn({
 
                   {isFail ? (
                     <span className="flex items-center gap-1 font-mono text-[0.68rem] text-[color:var(--fail)]">
-                      <XIcon className="size-3" /> chiede di nuovo tutto da capo
+                      <XIcon className="size-3" /> asks for everything all over again
                     </span>
                   ) : null}
                   {isWin ? (
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="flex items-center gap-1 font-mono text-[0.68rem] text-[color:var(--recall)]">
-                        <CheckIcon className="size-3" /> prova
+                        <CheckIcon className="size-3" /> proof
                       </span>
                       <span className="rounded bg-[color:var(--recall)]/15 px-1.5 py-0.5 font-mono text-[0.7rem] text-[color:var(--recall)]">
-                        [t5] scadenza
+                        [t5] deadline
                       </span>
                       <span className="rounded bg-[color:var(--recall)]/15 px-1.5 py-0.5 font-mono text-[0.7rem] text-[color:var(--recall)]">
-                        [t9] consegna
+                        [t9] delivery
                       </span>
                     </div>
                   ) : null}
                   {isHighlight ? (
                     <span className="flex items-center gap-1 font-mono text-[0.68rem] text-[color:var(--voice-accent)]">
-                      <CheckIcon className="size-3" /> salvato in memoria
+                      <CheckIcon className="size-3" /> saved to memory
                     </span>
                   ) : null}
                 </div>
@@ -519,9 +519,9 @@ function MemoryRail({
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-black/10 px-4 py-2.5">
         <div className="flex flex-col">
           <h2 className="text-base font-semibold leading-tight text-[color:var(--voice-accent)]">
-            Memoria viva
+            Live memory
           </h2>
-          <p className="text-[0.72rem] text-muted-foreground">si scrive da sola</p>
+          <p className="text-[0.72rem] text-muted-foreground">writes itself</p>
         </div>
         <span className="rounded bg-[color:var(--voice-accent)]/15 px-2 py-0.5 font-mono text-[0.64rem] text-[color:var(--voice-accent)]">
           {revealed}/{total}
@@ -532,17 +532,17 @@ function MemoryRail({
         {recallActive ? (
           <div className="animate-in fade-in slide-in-from-bottom-1 rounded-md border border-[color:var(--recall)] bg-[color:var(--recall)]/10 px-3 py-2 shadow-[0_0_24px_var(--recall-glow)] duration-500">
             <p className="font-mono text-[0.62rem] uppercase tracking-wide text-[color:var(--recall)]">
-              prova del recall · t41
+              recall proof · t41
             </p>
             <p className="mt-0.5 text-[0.78rem] leading-5 text-foreground">
-              Whisperer cita scadenza e consegna dalla memoria.
+              Whisperer cites the deadline and delivery from memory.
             </p>
           </div>
         ) : null}
 
         <div>
           <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
-            Chi è
+            Who it is
           </p>
           <p className="rounded-md border border-[color:var(--voice-accent)]/25 bg-[color:var(--voice-accent)]/10 px-2.5 py-2 text-[0.78rem] leading-5">
             {state.identity}
@@ -551,7 +551,7 @@ function MemoryRail({
 
         <div>
           <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
-            Cosa vuole
+            What it wants
           </p>
           <p className="rounded-md border border-black/10 bg-[color:var(--surface-soft)] px-2.5 py-2 text-[0.78rem] leading-5">
             {state.objective}
@@ -562,12 +562,12 @@ function MemoryRail({
 
         <div>
           <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
-            Cosa ho ricordato
+            What I remembered
           </p>
           <div className="flex flex-col gap-1.5">
             {visibleFacts.length === 0 ? (
               <p className="rounded-md border border-dashed border-black/10 px-2.5 py-2 text-center text-[0.74rem] text-muted-foreground">
-                in ascolto…
+                listening…
               </p>
             ) : (
               visibleFacts.map((entry) => (
@@ -583,12 +583,12 @@ function MemoryRail({
 
         <div>
           <p className="mb-1.5 text-[0.72rem] font-medium uppercase tracking-wider text-muted-foreground">
-            Cosa ho promesso
+            What I promised
           </p>
           <div className="flex flex-col gap-1.5">
             {visibleCommitments.length === 0 ? (
               <p className="rounded-md border border-dashed border-black/10 px-2.5 py-2 text-center text-[0.74rem] text-muted-foreground">
-                nessun impegno ancora
+                no commitments yet
               </p>
             ) : (
               visibleCommitments.map((entry) => (
@@ -616,8 +616,8 @@ function VerdictBar({
   if (!recallActive) {
     return (
       <div className="flex shrink-0 items-center justify-center gap-3 rounded-lg border border-black/10 bg-[color:var(--card)] px-5 py-2.5 text-sm text-muted-foreground shadow-sm">
-        <span className="font-mono text-[0.66rem] uppercase tracking-wider">verdetto</span>
-        <span>Il giudice valuta la memoria a fine chiamata — N=10 run per lato</span>
+        <span className="font-mono text-[0.66rem] uppercase tracking-wider">verdict</span>
+        <span>The judge scores memory at the end of the call — N=10 runs per side</span>
       </div>
     );
   }
@@ -626,7 +626,7 @@ function VerdictBar({
     <div className="animate-in fade-in slide-in-from-bottom-2 flex shrink-0 flex-wrap items-center justify-between gap-4 rounded-xl border border-[color:var(--recall)]/50 bg-[color:var(--card)] px-5 py-2.5 shadow-[0_12px_40px_-10px_var(--recall-glow)] duration-500">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
         <span className="font-mono text-[0.66rem] uppercase tracking-wider text-[color:var(--recall)]">
-          il verdetto · run-1330 · misurato
+          the verdict · run-1330 · measured
         </span>
         <div className="flex items-baseline gap-2">
           <span className="text-[0.72rem] uppercase tracking-wide text-muted-foreground">base</span>
@@ -645,7 +645,7 @@ function VerdictBar({
         </div>
       </div>
       <Button variant="outline" size="sm" className="h-9" onClick={onOpenProof}>
-        Le prove · {verdicts.runs.base.length + verdicts.runs.suggeritore.length} run
+        The proofs · {verdicts.runs.base.length + verdicts.runs.suggeritore.length} runs
       </Button>
     </div>
   );
@@ -681,7 +681,7 @@ function ProofOverlay({
           size="icon"
           className="absolute right-3 top-3 z-10 size-9"
           onClick={onClose}
-          aria-label="Chiudi le prove"
+          aria-label="Close the proofs"
         >
           <XIcon />
         </Button>
@@ -721,7 +721,7 @@ function LongCallOverlay({
           size="icon"
           className="absolute right-3 top-3 z-10 size-9"
           onClick={onClose}
-          aria-label="Chiudi la chiamata lunga"
+          aria-label="Close the long call"
         >
           <XIcon />
         </Button>
@@ -757,7 +757,7 @@ export function TranscriptShell({
   );
   const recallStart = useMemo(() => secondsForTurn(baseTurns, "t38") ?? 596, [baseTurns]);
   const recallEnd = useMemo(() => secondsForTurn(baseTurns, "t41") ?? 614, [baseTurns]);
-  // from consegna (t9) to the memory test (t38) there is no voice — fast-forward
+  // from delivery (t9) to the memory test (t38) there is no voice — fast-forward
   // it at 2× so the replay reaches the recall quickly.
   const consegnaSeconds = useMemo(() => secondsForTurn(baseTurns, "t9") ?? 168, [baseTurns]);
   const turnTimes = useMemo(
@@ -769,9 +769,9 @@ export function TranscriptShell({
     const out: { label: string; seconds: number; recall?: boolean }[] = [];
     const scadenza = secondsForTurn(baseTurns, "t5");
     const consegna = secondsForTurn(baseTurns, "t9");
-    if (scadenza != null) out.push({ label: "scadenza", seconds: scadenza });
-    if (consegna != null) out.push({ label: "consegna", seconds: consegna });
-    out.push({ label: "test memoria", seconds: recallStart, recall: true });
+    if (scadenza != null) out.push({ label: "deadline", seconds: scadenza });
+    if (consegna != null) out.push({ label: "delivery", seconds: consegna });
+    out.push({ label: "memory test", seconds: recallStart, recall: true });
     return out;
   }, [baseTurns, recallStart]);
 
@@ -817,7 +817,7 @@ export function TranscriptShell({
   const speakerLabel = useMemo(() => {
     if (!speakingTurn) return "";
     const t = allTurns.find((x) => x.displayTurn === speakingTurn);
-    return t?.role === "agent" ? "Agente" : "Nonna";
+    return t?.role === "agent" ? "Agent" : "Grandmother";
   }, [speakingTurn, allTurns]);
 
   // warm the first clip so the opening voice starts with no cold-start delay
@@ -887,7 +887,7 @@ export function TranscriptShell({
     }
     if (recallToastFiredRef.current) return;
     recallToastFiredRef.current = true;
-    toast("Ricorda ✓", {
+    toast("Remembers ✓", {
       duration: 2600,
       className:
         "border-[color:var(--recall)] bg-[color:var(--surface-strong)] text-[color:var(--recall)] shadow-[0_0_44px_var(--recall-glow)]",
@@ -909,7 +909,7 @@ export function TranscriptShell({
     const [turn] = crossed[crossed.length - 1];
 
     if (!audioSet.has(turn)) {
-      // muted highlight (scadenza / consegna): emphasize ~1.6s, no audio
+      // muted highlight (deadline / delivery): emphasize ~1.6s, no audio
       holdRef.current = true;
       setHighlightTurn(turn);
       window.setTimeout(() => {
@@ -1035,7 +1035,7 @@ export function TranscriptShell({
           <span className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
             Whisperer
           </span>
-          <span className="font-mono text-[0.7rem] text-muted-foreground">HackRome · 13 giu 2026</span>
+          <span className="font-mono text-[0.7rem] text-muted-foreground">HackRome · 13 Jun 2026</span>
         </div>
         <div className="flex items-center gap-2.5">
           <PressureMeter
@@ -1051,7 +1051,7 @@ export function TranscriptShell({
             onClick={() => setShowLongCall(true)}
           >
             <span className="flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-wider text-muted-foreground">
-              <TrendingUpIcon className="size-3" /> chiamata lunga
+              <TrendingUpIcon className="size-3" /> long call
             </span>
             <span className="font-mono text-sm font-semibold tabular-nums text-foreground">
               {longCall.callTurns} turn ·{" "}
@@ -1064,12 +1064,12 @@ export function TranscriptShell({
       {/* operative title */}
       <header className="flex shrink-0 flex-col">
         <h1 className="text-2xl font-semibold leading-tight tracking-tight text-foreground lg:text-3xl">
-          La stessa chiamata. Uno dimentica, uno ricorda.
+          The same call. One forgets, one remembers.
         </h1>
         <p className="text-sm text-muted-foreground">
           {recallActive
-            ? "A 10:14 il base richiede tutto da capo. Whisperer conferma — con la prova."
-            : "Stesso prompt, stessa voce. L'unica differenza è il layer di memoria."}
+            ? "At 10:14 the base asks for everything again. Whisperer confirms — with proof."
+            : "Same prompt, same voice. The only difference is the memory layer."}
         </p>
       </header>
 
@@ -1082,12 +1082,12 @@ export function TranscriptShell({
         speakerLabel={speakerLabel}
         phase={
           interlude
-            ? "la memoria regge"
+            ? "memory holds"
             : currentSeconds >= recallEnd
               ? "recall ✓"
               : currentSeconds >= recallStart
                 ? "recall"
-                : "i fatti"
+                : "the facts"
         }
         percent={duration ? Math.round((currentSeconds / duration) * 100) : 0}
         markers={markers}
@@ -1101,8 +1101,8 @@ export function TranscriptShell({
       {/* stage — the three panels are the hero, bounded to fit the viewport */}
       <section className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_20rem]">
         <LaneColumn
-          title="Agente base"
-          subtitle="nessuna memoria · ripaga tutto il contesto"
+          title="Base agent"
+          subtitle="no memory · re-pays the whole context"
           turns={baseWindow}
           lane="base"
           recallActive={recallActive}
@@ -1112,7 +1112,7 @@ export function TranscriptShell({
         />
         <LaneColumn
           title="Whisperer"
-          subtitle="stesso prompt e voce · memoria attiva"
+          subtitle="same prompt and voice · memory on"
           turns={suggeritoreWindow}
           lane="suggeritore"
           recallActive={recallActive}
@@ -1138,18 +1138,18 @@ export function TranscriptShell({
         <div className="animate-in fade-in fixed inset-0 z-40 grid place-items-center bg-[color:var(--background)]/75 p-6 backdrop-blur-sm duration-300">
           <div className="animate-in zoom-in-95 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-black/10 bg-[color:var(--card)] px-10 py-8 text-center shadow-2xl duration-500">
             <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground">
-              la chiamata continua
+              the call continues
             </span>
-            <p className="text-3xl font-semibold tracking-tight text-foreground">≈ 9 minuti dopo</p>
+            <p className="text-3xl font-semibold tracking-tight text-foreground">≈ 9 minutes later</p>
             <p className="text-base leading-6 text-muted-foreground">
-              La nonna parla del tempo, della festa, della figlia. Il base si riempie di
-              contesto e perde il filo.
+              The grandmother talks about the weather, the party, her daughter. The base fills up
+              with context and loses the thread.
             </p>
             <p className="text-base leading-6 text-foreground">
               <span className="font-semibold text-[color:var(--recall)]">
-                Whisperer ha tenuto tutto:
+                Whisperer kept it all:
               </span>{" "}
-              orologio · laurea · prima del 20 · Pina interno 3.
+              watch · graduation · before the 20th · Pina, apt 3.
             </p>
           </div>
         </div>

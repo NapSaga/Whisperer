@@ -19,6 +19,10 @@ out/
 # os
 .DS_Store
 
+# runtime ledger / cost state (written by the live server, transient)
+sdk/run/
+server/server/run/
+
 # heavy / raw media — kept local, not in git
 *.mov
 *.mp4

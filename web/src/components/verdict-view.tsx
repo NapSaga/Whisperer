@@ -43,7 +43,7 @@ function ScorePanel({
         {score}
       </span>
       <span className="text-xs text-muted-foreground">
-        ricorda il fatto seminato
+        remembers the seeded fact
       </span>
     </div>
   );
@@ -67,7 +67,7 @@ function RunList({ runs, side }: { runs: VerdictRun[]; side: string }) {
                 : "text-[color:var(--fail)]"
             }
           >
-            {run.remembers ? "✓ ricorda" : "✗ dimentica"}
+            {run.remembers ? "✓ remembers" : "✗ forgets"}
           </span>
           <span className="text-muted-foreground">[{run.citation}]</span>
           <span className="flex-1 leading-5 text-muted-foreground">
@@ -88,22 +88,22 @@ export function VerdictView({ verdicts }: { verdicts: VerdictsFixture }) {
     <section className="flex flex-col gap-5 rounded-2xl border border-black/10 bg-card p-6 shadow-2xl lg:p-8">
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-2xl font-semibold">Il verdetto — il numero</h2>
+          <h2 className="text-2xl font-semibold">The verdict — the number</h2>
           <Badge
             variant="outline"
             className="h-7 rounded-lg border-[color:var(--recall)]/60 px-3 font-mono text-xs text-[color:var(--recall)]"
           >
-            run-1330 · misurato
+            run-1330 · measured
           </Badge>
         </div>
         <p className="max-w-3xl text-base text-muted-foreground">
-          Stesso agente, N=10 run per lato. &ldquo;Ricorda il fatto del minuto
-          uno?&rdquo; — sì/no, con citazione del turno. Niente vibes.
+          Same agent, N=10 runs per side. &ldquo;Does it recall the minute-one
+          fact?&rdquo; — yes/no, with the turn citation. No vibes.
         </p>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <ScorePanel label="Agente base" score={verdicts.score.base} tone="fail" />
+        <ScorePanel label="Base agent" score={verdicts.score.base} tone="fail" />
         <ScorePanel
           label="Whisperer"
           score={verdicts.score.suggeritore}
@@ -116,7 +116,7 @@ export function VerdictView({ verdicts }: { verdicts: VerdictsFixture }) {
           <ChevronDownIcon
             className={cn("size-4 transition-transform", open && "rotate-180")}
           />
-          {open ? "Nascondi" : "Mostra"} i {totalRuns} run con le prove
+          {open ? "Hide" : "Show"} the {totalRuns} runs with proofs
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-4 grid gap-6 lg:grid-cols-2">
           <div className="flex flex-col gap-2">

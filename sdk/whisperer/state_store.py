@@ -37,8 +37,9 @@ class StateLedger(BaseModel):
     last_turn: int = 0
 
 
-# Resolve relative to this file (not cwd). This file is server/server/app/...,
-# so parents[1] is server/server/ and run/ is the runtime ledger location.
+# Resolve relative to this file (not cwd). This file is sdk/whisperer/state_store.py,
+# so parents[1] is sdk/ and the runtime ledger lives at sdk/run/state.json.
+# (Override with SUGGERITORE_STATE_PATH to relocate it, e.g. under the server.)
 _RUNTIME_DEFAULT = Path(__file__).resolve().parents[1] / "run" / "state.json"
 
 
