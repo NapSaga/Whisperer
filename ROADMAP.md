@@ -1,17 +1,42 @@
 # Whisperer — Roadmap post-HackRome
 
-_Su `main` (workflow main-only) · aggiornato: 2026-06-26_
+_Su `main` (workflow main-only) · aggiornato: 2026-06-29_
 
 ---
 
-## ▶ Riprendi da qui (sessione 2026-06-26 → continua domani)
+## ▶ Riprendi da qui (sessione 2026-06-29)
 
-Fermato a fine giornata. **Prossima azione, in ordine:**
+**Smoke-test del server live: ✓ FATTO** (su testo — stesso `Workflow.run` del path audio).
+Validato col layer acceso (`SUGGERITORE_MODE=on`, `SUGGERITORE_WATCHDOG=off`,
+`SUGGERITORE_DISTILL_EVERY=2`): la pipeline parte, il distiller **scrive il ledger**
+(`sdk/run/state.json` — NON `server/server/run/`, vedi sotto), il pannello "Live memory" si
+popola in real-time e il **recall regge** (l'agente pesca i fatti dal ledger senza farli
+ripetere).
 
-1. **Smoke-test del server live** con `SUGGERITORE_MODE=on` (+ watchdog già on): verificare che il path `VoicePipeline` STT→LLM→TTS parta, che il distiller scriva il ledger e che il recall regga su una chiamata vera. È il de-risking *prima* di toccare la UI — il path live non è mai stato provato col layer acceso (i numeri vengono dal batch harness, non dal server).
-2. Poi **punto 7** (demo live: interfaccia + real-time) sul connettore demo `api_shopdemo`.
+**Prossima azione, in ordine:**
 
-**Note da non perdere:** `SUGGERITORE_MODE` default = `off` (va acceso a mano per la demo) · watchdog ora default-on = latenza extra in tempo reale, da valutare se renderlo non-bloccante · budget ~50€/~5€ a call → debug su chiamate corte, credito solo per la validazione finale. **Non** servono #4 né #6 prima del #7.
+1. **Punto 7 — chiudere la validazione audio (A2):** una chiamata vocale corta (push-to-talk)
+   per confermare STT→TTS live; poi la **chiamata lunga reale** (~15 min, ~5€) per il recall su
+   durata vera — qui si spende il credito.
+2. Rifinire la demo live solo se la prova reale lo richiede.
+
+**Fatto in questa sessione (punto 7 + infra):**
+- **Pannello "Live memory"** nel client live (`server/frontend/`): facts/commitments in
+  real-time via messaggio WebSocket `state.updated` (push dal server dopo ogni distill e on-connect).
+- **Fix `.env`**: `server.py` carica il `.env` di root in modo affidabile (ancorato a `__file__`,
+  non alla cwd) — prima `make serve` (cwd `server/server`) cercava un inesistente `server/.env`.
+- **Fix display chat**: in `SUGGERITORE_MODE=on` la chat non collassa più e non mostra il ledger
+  come "system prompt" — lo storico visibile è ora separato dall'input compatto del modello
+  (flag `compact` in `WebsocketHelper.text_output_complete` + `Workflow.run`).
+- **Path runtime chiarito**: il ledger live vive in `sdk/run/state.json` (dopo l'estrazione SDK
+  `parents[1]` è `sdk/`), non in `server/server/run/`. Override con `SUGGERITORE_STATE_PATH`.
+- **Repo tradotto in inglese** (HUD `web/` + docs); `PROGRESS.md` eliminato (ridondante); questo
+  `ROADMAP.md` resta in italiano per scelta.
+
+**Note da non perdere:** budget ~50€/~5€ a call → credito solo per la validazione finale · il
+reloader di uvicorn si impalla dopo il primo reload, **riavvia il backend a mano** dopo le
+modifiche al server · watchdog tenuto **off** in demo (recall invariato, latenza minima) ·
+**Non** servono #4 né #6 prima del #7.
 
 ---
 
@@ -31,7 +56,7 @@ Il core è completo e misurato:
 | Watchdog rilevamento drift (SPEC §4) | ✓ default on via `SUGGERITORE_WATCHDOG` | `sdk/whisperer/watchdog.py` |
 | Generalizzazione scenari | ✓ parametrici via `--scenario` | `batch_run.py`, `spec/fixtures/scenarios/` |
 | Misurazione chiamate lunghe | ✓ scenario `long-call` + `--turns` | `spec/fixtures/scenarios/long-call.jsonl` |
-| Trascrizione vocale live (Whisper) | ◐ presente nell'engine (`VoicePipeline` STT→LLM→TTS), assente nella HUD demo (replay di audio pre-registrato) → vedi punto 7 | `server/server/server.py` |
+| Demo live real-time (punto 7) | ◐ engine validato (smoke-test 2026-06-29, su testo); client live + pannello "Live memory" pronti; manca conferma STT/TTS audio + chiamata lunga reale | `server/server/server.py`, `server/frontend/` |
 
 **Il numero misurato:** recall 0/10 → 10/10 · costo 1.3× misurato su 28 turn (7.6× proiettato su una chiamata da 10-20 min).
 
@@ -107,13 +132,16 @@ Il punteggio (`X/10 recall`, costo medio) diventa la scorecard di quella integra
 
 **Impatto:** trasforma Whisperer da demo standalone a layer certificato su N piattaforme — ogni integrazione riuscita ha un numero che la prova. Dà anche al harness una vita continuativa oltre l'hackathon: ogni nuova piattaforma è una nuova riga di scorecard, non un one-shot.
 
-### 7. Demo live real-time — interfaccia + implementazione real-time (da fare)
+### 7. Demo live real-time — interfaccia + implementazione real-time (in corso)
 
 Task dal team (audio, 2026-06-26): **prendere in mano la configurazione della demo live** e costruire un'**interfaccia** con **implementazione real-time** — un vero *demo product*, non il replay di audio pre-registrato dell'attuale HUD. Tenerla **semplice**, non sovra-ingegnerizzata ("una complessa è troppo, facciamone una semplice").
 
+**Fatto (2026-06-29):** client live `server/frontend/` collegato all'engine + **pannello "Live memory"** che mostra facts/commitments accumularsi in real-time (push WebSocket `state.updated`); fix `.env` e fix display chat (vedi "Riprendi da qui"). Engine validato sullo smoke-test su testo (recall pieno dal ledger).
+
+**Da fare:** conferma audio STT→TTS (chiamata corta) + **chiamata lunga reale** (~15 min, ~5€) per il recall su durata vera.
+
 **Workstream:**
-- **Front:** interfaccia + prova di implementazione real-time.
-- **Back:** codice di collegamento + connettori API.
+- **Front:** ✓ interfaccia + pannello memoria live. — **Back:** ✓ push dello state + connettore demo `api_shopdemo`.
 - **Poi:** **test lunghi** (~15 min, ~5€ a chiamata) per verificare il recall del contatto, usando i ~50€ di credito disponibili.
 
 **Obiettivo:** dimostrare su una **prova reale** (use case voice/commerce) che il problema concreto — drift / perdita del filo su chiamate lunghe — è risolto, in real-time e su modello reale.
