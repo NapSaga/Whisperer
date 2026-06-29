@@ -4,23 +4,17 @@ _Su `main` (workflow main-only) · aggiornato: 2026-06-29_
 
 ---
 
-## ▶ Riprendi da qui (sessione 2026-06-29)
+## ▶ Riprendi da qui (prossima sessione)
 
-**Smoke-test del server live: ✓ FATTO** (su testo — stesso `Workflow.run` del path audio).
-Validato col layer acceso (`SUGGERITORE_MODE=on`, `SUGGERITORE_WATCHDOG=off`,
-`SUGGERITORE_DISTILL_EVERY=2`): la pipeline parte, il distiller **scrive il ledger**
-(`sdk/run/state.json` — NON `server/server/run/`, vedi sotto), il pannello "Live memory" si
-popola in real-time e il **recall regge** (l'agente pesca i fatti dal ledger senza farli
-ripetere).
+**Smoke-test del server live: ✓ COMPLETO** — testo (A1) + audio (A2) entrambi passati.
 
-**Prossima azione, in ordine:**
+**Prossima azione:** **B5 — chiamata lunga reale** (~15 min, ~5€).
+- Config: `SUGGERITORE_MODE=on`, `SUGGERITORE_WATCHDOG=off`, `SUGGERITORE_DISTILL_EVERY=2`.
+- Semina un fatto all'inizio, chiedi la recall verso la fine.
+- Verifica: ledger si popola nel pannello, recall corretto a distanza, nessuna eccezione nei log.
+- Poi, opzionale: stessa chiamata con `SUGGERITORE_MODE=off` per il contrasto.
 
-1. **Punto 7 — chiudere la validazione audio (A2):** una chiamata vocale corta (push-to-talk)
-   per confermare STT→TTS live; poi la **chiamata lunga reale** (~15 min, ~5€) per il recall su
-   durata vera — qui si spende il credito.
-2. Rifinire la demo live solo se la prova reale lo richiede.
-
-**Fatto in questa sessione (punto 7 + infra):**
+**Fatto nella sessione 2026-06-29 (punto 7 + infra):**
 - **Pannello "Live memory"** nel client live (`server/frontend/`): facts/commitments in
   real-time via messaggio WebSocket `state.updated` (push dal server dopo ogni distill e on-connect).
 - **Fix `.env`**: `server.py` carica il `.env` di root in modo affidabile (ancorato a `__file__`,
@@ -33,10 +27,11 @@ ripetere).
 - **Repo tradotto in inglese** (HUD `web/` + docs); `PROGRESS.md` eliminato (ridondante); questo
   `ROADMAP.md` resta in italiano per scelta.
 
-**Note da non perdere:** budget ~50€/~5€ a call → credito solo per la validazione finale · il
-reloader di uvicorn si impalla dopo il primo reload, **riavvia il backend a mano** dopo le
-modifiche al server · watchdog tenuto **off** in demo (recall invariato, latenza minima) ·
-**Non** servono #4 né #6 prima del #7.
+**Note da non perdere:** budget ~50€/~5€ a call → credito solo per B5 · il reloader di
+uvicorn si impalla dopo il primo reload, **riavvia il backend a mano** (`Ctrl-C` + `npm run dev`
+in `server/frontend/`) dopo le modifiche al server · watchdog tenuto **off** in demo (recall
+invariato, latenza minima) · ElevenLabs **non** serve nel path VoicePipeline (solo
+`OPENAI_API_KEY`) · il ledger live vive in `sdk/run/state.json`, non in `server/server/run/`.
 
 ---
 
@@ -56,7 +51,7 @@ Il core è completo e misurato:
 | Watchdog rilevamento drift (SPEC §4) | ✓ default on via `SUGGERITORE_WATCHDOG` | `sdk/whisperer/watchdog.py` |
 | Generalizzazione scenari | ✓ parametrici via `--scenario` | `batch_run.py`, `spec/fixtures/scenarios/` |
 | Misurazione chiamate lunghe | ✓ scenario `long-call` + `--turns` | `spec/fixtures/scenarios/long-call.jsonl` |
-| Demo live real-time (punto 7) | ◐ engine validato (smoke-test 2026-06-29, su testo); client live + pannello "Live memory" pronti; manca conferma STT/TTS audio + chiamata lunga reale | `server/server/server.py`, `server/frontend/` |
+| Demo live real-time (punto 7) | ◐ smoke-test completo (testo A1 + audio A2, 2026-06-29); pannello "Live memory" live; manca solo B5 — chiamata lunga reale (~15 min, ~5€) | `server/server/server.py`, `server/frontend/` |
 
 **Il numero misurato:** recall 0/10 → 10/10 · costo 1.3× misurato su 28 turn (7.6× proiettato su una chiamata da 10-20 min).
 
@@ -136,9 +131,9 @@ Il punteggio (`X/10 recall`, costo medio) diventa la scorecard di quella integra
 
 Task dal team (audio, 2026-06-26): **prendere in mano la configurazione della demo live** e costruire un'**interfaccia** con **implementazione real-time** — un vero *demo product*, non il replay di audio pre-registrato dell'attuale HUD. Tenerla **semplice**, non sovra-ingegnerizzata ("una complessa è troppo, facciamone una semplice").
 
-**Fatto (2026-06-29):** client live `server/frontend/` collegato all'engine + **pannello "Live memory"** che mostra facts/commitments accumularsi in real-time (push WebSocket `state.updated`); fix `.env` e fix display chat (vedi "Riprendi da qui"). Engine validato sullo smoke-test su testo (recall pieno dal ledger).
+**Fatto (2026-06-29):** client live `server/frontend/` collegato all'engine + **pannello "Live memory"** che mostra facts/commitments accumularsi in real-time (push WebSocket `state.updated`); fix `.env` e fix display chat; smoke-test completo (A1 testo + A2 audio — STT→LLM→TTS confermato con ledger che si popola e recall funzionante dalla voce).
 
-**Da fare:** conferma audio STT→TTS (chiamata corta) + **chiamata lunga reale** (~15 min, ~5€) per il recall su durata vera.
+**Da fare:** **B5 — chiamata lunga reale** (~15 min, ~5€) — il recall su durata vera, il passo finale.
 
 **Workstream:**
 - **Front:** ✓ interfaccia + pannello memoria live. — **Back:** ✓ push dello state + connettore demo `api_shopdemo`.
