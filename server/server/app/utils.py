@@ -176,3 +176,11 @@ class WebsocketHelper:
 
     async def send_audio_done(self):
         await self.websocket.send_text(json.dumps({"type": "audio.done"}))
+
+    async def send_state(self, state):
+        # Push the live ledger to the client so the demo panel shows facts /
+        # commitments accumulating in real time. `state` is a pydantic
+        # StateLedger (SPEC §1) — model_dump() is the same shape state.json holds.
+        await self.websocket.send_text(
+            json.dumps({"type": "state.updated", "state": state.model_dump()})
+        )

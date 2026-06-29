@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Message } from "@/lib/types";
+import { Ledger, Message } from "@/lib/types";
 import { arrayBufferToBase64, base64ToArrayBuffer } from "@/lib/utils";
 
 export function useWebsocket({
@@ -19,6 +19,7 @@ export function useWebsocket({
   const [isReady, setIsReady] = useState(false);
   const [history, setHistory] = useState<Message[]>([]);
   const [agentName, setAgentName] = useState<string | null>(null);
+  const [ledger, setLedger] = useState<Ledger | null>(null);
   const websocket = useRef<WebSocket | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,6 +55,8 @@ export function useWebsocket({
         if (typeof onAudioDone === "function") {
           onAudioDone();
         }
+      } else if (data.type === "state.updated") {
+        setLedger(data.state as Ledger);
       }
     });
 
@@ -89,6 +92,7 @@ export function useWebsocket({
     setHistory([]);
     setIsLoading(false);
     setAgentName(null);
+    setLedger(null);
     websocket.current?.send(
       JSON.stringify({
         type: "history.update",
@@ -128,5 +132,6 @@ export function useWebsocket({
     resetHistory,
     agentName,
     isLoading,
+    ledger,
   };
 }

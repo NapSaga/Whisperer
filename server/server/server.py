@@ -2,6 +2,7 @@ import asyncio
 import os
 import time
 from collections.abc import AsyncIterator
+from pathlib import Path
 from logging import getLogger
 from typing import Any, Dict
 
@@ -33,8 +34,13 @@ from fastapi.responses import FileResponse, HTMLResponse
 
 from dotenv import load_dotenv
 
-# When .env file is present, it will override the environment variables
-load_dotenv(dotenv_path="../.env", override=True)
+# Load the repo-root .env (where .env.example and the README place it), anchored
+# to this file's location — NOT a cwd-relative path. `make serve` launches the
+# server from server/server/, where a relative "../.env" resolves to a
+# non-existent server/.env and the root file (keys + SUGGERITORE_* toggles)
+# would be silently skipped. When the file is present it overrides the shell env.
+_ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(dotenv_path=_ENV_PATH, override=True)
 
 app = FastAPI()
 
@@ -171,6 +177,8 @@ class Workflow(VoiceWorkflowBase):
         try:
             updated = await distiller.distill(state_store.current(), batch)
             state_store.save(updated)
+            # Mirror the freshly written ledger to the client (demo panel, §7).
+            await self.connection.send_state(updated)
         except Exception:
             logger.exception("suggeritore: distillation failed")
         finally:
@@ -194,6 +202,11 @@ async def websocket_endpoint(websocket: WebSocket):
 
         connection = WebsocketHelper(websocket, [], starting_agent)
         audio_buffer = []
+
+        # Start the demo ledger panel from the blank state this call begins with,
+        # so it's clean and in sync before the first fact is distilled (§7).
+        if injector.is_enabled():
+            await connection.send_state(state_store.current())
 
         workflow = Workflow(connection)
         while True:

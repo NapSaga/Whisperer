@@ -4,6 +4,7 @@ import AudioChat from "@/components/AudioChat";
 import { ChatHistory } from "@/components/ChatDialog";
 import { Composer } from "@/components/Composer";
 import { Header } from "@/components/Header";
+import { LedgerPanel } from "@/components/LedgerPanel";
 import { useAudio } from "@/hooks/useAudio";
 import { useWebsocket } from "@/hooks/useWebsocket";
 import { useState } from "react";
@@ -30,6 +31,7 @@ export default function Home() {
     resetHistory,
     isLoading,
     agentName,
+    ledger,
   } = useWebsocket({
     onNewAudio: playAudio,
   });
@@ -44,29 +46,34 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-dvh flex flex-col items-center">
+    <div className="w-full h-dvh flex flex-col">
       <Header
         agentName={agentName ?? ""}
         playbackFrequencies={playbackFrequencies}
         stopPlaying={handleStopPlaying}
         resetConversation={resetHistory}
       />
-      <ChatHistory messages={messages} isLoading={isLoading} />
-      <Composer
-        prompt={prompt}
-        setPrompt={setPrompt}
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-        audioChat={
-          <AudioChat
-            frequencies={frequencies}
-            isReady={websocketReady && audioIsReady}
-            startRecording={startRecording}
-            stopRecording={stopRecording}
-            sendAudioMessage={sendAudioMessage}
+      <div className="flex w-full flex-1 min-h-0">
+        <div className="flex flex-1 min-h-0 flex-col items-center">
+          <ChatHistory messages={messages} isLoading={isLoading} />
+          <Composer
+            prompt={prompt}
+            setPrompt={setPrompt}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            audioChat={
+              <AudioChat
+                frequencies={frequencies}
+                isReady={websocketReady && audioIsReady}
+                startRecording={startRecording}
+                stopRecording={stopRecording}
+                sendAudioMessage={sendAudioMessage}
+              />
+            }
           />
-        }
-      />
+        </div>
+        <LedgerPanel ledger={ledger} />
+      </div>
     </div>
   );
 }
