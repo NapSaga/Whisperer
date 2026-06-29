@@ -141,7 +141,7 @@ class WebsocketHelper:
         elif is_text_output(event):
             await self.stream_response(event.data.delta)  # type: ignore
 
-    async def text_output_complete(self, output, is_done=False):
+    async def text_output_complete(self, output, is_done=False, compact=False):
         if not is_done:
             await self.websocket.send_text(
                 json.dumps(
@@ -156,7 +156,14 @@ class WebsocketHelper:
         else:
             self.partial_response = ""
             self.latest_agent = output.last_agent
-            self.history = output.to_input_list()
+            # In compact (suggeritore) mode the model runs on [ledger + current
+            # question], so output.to_input_list() would collapse the VISIBLE chat
+            # to those items (and surface the ledger as a system message). The full
+            # display history is already accumulated turn-by-turn via
+            # handle_new_item — keep it; only normalize from the run input when the
+            # run actually saw the whole history (base / non-compact path).
+            if not compact:
+                self.history = output.to_input_list()
             await self.websocket.send_text(
                 json.dumps(
                     {

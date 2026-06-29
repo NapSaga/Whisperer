@@ -113,7 +113,9 @@ class Workflow(VoiceWorkflowBase):
                 agent_text += event.data.delta  # type: ignore
                 yield event.data.delta  # type: ignore
 
-        await self.connection.text_output_complete(output, is_done=True)
+        await self.connection.text_output_complete(
+            output, is_done=True, compact=injector.is_enabled()
+        )
 
         # Watchdog (SPEC §4, opt-in): after the reply, a cheap check asks whether
         # it contradicts a known fact. On drift, re-inject that ONE fact and let
@@ -136,7 +138,9 @@ class Workflow(VoiceWorkflowBase):
                             if is_text_output(event):
                                 agent_text += event.data.delta  # type: ignore
                                 yield event.data.delta  # type: ignore
-                        await self.connection.text_output_complete(retry, is_done=True)
+                        await self.connection.text_output_complete(
+                            retry, is_done=True, compact=injector.is_enabled()
+                        )
                         responses.append(retry)
             except Exception:
                 logger.exception("suggeritore: watchdog skipped")
