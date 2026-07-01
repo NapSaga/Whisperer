@@ -108,3 +108,34 @@ export type LongCallFixture = {
   scaling: LongCallScalingPoint[];
   curve: LongCallCurvePoint[];
 };
+
+/* StudierAI oral-exam demo — the real configured customer-zero measurement
+   (ROADMAP #4). Same recall/cost shape as the long call, plus the full StudierAI
+   stack configuration (model, voice, cost lens) surfaced for the "see all the
+   configs" view. Built from recordings/studierai-oral_* via per-turn aggregation. */
+export type StudieraiConfig = {
+  modelHarness: string;
+  modelProd: string;
+  agentProfile: string;
+  scenario: string;
+  stt: string;
+  tts: string;
+  baseCap: number;
+  costLens: string;
+  source: string;
+};
+
+export type StudieraiFixture = {
+  callTurns: number;
+  sessionMinutes: number;
+  runs: number;
+  subject: string;
+  config: StudieraiConfig;
+  headline: {
+    baseCapped: LongCallConfig;
+    baseFull: LongCallConfig;
+    suggeritore: LongCallConfig;
+    ratio: number;
+  };
+  curve: LongCallCurvePoint[];
+};

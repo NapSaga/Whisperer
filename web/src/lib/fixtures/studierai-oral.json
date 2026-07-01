@@ -1,0 +1,230 @@
+{
+  "_generated": "derivato da recordings/studierai-oral_* (+ studierai-uncapped/) — esame orale StudierAI, N=3, 64 turni (~14 min), aggregazione per-turno SPEC §5",
+  "callTurns": 64,
+  "sessionMinutes": 14,
+  "runs": 3,
+  "subject": "Matematica · 5° anno (maturità)",
+  "config": {
+    "modelHarness": "gpt-4o-mini",
+    "modelProd": "gpt-realtime-mini (OpenAI Realtime API)",
+    "agentProfile": "studierai_oral",
+    "scenario": "studierai-oral",
+    "stt": "whisper-1 (it)",
+    "tts": "shimmer",
+    "baseCap": 8,
+    "costLens": "OpenAI Realtime audio · $32/M in · $64/M out",
+    "source": "StudierAI/server (esame orale reale)"
+  },
+  "headline": {
+    "baseCapped": {
+      "recall": "1/3",
+      "cost": 0.9373,
+      "note": "economico ma dimentica (cap=8)"
+    },
+    "baseFull": {
+      "recall": "3/3",
+      "cost": 1.8112,
+      "note": "ricorda ma ripaga tutto il contesto (≈ Realtime)"
+    },
+    "suggeritore": {
+      "recall": "3/3",
+      "cost": 1.0547,
+      "note": "ricorda e resta piatto"
+    },
+    "ratio": 1.72
+  },
+  "curve": [
+    {
+      "turn": 2,
+      "baseFull": 0.0198,
+      "sug": 0.0243,
+      "baseCapped": 0.0197
+    },
+    {
+      "turn": 4,
+      "baseFull": 0.0415,
+      "sug": 0.047,
+      "baseCapped": 0.0417
+    },
+    {
+      "turn": 6,
+      "baseFull": 0.0649,
+      "sug": 0.0706,
+      "baseCapped": 0.0662
+    },
+    {
+      "turn": 8,
+      "baseFull": 0.091,
+      "sug": 0.0935,
+      "baseCapped": 0.0946
+    },
+    {
+      "turn": 10,
+      "baseFull": 0.1195,
+      "sug": 0.1248,
+      "baseCapped": 0.1234
+    },
+    {
+      "turn": 12,
+      "baseFull": 0.1502,
+      "sug": 0.155,
+      "baseCapped": 0.1538
+    },
+    {
+      "turn": 14,
+      "baseFull": 0.1843,
+      "sug": 0.1826,
+      "baseCapped": 0.1839
+    },
+    {
+      "turn": 16,
+      "baseFull": 0.2198,
+      "sug": 0.2104,
+      "baseCapped": 0.2134
+    },
+    {
+      "turn": 18,
+      "baseFull": 0.2587,
+      "sug": 0.2402,
+      "baseCapped": 0.2436
+    },
+    {
+      "turn": 20,
+      "baseFull": 0.2991,
+      "sug": 0.2692,
+      "baseCapped": 0.2741
+    },
+    {
+      "turn": 22,
+      "baseFull": 0.3421,
+      "sug": 0.2993,
+      "baseCapped": 0.3035
+    },
+    {
+      "turn": 24,
+      "baseFull": 0.3885,
+      "sug": 0.3292,
+      "baseCapped": 0.3336
+    },
+    {
+      "turn": 26,
+      "baseFull": 0.436,
+      "sug": 0.3613,
+      "baseCapped": 0.3649
+    },
+    {
+      "turn": 28,
+      "baseFull": 0.4856,
+      "sug": 0.3951,
+      "baseCapped": 0.3949
+    },
+    {
+      "turn": 30,
+      "baseFull": 0.5384,
+      "sug": 0.4276,
+      "baseCapped": 0.4263
+    },
+    {
+      "turn": 32,
+      "baseFull": 0.5946,
+      "sug": 0.4613,
+      "baseCapped": 0.4574
+    },
+    {
+      "turn": 34,
+      "baseFull": 0.6522,
+      "sug": 0.4945,
+      "baseCapped": 0.4888
+    },
+    {
+      "turn": 36,
+      "baseFull": 0.7123,
+      "sug": 0.528,
+      "baseCapped": 0.5203
+    },
+    {
+      "turn": 38,
+      "baseFull": 0.7763,
+      "sug": 0.5637,
+      "baseCapped": 0.5522
+    },
+    {
+      "turn": 40,
+      "baseFull": 0.8415,
+      "sug": 0.5975,
+      "baseCapped": 0.5832
+    },
+    {
+      "turn": 42,
+      "baseFull": 0.9091,
+      "sug": 0.6336,
+      "baseCapped": 0.6146
+    },
+    {
+      "turn": 44,
+      "baseFull": 0.9796,
+      "sug": 0.6715,
+      "baseCapped": 0.6455
+    },
+    {
+      "turn": 46,
+      "baseFull": 1.0516,
+      "sug": 0.7072,
+      "baseCapped": 0.6753
+    },
+    {
+      "turn": 48,
+      "baseFull": 1.126,
+      "sug": 0.7432,
+      "baseCapped": 0.7056
+    },
+    {
+      "turn": 50,
+      "baseFull": 1.2027,
+      "sug": 0.7818,
+      "baseCapped": 0.7354
+    },
+    {
+      "turn": 52,
+      "baseFull": 1.2829,
+      "sug": 0.8196,
+      "baseCapped": 0.7648
+    },
+    {
+      "turn": 54,
+      "baseFull": 1.3654,
+      "sug": 0.857,
+      "baseCapped": 0.7945
+    },
+    {
+      "turn": 56,
+      "baseFull": 1.4496,
+      "sug": 0.894,
+      "baseCapped": 0.8237
+    },
+    {
+      "turn": 58,
+      "baseFull": 1.5358,
+      "sug": 0.9335,
+      "baseCapped": 0.8522
+    },
+    {
+      "turn": 60,
+      "baseFull": 1.6244,
+      "sug": 0.9724,
+      "baseCapped": 0.8803
+    },
+    {
+      "turn": 62,
+      "baseFull": 1.7153,
+      "sug": 1.0116,
+      "baseCapped": 0.9077
+    },
+    {
+      "turn": 64,
+      "baseFull": 1.8112,
+      "sug": 1.0547,
+      "baseCapped": 0.9373
+    }
+  ]
+}

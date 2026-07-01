@@ -36,6 +36,16 @@
       "identity": "you are ShopDemo's phone support agent",
       "objective": "help the caller with their existing order",
       "recall_markers": ["3310", "caff", "sofia", "dodici", "12", "marco", "portier"]
+    },
+    {
+      "id": "studierai-oral",
+      "name": "StudierAI oral exam (matematica)",
+      "script": "studierai-oral.jsonl",
+      "seeded_fact": "at the start the student Marco said he had reviewed derivatives and the theorems of Rolle and Lagrange well but had NOT reviewed integrals; the exam has so far covered derivatives and the mean-value theorems (Rolle, Lagrange)",
+      "identity": "you are an Italian university professor conducting a student's oral exam (esame orale)",
+      "objective": "quiz the student on the study material and assess them, tracking what has already been covered",
+      "recall_markers": ["integral", "derivat", "rolle", "lagrang", "marco"],
+      "agent_profile": "studierai_oral"
     }
   ]
 }

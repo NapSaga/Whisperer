@@ -1,0 +1,32 @@
+{"text": "Buongiorno professore, sono Marco. Le dico subito una cosa: ho ripassato molto bene le derivate e i teoremi del calcolo, Rolle e Lagrange, ma gli integrali non ho fatto in tempo a rivederli, mi scuso in anticipo."}
+{"text": "La derivata è il limite del rapporto incrementale, e geometricamente è il coefficiente angolare della retta tangente al grafico nel punto."}
+{"text": "Per il teorema di Rolle servono tre ipotesi: funzione continua sull'intervallo chiuso, derivabile su quello aperto, e stesso valore agli estremi."}
+{"text": "La tesi è che esiste almeno un punto interno in cui la derivata prima si annulla."}
+{"text": "Il teorema di Lagrange è una generalizzazione: tolgo l'ipotesi che gli estremi abbiano lo stesso valore."}
+{"text": "Esiste un punto in cui la derivata vale il rapporto tra la variazione della funzione e l'ampiezza dell'intervallo."}
+{"text": "Geometricamente, in quel punto la tangente è parallela alla corda che unisce gli estremi."}
+{"text": "Mi scusi professore, posso bere un sorso d'acqua? Sono un po' emozionato."}
+{"text": "Grazie. Una funzione è continua in un punto se il limite esiste, è finito e coincide col valore della funzione."}
+{"text": "Per lo studio di funzione di solito parto dal dominio, poi guardo simmetrie e segno."}
+{"text": "Poi calcolo i limiti agli estremi del dominio per trovare gli asintoti."}
+{"text": "Gli asintoti possono essere verticali, orizzontali oppure obliqui, a seconda dei limiti."}
+{"text": "Con la derivata prima studio la monotonia e trovo i massimi e i minimi."}
+{"text": "Con la derivata seconda invece la concavità e gli eventuali punti di flesso."}
+{"text": "Un punto di flesso è dove la concavità cambia e la derivata seconda si annulla cambiando segno."}
+{"text": "Professore, una curiosità: nella seconda prova secondo lei chiederanno più analisi o più geometria?"}
+{"text": "Ah, grazie del consiglio. Allora mi concentro sull'analisi nelle prossime due settimane."}
+{"text": "Sulle derivate mi sento davvero sicuro, le ho fatte e rifatte fino a ieri sera."}
+{"text": "Le confermo la regola della catena: la derivata di una funzione composta è il prodotto delle derivate."}
+{"text": "Anche la derivata del prodotto la ricordo: primo per derivata del secondo più secondo per derivata del primo."}
+{"text": "Su Rolle le ho già risposto prima, professore, preferirei non ripeterlo se per lei va bene."}
+{"text": "Mi stavo chiedendo: i teoremi di Rolle e Lagrange sono collegati anche a quello di Cauchy, vero?"}
+{"text": "Esatto, Cauchy generalizza Lagrange mettendo a rapporto due funzioni contemporaneamente."}
+{"text": "Sui limiti notevoli ricordo quello del seno di x su x che tende a uno per x che va a zero."}
+{"text": "Per le forme indeterminate userei De l'Hôpital, quando ho zero su zero oppure infinito su infinito."}
+{"text": "Cerco di essere preciso nel linguaggio, professore, anche se con l'emozione ogni tanto mi perdo un po'."}
+{"text": "Sul grafico finale metto insieme dominio, asintoti, monotonia e concavità per disegnarlo."}
+{"text": "Una funzione pari è simmetrica rispetto all'asse y, una dispari rispetto all'origine."}
+{"text": "Professore, su questo argomento mi ha già interrogato prima: possiamo passare ad altro?"}
+{"text": "Mi sento di aver coperto bene la parte che avevo preparato per oggi."}
+{"text": "La ringrazio molto della pazienza, professore, è stato un colloquio sereno."}
+{"text": "Professore, prima di chiudere: si ricorda cosa le avevo detto all'inizio su cosa avevo e cosa NON avevo ripassato? E su quali argomenti mi ha già interrogato finora?"}

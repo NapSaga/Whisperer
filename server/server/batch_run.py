@@ -12,6 +12,11 @@ Usage:
     uv run python batch_run.py --mode base        --n 10            # scenario nonna
     uv run python batch_run.py --mode suggeritore  --n 10 --scenario reso
     uv run python batch_run.py --mode base --scenario long-call --turns 20
+    uv run python batch_run.py --mode suggeritore --scenario studierai-oral  # real StudierAI oral exam
+
+A scenario may declare ``agent_profile`` in index.json (e.g. ``studierai_oral``)
+to pick the agent persona for that run; otherwise the WHISPERER_AGENT_PROFILE env
+var, then the ShopDemo demo agent, are used.
 
 Output (SPEC §7 shape ``{ turn, role:"caller"|"agent", text, ts }``):
     recordings/{scenario}_base_run{i}.jsonl   (base)
@@ -51,7 +56,7 @@ load_dotenv(dotenv_path=str(_REPO_ROOT / ".env"), override=True)
 load_dotenv(dotenv_path=str(_HERE.parent / ".env"), override=True)
 
 from whisperer import state_store  # noqa: E402
-from app.agent_config import starting_agent  # noqa: E402
+from app.agent_config import get_agent  # noqa: E402
 from whisperer.state_store import StateLedger  # noqa: E402
 from app.utils import is_new_output_item  # noqa: E402
 from server import Workflow  # noqa: E402  — the live class, reused verbatim
@@ -105,6 +110,7 @@ def load_scenario(
             "identity": _DEFAULT_IDENTITY,
             "objective": _DEFAULT_OBJECTIVE,
             "recall_markers": [],
+            "agent_profile": None,
         }
     else:
         if not scenario_id:
@@ -123,6 +129,7 @@ def load_scenario(
             "identity": entry.get("identity", _DEFAULT_IDENTITY),
             "objective": entry.get("objective", _DEFAULT_OBJECTIVE),
             "recall_markers": entry.get("recall_markers", []),
+            "agent_profile": entry.get("agent_profile"),
         }
 
     if turns is not None and turns < len(scenario["script"]):
@@ -218,7 +225,7 @@ async def run_one(mode: str, run_idx: int, out_dir: Path, scenario: dict) -> lis
     os.environ["SUGGERITORE_COST_PATH"] = str(cost_path)
     cost_path.unlink(missing_ok=True)
 
-    conn = HeadlessConnection(starting_agent)
+    conn = HeadlessConnection(get_agent(scenario.get("agent_profile")))
     wf = Workflow(conn)
 
     turns: list[dict] = []

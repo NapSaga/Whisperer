@@ -15,7 +15,8 @@ from agents.voice import (
 )
 from whisperer import cost_meter, distiller, injector, state_store, truncation, watchdog
 from whisperer.cost_meter import CostMeter
-from app.agent_config import starting_agent
+from app.agent_config import starting_agent, get_agent
+from app import realtime_relay
 from app.utils import (
     WebsocketHelper,
     concat_audio_chunks,
@@ -44,7 +45,25 @@ load_dotenv(dotenv_path=_ENV_PATH, override=True)
 
 app = FastAPI()
 
+# Boot: stampa la modalita' attiva (print -> visibile nei log uvicorn).
+print(
+    f"[BOOT] realtime={realtime_relay.is_enabled()} "
+    f"provider={os.getenv('REALTIME_PROVIDER')} mode={os.getenv('SUGGERITORE_MODE')}",
+    flush=True,
+)
+
 logger = getLogger(__name__)
+
+# Rendi visibili i log [REALTIME]/[REALTIME-COST] su stdout: uvicorn non mostra di
+# default gli INFO degli app-logger. Guardato per non duplicare handler sui reload.
+import logging as _logging
+import sys as _sys
+for _n in ("app.realtime_relay", "whisperer.realtime_cost_meter"):
+    _lg = _logging.getLogger(_n)
+    if not _lg.handlers:
+        _lg.setLevel(_logging.INFO)
+        _lg.addHandler(_logging.StreamHandler(_sys.stdout))
+        _lg.propagate = False
 
 app.add_middleware(
     CORSMiddleware,
@@ -189,10 +208,59 @@ class Workflow(VoiceWorkflowBase):
             self._distilling = False
 
 
+async def _run_realtime(websocket: WebSocket) -> None:
+    """Demo realtime speech-to-speech (SUGGERITORE_REALTIME=on).
+
+    Ponte browser <-> provider realtime (Grok Voice / OpenAI GA) riusando il protocollo
+    audio del frontend (append/commit + response.audio.delta) e il pannello memoria.
+    La VoicePipeline resta il path di default quando il flag e' off.
+    """
+    # Chiamata nuova: ledger vuoto + contatore costo azzerato, pannello sincronizzato.
+    state_store.reset()
+    cost_meter.reset()
+    # Risolvi la persona ORA (dopo load_dotenv), cosi' WHISPERER_AGENT_PROFILE dal
+    # .env vale davvero — es. studierai_oral (esaminatore italiano).
+    agent = get_agent()
+    connection = WebsocketHelper(websocket, [], agent)
+    await connection.send_state(state_store.current())
+
+    relay = realtime_relay.RealtimeRelay(
+        connection, getattr(agent, "instructions", "") or ""
+    )
+    if not await relay.connect():
+        return
+    pump = asyncio.create_task(relay.pump_provider())
+    try:
+        while True:
+            message = await websocket.receive_json()
+            if message.get("type") == "call.start":
+                # lo studente avvia: imposta la modalita' A/B (suggeritore/base_cap/base_full)
+                # e fai salutare per primo l'esaminatore.
+                relay.set_mode(message.get("mode"))
+                await relay.greet()
+            elif is_new_audio_chunk(message):
+                await relay.feed_append(message["delta"])
+            elif is_audio_complete(message):
+                await relay.feed_commit()
+            elif is_sync_message(message):
+                connection.history = message["inputs"]
+    except WebSocketDisconnect:
+        logger.info("realtime: client disconnected")
+    finally:
+        pump.cancel()
+        await relay.close()
+
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     with trace("Voice Agent Chat"):
         await websocket.accept()
+
+        # Modalita' realtime (opt-in): speech-to-speech verso un provider realtime,
+        # invece della VoicePipeline. Path di default invariato quando il flag e' off.
+        if realtime_relay.is_enabled():
+            await _run_realtime(websocket)
+            return
 
         # Fresh call starts empty: wipe the runtime ledger to BLANK so the
         # suggeritore demo builds state.json from ONLY what the caller says

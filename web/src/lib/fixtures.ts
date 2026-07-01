@@ -7,6 +7,7 @@ import type {
   DisplayTurn,
   LongCallFixture,
   StateLedger,
+  StudieraiFixture,
   TranscriptLane,
   TranscriptRole,
   TranscriptTurn,
@@ -64,6 +65,10 @@ export function getCostFixture(): CostFixture {
 
 export function getLongCall(): LongCallFixture {
   return parseJsonFile<LongCallFixture>("long-call.json");
+}
+
+export function getStudierai(): StudieraiFixture {
+  return parseJsonFile<StudieraiFixture>("studierai-oral.json");
 }
 
 export function getTranscriptLane(

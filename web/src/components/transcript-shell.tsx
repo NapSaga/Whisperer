@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckIcon,
+  GraduationCapIcon,
   PauseIcon,
   PlayIcon,
   RotateCcwIcon,
@@ -1058,6 +1060,15 @@ export function TranscriptShell({
               <span className="text-[color:var(--fail)]">{longCall.headline.ratio}×</span>
             </span>
           </Button>
+          <Link
+            href="/studierai"
+            className="flex h-auto shrink-0 flex-col items-start gap-0 rounded-md border border-[color:var(--voice-accent)]/30 bg-[color:var(--voice-accent)]/8 px-3 py-1 leading-tight transition-colors hover:bg-[color:var(--voice-accent)]/15"
+          >
+            <span className="flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-wider text-[color:var(--voice-accent)]">
+              <GraduationCapIcon className="size-3" /> demo reale
+            </span>
+            <span className="font-mono text-sm font-semibold text-foreground">StudierAI →</span>
+          </Link>
         </div>
       </div>
 

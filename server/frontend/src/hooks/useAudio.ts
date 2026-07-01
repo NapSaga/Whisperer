@@ -76,6 +76,30 @@ export function useAudio() {
     setPlaybackFrequencies(Array.from({ length: 30 }, () => 0));
   }
 
+  // --- Realtime-native: streaming continuo del microfono ---------------------
+  // Il mic resta aperto e ogni chunk viene passato subito a `onChunk` (che lo
+  // invia come input_audio_buffer.append). I turni li chiude il server_vad, non
+  // un pulsante: nessun push-to-talk.
+  async function startStreaming(onChunk: (chunk: Int16Array<ArrayBuffer>) => void) {
+    stoppedManually.current = false;
+    await wavRecorder.current?.clear();
+    await wavRecorder.current?.record((data) => {
+      // data.mono e' un ArrayBuffer (PCM16): va avvolto direttamente in Int16Array,
+      // NON via .buffer (che sarebbe undefined -> chunk vuoto). Stesso pattern del
+      // push-to-talk originale (stopRecording).
+      onChunk(new Int16Array(data.mono));
+      const f = wavRecorder.current?.getFrequencies("voice") || {
+        values: new Float32Array([0]),
+      };
+      setFrequencies(normalizeArray(f.values, 30));
+    });
+  }
+
+  async function stopStreaming() {
+    await wavRecorder.current?.pause();
+    setFrequencies(Array.from({ length: 30 }, () => 0));
+  }
+
   async function stopRecording() {
     await wavRecorder.current?.pause();
     const dataArrays = audioChunks.current.map((chunk) => {
@@ -103,6 +127,8 @@ export function useAudio() {
     playAudio,
     startRecording,
     stopRecording,
+    startStreaming,
+    stopStreaming,
     stopPlaying,
     frequencies,
     playbackFrequencies,
